@@ -15,7 +15,7 @@
 
 @interface UIViewController (FSPanes)
 
-@property(nonatomic, readonly, retain) FSPanesSplitViewController *splitCascadeViewController;
-@property(nonatomic, readonly, retain) FSPanesNavigationController *cascadeNavigationController;
+@property(nonatomic, readonly, retain) FSPanesSplitViewController *panesSplitViewController;
+@property(nonatomic, readonly, retain) FSPanesNavigationController *panesNavigationController;
 
 @end

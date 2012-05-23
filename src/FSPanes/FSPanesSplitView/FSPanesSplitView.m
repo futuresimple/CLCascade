@@ -23,10 +23,10 @@
 
 @implementation FSPanesSplitView
 
-@synthesize splitCascadeViewController = _splitCascadeViewController;
+@synthesize splitViewController = _splitViewController;
 
-@synthesize categoriesView = _categoriesView;
-@synthesize cascadeView = _cascadeView;
+@synthesize menuView = _menuView;
+@synthesize navigationView = _navigationView;
 @synthesize backgroundView = _backgroundView;
 @synthesize verticalDividerImage = _verticalDividerImage;
 
@@ -99,8 +99,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)dealloc
 {
-    _cascadeView = nil;
-    _categoriesView = nil;
+    _navigationView = nil;
+    _menuView = nil;
     _verticalDividerImage = nil;
     _dividerView = nil;
     
@@ -110,19 +110,19 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     
-    FSPanesNavigationController* cascadeNavigationController = _splitCascadeViewController.cascadeNavigationController;
-    UIView* navigationView = [cascadeNavigationController view];
+    FSPanesNavigationController* panesNavigationController = _splitViewController.panesNavigationController;
+    UIView* navigationView = [panesNavigationController view];
     
-    if (CGRectContainsPoint(_categoriesView.frame, point)) {
+    if (CGRectContainsPoint(_menuView.frame, point)) {
         
-        UIView* rootView = [[cascadeNavigationController firstVisibleViewController] view];
+        UIView* rootView = [[panesNavigationController firstVisibleViewController] view];
         CGRect rootViewRect = [rootView convertRect:rootView.bounds toView:self];
         
         if ((rootView) && (CGRectContainsPoint(rootViewRect, point))) {
             CGPoint newPoint = [self convertPoint:point toView:navigationView];
             return [navigationView hitTest:newPoint withEvent:event];
         } else {
-            return [_categoriesView hitTest:point withEvent:event];
+            return [_menuView hitTest:point withEvent:event];
         }
         
     } else {
@@ -138,11 +138,11 @@
     
     CGRect bounds = self.bounds;
     
-    CGRect categoriesFrame = CGRectMake(0.0, 0.0, CATEGORIES_VIEW_WIDTH, bounds.size.height);
-    _categoriesView.frame = categoriesFrame;
+    CGRect menuFrame = CGRectMake(0.0, 0.0, CATEGORIES_VIEW_WIDTH, bounds.size.height);
+    _menuView.frame = menuFrame;
     
-    CGRect cascadeNavigationFrame = bounds;
-    _cascadeView.frame = cascadeNavigationFrame;
+    CGRect navigationFrame = bounds;
+    _navigationView.frame = navigationFrame;
     
     CGRect backgroundViewFrame = CGRectMake(CATEGORIES_VIEW_WIDTH, 0.0, bounds.size.width - CATEGORIES_VIEW_WIDTH, bounds.size.height);
     _backgroundView.frame = backgroundViewFrame;
@@ -157,23 +157,23 @@
 #pragma mark Setter
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setCategoriesView:(UIView*) aView {
-    if (_categoriesView != aView) {
-        _categoriesView = aView;
+- (void) setMenuView:(UIView*) aView {
+    if (_menuView != aView) {
+        _menuView = aView;
         
-        [self addSubview: _categoriesView];
-        [self bringSubviewToFront: _cascadeView];
+        [self addSubview: _menuView];
+        [self bringSubviewToFront: _navigationView];
     }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setCascadeView:(UIView*) aView {
-    if (_cascadeView != aView) {
-        _cascadeView = aView;
+- (void) setNavigationView:(UIView*) aView {
+    if (_navigationView != aView) {
+        _navigationView = aView;
         
-        [self addSubview: _cascadeView];
-        [self bringSubviewToFront: _cascadeView];
+        [self addSubview: _navigationView];
+        [self bringSubviewToFront: _navigationView];
     }
 }
 
@@ -186,10 +186,10 @@
         [_dividerView removeFromSuperview];
         _dividerView = nil;
         
-        if (_cascadeView == nil) {
+        if (_navigationView == nil) {
             [self addSubview: _backgroundView];
         } else {
-            NSUInteger index = [self.subviews indexOfObject: _cascadeView];
+            NSUInteger index = [self.subviews indexOfObject: _navigationView];
             [self insertSubview:_backgroundView atIndex:index];
         }
         

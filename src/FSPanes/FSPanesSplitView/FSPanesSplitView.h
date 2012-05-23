@@ -18,8 +18,8 @@
 
 @interface FSPanesSplitView : UIView {
     // views
-    UIView* _categoriesView;
-    UIView* _cascadeView;
+    UIView* _menuView;
+    UIView* _navigationView;
     
     // background
     UIView*     _backgroundView;
@@ -31,27 +31,14 @@
     
 }
 
-@property (nonatomic, strong) IBOutlet FSPanesSplitViewController* splitCascadeViewController;
+@property (nonatomic, strong) IBOutlet FSPanesSplitViewController* splitViewController;
 
-/*
- * Divider image - image between categories and cascade view
- */
 @property (nonatomic, strong) UIImage* verticalDividerImage;
 
-/*
- * Background view - located under cascade view
- */
 @property (nonatomic, strong) UIView* backgroundView;
 
-/*
- * Categories view - located on the left, view containing table view
- */
-@property (nonatomic, strong) UIView* categoriesView;
+@property (nonatomic, strong) UIView* menuView;
 
-/*
- * Cascade content navigator - located on the right, view containing cascade view controllers
- */
-@property (nonatomic, strong) UIView* cascadeView;
-
+@property (nonatomic, strong) UIView* navigationView;
 
 @end

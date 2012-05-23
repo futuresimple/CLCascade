@@ -327,7 +327,7 @@
 		B6EA8CBA1456D25200817157 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DSTROOT = /tmp/Cascade.dst;
+				DSTROOT = /tmp/FSPanes.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FSPanes-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -341,7 +341,7 @@
 		B6EA8CBB1456D25200817157 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DSTROOT = /tmp/Cascade.dst;
+				DSTROOT = /tmp/FSPanes.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FSPanes-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;

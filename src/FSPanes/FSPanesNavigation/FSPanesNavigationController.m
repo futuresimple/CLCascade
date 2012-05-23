@@ -29,7 +29,7 @@
 
 - (void)dealloc
 {
-    _cascadeView = nil;
+    _navigationView = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -38,7 +38,7 @@
     [super didReceiveMemoryWarning];
     
     // unload all invisible pages in cascadeView
-    [_cascadeView unloadInvisiblePages];
+    [_navigationView unloadInvisiblePages];
 }
 
 #pragma mark - View lifecycle
@@ -49,10 +49,10 @@
     // set background color
     [self.view setBackgroundColor: [UIColor clearColor]];
     
-    _cascadeView = [[FSPanesNavigationView alloc] initWithFrame:self.view.bounds];
-    _cascadeView.delegate = self;
-    _cascadeView.dataSource = self;
-    [self.view addSubview:_cascadeView];
+    _navigationView = [[FSPanesNavigationView alloc] initWithFrame:self.view.bounds];
+    _navigationView.delegate = self;
+    _navigationView.dataSource = self;
+    [self.view addSubview:_navigationView];
 }
 
 - (void)viewDidUnload
@@ -60,8 +60,8 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-    [_cascadeView removeFromSuperview];
-    _cascadeView = nil;
+    [_navigationView removeFromSuperview];
+    _navigationView = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -73,7 +73,7 @@
 
 - (void)willAnimateRotationToInterfaceOrientation:( UIInterfaceOrientation )interfaceOrientation
                                          duration:( NSTimeInterval )duration {
-    [_cascadeView updateContentLayoutToInterfaceOrientation:interfaceOrientation
+    [_navigationView updateContentLayoutToInterfaceOrientation:interfaceOrientation
                                                    duration:duration ];
 }
 
@@ -83,22 +83,22 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (CGFloat) widerLeftInset {
-    return _cascadeView.widerLeftInset;
+    return _navigationView.widerLeftInset;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) setWiderLeftInset:(CGFloat)inset {
-    [_cascadeView setWiderLeftInset: inset];    
+    [_navigationView setWiderLeftInset: inset];    
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (CGFloat) leftInset {
-    return _cascadeView.leftInset;
+    return _navigationView.leftInset;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) setLeftInset:(CGFloat)inset {
-    [_cascadeView setLeftInset: inset];
+    [_navigationView setLeftInset: inset];
 }
 
 
@@ -115,7 +115,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIViewController*) lastCascadeViewController {
+- (UIViewController*) lastViewController {
     return [self.childViewControllers lastObject];
 }
 
@@ -229,7 +229,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated {
     // pop all pages
-    [_cascadeView popAllPagesAnimated: NO];
+    [_navigationView popAllPagesAnimated: NO];
     // remove all controllers
     [self removeAllPageViewControllers];
     // add root view controller
@@ -260,7 +260,7 @@
     [self addChildViewController:viewController];
     
     // push view
-    [_cascadeView pushPage:[viewController view] 
+    [_navigationView pushPage:[viewController view] 
                   fromPage:[sender view] 
                   animated:animated
                   viewSize:size];
@@ -270,7 +270,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (UIViewController*) firstVisibleViewController {
-    NSInteger index = [_cascadeView indexOfFirstVisibleView: YES];
+    NSInteger index = [_navigationView indexOfFirstVisibleView: YES];
     
     if (index != NSNotFound) {
         return [self.childViewControllers objectAtIndex: index];
@@ -300,7 +300,7 @@
 - (void) addPagesRoundedCorners {
     
     // unload all rounded corners
-    for (id item in [_cascadeView visiblePages]) {
+    for (id item in [_navigationView visiblePages]) {
         if (item != [NSNull null]) {
             if ([item isKindOfClass:[FSPaneView class]]) {
                 FSPaneView* view = (FSPaneView*)item;
@@ -310,10 +310,10 @@
     }
     
     // get index of first visible page
-    NSInteger indexOfFirstVisiblePage = [_cascadeView indexOfFirstVisibleView: NO];
+    NSInteger indexOfFirstVisiblePage = [_navigationView indexOfFirstVisibleView: NO];
     
     // get index of last visible page
-    NSInteger indexOfLastVisiblePage = [_cascadeView indexOfLastVisibleView: NO];
+    NSInteger indexOfLastVisiblePage = [_navigationView indexOfLastVisibleView: NO];
     
     if (indexOfLastVisiblePage == indexOfFirstVisiblePage) {
         [self addRoundedCorner:UIRectCornerAllCorners toPageAtIndex: indexOfFirstVisiblePage];
@@ -345,7 +345,7 @@
     NSEnumerator* enumerator = [self.childViewControllers reverseObjectEnumerator];
     // enumarate pages
     while ([enumerator nextObject] && self.childViewControllers.count > toIndex+1) {
-        if (![_cascadeView canPopPageAtIndex: index]) {
+        if (![_navigationView canPopPageAtIndex: index]) {
             //dodikk - maybe break fits better
             continue;
         }
@@ -354,7 +354,7 @@
         [viewController willMoveToParentViewController:nil];
         
         // pop page at index
-        [_cascadeView popPageAtIndex:index animated:NO];
+        [_navigationView popPageAtIndex:index animated:NO];
         
         [viewController removeFromParentViewController];
         

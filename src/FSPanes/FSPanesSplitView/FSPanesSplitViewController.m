@@ -18,14 +18,14 @@
 
 @implementation FSPanesSplitViewController
 
-@synthesize cascadeNavigationController = _cascadeNavigationController;
-@synthesize categoriesViewController = _categoriesViewController;
+@synthesize panesMenuViewController = _panesMenuViewController;
+@synthesize panesNavigationController = _panesNavigationController;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id) initWithNavigationController:(FSPanesNavigationController*)navigationController {
     self = [super init];
     if (self) {
-        _cascadeNavigationController = navigationController;
+        _panesNavigationController = navigationController;
     }
     return self;
 }
@@ -33,7 +33,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)dealloc
 {
-    _categoriesViewController = nil;
+    _panesMenuViewController = nil;
 }
 
 
@@ -61,8 +61,8 @@
         if(path) {
             self.view = [[bundle loadNibNamed:nib owner:self options:nil] objectAtIndex: 0];
             FSPanesSplitView* view_ = (FSPanesSplitView*)self.view;
-            [view_ setCategoriesView: self.categoriesViewController.view];
-            [view_ setCascadeView: self.cascadeNavigationController.view];
+            [view_ setMenuView: self.panesMenuViewController.view];
+            [view_ setNavigationView: self.panesNavigationController.view];
             
             return;
         }
@@ -71,9 +71,9 @@
     FSPanesSplitView* view_ = [[FSPanesSplitView alloc] init];
     self.view = view_;
     
-    [view_ setCategoriesView: self.categoriesViewController.view];
-    [view_ setCascadeView: self.cascadeNavigationController.view];
-    [view_ setSplitCascadeViewController:self];
+    [view_ setMenuView: self.panesMenuViewController.view];
+    [view_ setNavigationView: self.panesNavigationController.view];
+    [view_ setSplitViewController:self];
 }
 
 
@@ -83,8 +83,8 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-    self.cascadeNavigationController = nil;
-    self.categoriesViewController = nil;
+    self.panesNavigationController = nil;
+    self.panesMenuViewController = nil;
 }
 
 
@@ -96,8 +96,8 @@
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
-    if ([_cascadeNavigationController respondsToSelector:@selector(willAnimateRotationToInterfaceOrientation:duration:)]) {
-        [_cascadeNavigationController willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
+    if ([_panesNavigationController respondsToSelector:@selector(willAnimateRotationToInterfaceOrientation:duration:)]) {
+        [_panesNavigationController willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
     }
 }
 
@@ -122,9 +122,9 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) setCategoriesViewController:(FSPanesMenuViewController *)viewController {
-    if (viewController != _categoriesViewController) {
-        _categoriesViewController = viewController;
-        [(FSPanesSplitView*)self.view setCategoriesView: viewController.view];
+    if (viewController != _panesMenuViewController) {
+        _panesMenuViewController = viewController;
+        [(FSPanesSplitView*)self.view setMenuView: viewController.view];
         
         [self addChildViewController:viewController];
         [viewController didMoveToParentViewController:self];
@@ -133,10 +133,10 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setCascadeNavigationController:(FSPanesNavigationController *)viewController {
-    if (viewController != _cascadeNavigationController) {
-        _cascadeNavigationController = viewController;
-        [(FSPanesSplitView*)self.view setCascadeView: viewController.view];
+- (void) setPanesNavigationController:(FSPanesNavigationController *)viewController {
+    if (viewController != _panesNavigationController) {
+        _panesNavigationController = viewController;
+        [(FSPanesSplitView*)self.view setNavigationView: viewController.view];
         
         [self addChildViewController:viewController];
         [viewController didMoveToParentViewController:self];

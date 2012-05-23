@@ -1,5 +1,5 @@
 //
-// Prefix header for all source files of the 'Cascade' target in the 'Cascade' project
+// Prefix header for all source files of the 'FSPanes' target in the 'FSPanes' project
 //
 
 #ifdef __OBJC__

@@ -17,7 +17,7 @@
 
 @interface FSPanesNavigationController : UIViewController <FSPanesNavigationViewDataSource, FSPanesNavigationViewDelegate> {
     // view containing all views on stack
-    FSPanesNavigationView *_cascadeView;
+    FSPanesNavigationView *_navigationView;
 }
 
 
@@ -43,20 +43,8 @@
 - (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated;
 - (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated viewSize:(FSViewSize)size;
 
-/* 
- First in hierarchy CascadeViewController (opposite to lastCascadeViewController)
- */
-- (UIViewController*) rootViewController;
-
-/* 
- Last in hierarchy CascadeViewController (opposite to rootViewController)
- */
-- (UIViewController*) lastCascadeViewController;
-
-/* 
- Return first visible view controller (load if needed)
- */
-- (UIViewController*) firstVisibleViewController;
-
+- (UIViewController *) rootViewController;
+- (UIViewController *) lastViewController;
+- (UIViewController *) firstVisibleViewController;
 
 @end

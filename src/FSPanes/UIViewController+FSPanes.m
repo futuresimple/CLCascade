@@ -15,27 +15,27 @@
 @implementation UIViewController (FSPanes)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (FSPanesSplitViewController *)splitCascadeViewController {
+- (FSPanesSplitViewController *)panesSplitViewController {
     UIViewController *parent = self.parentViewController;
     
     if ([parent isKindOfClass:[FSPanesSplitViewController class]]) {
         return (FSPanesSplitViewController *)parent;
     }
     else {
-        return parent.splitCascadeViewController;
+        return parent.panesSplitViewController;
     }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (FSPanesNavigationController *)cascadeNavigationController {
+- (FSPanesNavigationController *)panesNavigationController {
     UIViewController *parent = self.parentViewController;
     
     if ([parent isKindOfClass:[FSPanesNavigationController class]]) {
         return (FSPanesNavigationController *)parent;
     }
     else {
-        return parent.cascadeNavigationController;
+        return parent.panesNavigationController;
     }
 }
 

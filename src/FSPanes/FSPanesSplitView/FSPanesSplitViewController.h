@@ -17,16 +17,16 @@
 @class FSPanesNavigationController;
 
 @interface FSPanesSplitViewController : UIViewController {
-    FSPanesMenuViewController*     _categoriesViewController;
-    FSPanesNavigationController*  _cascadeNavigationController;
+    FSPanesMenuViewController *_panesMenuViewController;
+    FSPanesNavigationController *_panesNavigationController;
 }
 
-@property (nonatomic, strong) IBOutlet FSPanesMenuViewController* categoriesViewController;
-@property (nonatomic, strong) IBOutlet FSPanesNavigationController* cascadeNavigationController; //it should be readonly
+@property (nonatomic, strong) IBOutlet FSPanesMenuViewController *panesMenuViewController;
+@property (nonatomic, strong) IBOutlet FSPanesNavigationController *panesNavigationController; //it should be readonly
 
-- (id) initWithNavigationController:(FSPanesNavigationController*)navigationController;
+- (id)initWithNavigationController:(FSPanesNavigationController *)navigationController;
 
-- (void) setBackgroundView:(UIView*)backgroundView;
-- (void) setDividerImage:(UIImage*)image;
+- (void)setBackgroundView:(UIView *)backgroundView;
+- (void)setDividerImage:(UIImage *)image;
 
 @end
