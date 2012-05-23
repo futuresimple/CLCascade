@@ -328,7 +328,7 @@
 			buildSettings = {
 				DSTROOT = /tmp/Cascade.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Cascade/FSPanes-Prefix.pch";
+				GCC_PREFIX_HEADER = "FSPanes-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = FSPanes;
@@ -342,7 +342,7 @@
 			buildSettings = {
 				DSTROOT = /tmp/Cascade.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Cascade/FSPanes-Prefix.pch";
+				GCC_PREFIX_HEADER = "FSPanes-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = FSPanes;
