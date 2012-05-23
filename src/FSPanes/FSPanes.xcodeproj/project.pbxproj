@@ -41,9 +41,9 @@
 		20226E8D1532E0A500195298 /* CLSegmentedView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CLSegmentedView+Extension.m"; sourceTree = "<group>"; };
 		A2E28730155D4E5600300163 /* UIViewController+CLCascade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+CLCascade.h"; sourceTree = "<group>"; };
 		A2E28731155D4E5600300163 /* UIViewController+CLCascade.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+CLCascade.m"; sourceTree = "<group>"; };
-		B6EA8CAC1456D25200817157 /* libCascade.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCascade.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6EA8CAC1456D25200817157 /* libFSPanes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFSPanes.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6EA8CAF1456D25200817157 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		B6EA8CB31456D25200817157 /* Cascade-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cascade-Prefix.pch"; sourceTree = "<group>"; };
+		B6EA8CB31456D25200817157 /* FSPanes-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FSPanes-Prefix.pch"; sourceTree = "<group>"; };
 		B6EA8CBE1456D2EC00817157 /* Cascade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cascade.h; sourceTree = SOURCE_ROOT; };
 		B6EA8CC11456D53200817157 /* CLCascadeNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLCascadeNavigationController.h; sourceTree = "<group>"; };
 		B6EA8CC21456D53200817157 /* CLCascadeNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLCascadeNavigationController.m; sourceTree = "<group>"; };
@@ -93,7 +93,7 @@
 		B6EA8CAD1456D25200817157 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B6EA8CAC1456D25200817157 /* libCascade.a */,
+				B6EA8CAC1456D25200817157 /* libFSPanes.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -122,7 +122,7 @@
 		B6EA8CB21456D25200817157 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				B6EA8CB31456D25200817157 /* Cascade-Prefix.pch */,
+				B6EA8CB31456D25200817157 /* FSPanes-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -208,9 +208,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		B6EA8CAB1456D25200817157 /* Cascade */ = {
+		B6EA8CAB1456D25200817157 /* FSPanes */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B6EA8CB91456D25200817157 /* Build configuration list for PBXNativeTarget "Cascade" */;
+			buildConfigurationList = B6EA8CB91456D25200817157 /* Build configuration list for PBXNativeTarget "FSPanes" */;
 			buildPhases = (
 				B6EA8CA81456D25200817157 /* Sources */,
 				B6EA8CA91456D25200817157 /* Frameworks */,
@@ -220,9 +220,9 @@
 			);
 			dependencies = (
 			);
-			name = Cascade;
+			name = FSPanes;
 			productName = Cascade;
-			productReference = B6EA8CAC1456D25200817157 /* libCascade.a */;
+			productReference = B6EA8CAC1456D25200817157 /* libFSPanes.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -233,7 +233,7 @@
 			attributes = {
 				LastUpgradeCheck = 0420;
 			};
-			buildConfigurationList = B6EA8CA61456D25200817157 /* Build configuration list for PBXProject "Cascade" */;
+			buildConfigurationList = B6EA8CA61456D25200817157 /* Build configuration list for PBXProject "FSPanes" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -245,7 +245,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B6EA8CAB1456D25200817157 /* Cascade */,
+				B6EA8CAB1456D25200817157 /* FSPanes */,
 			);
 		};
 /* End PBXProject section */
@@ -328,10 +328,10 @@
 			buildSettings = {
 				DSTROOT = /tmp/Cascade.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Cascade/Cascade-Prefix.pch";
+				GCC_PREFIX_HEADER = "Cascade/FSPanes-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = FSPanes;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
@@ -342,10 +342,10 @@
 			buildSettings = {
 				DSTROOT = /tmp/Cascade.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Cascade/Cascade-Prefix.pch";
+				GCC_PREFIX_HEADER = "Cascade/FSPanes-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = FSPanes;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
@@ -354,7 +354,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B6EA8CA61456D25200817157 /* Build configuration list for PBXProject "Cascade" */ = {
+		B6EA8CA61456D25200817157 /* Build configuration list for PBXProject "FSPanes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B6EA8CB71456D25200817157 /* Debug */,
@@ -363,7 +363,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B6EA8CB91456D25200817157 /* Build configuration list for PBXNativeTarget "Cascade" */ = {
+		B6EA8CB91456D25200817157 /* Build configuration list for PBXNativeTarget "FSPanes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B6EA8CBA1456D25200817157 /* Debug */,
