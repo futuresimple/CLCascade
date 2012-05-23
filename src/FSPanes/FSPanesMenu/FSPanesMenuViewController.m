@@ -1,15 +1,20 @@
 //
-//  CLCategoriesViewController.m
-//  Cascade
+//  FSPanesMenuViewController.m
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 11-05-06.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 AppUnite
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
-#import "CLCategoriesViewController.h"
-#import <Cascade/Other/UIViewController+CLCascade.h>
+#import "FSPanesMenuViewController.h"
+#import "UIViewController+FSPanes.h"
 
-@implementation CLCategoriesViewController
+@implementation FSPanesMenuViewController
 
 - (void)didReceiveMemoryWarning
 {
@@ -39,7 +44,7 @@
         }
     }
     
-    CLCategoriesView* view_ = [[CLCategoriesView alloc] init]; 
+    FSPanesMenuView* view_ = [[FSPanesMenuView alloc] init]; 
     self.view = view_;
     
     UITableView* tableView_ = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
@@ -48,9 +53,9 @@
     [self setTableView: tableView_];
     
     // set clear background color
-    [view_ setBackgroundColor: [UIColor clearColor]];
+    self.view.backgroundColor = [UIColor clearColor];
     
-
+    
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -98,7 +103,7 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-
+    
     return cell;
 }
 
@@ -106,7 +111,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
+    
 }
 
 @end

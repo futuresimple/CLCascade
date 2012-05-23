@@ -1,24 +1,29 @@
 //
-//  CLCascadeNavigationController.m
-//  Cascade
+//  FSPanesNavigationController.m
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 11-05-06.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 AppUnite
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
-#import "CLCascadeNavigationController.h"
-#import <Cascade/Other/UIViewController+CLSegmentedView.h>
-#import <Cascade/Other/UIViewController+CLCascade.h>
-#import "CLSegmentedView.h"
+#import "FSPanesNavigationController.h"
+#import "FSPaneView.h"
+#import "UIViewController+FSPaneView.h"
+#import "UIViewController+FSPanes.h"
 
-@interface CLCascadeNavigationController (Private)
+@interface FSPanesNavigationController (Private)
 - (void) addPagesRoundedCorners;
 - (void) addRoundedCorner:(UIRectCorner)rectCorner toPageAtIndex:(NSInteger)index;
 - (void) popPagesFromLastIndexTo:(NSInteger)index;
 - (void) removeAllPageViewControllers;
 @end
 
-@implementation CLCascadeNavigationController
+@implementation FSPanesNavigationController
 
 @synthesize leftInset, widerLeftInset;
 
@@ -43,8 +48,8 @@
     [super viewDidLoad];
     // set background color
     [self.view setBackgroundColor: [UIColor clearColor]];
-
-    _cascadeView = [[CLCascadeView alloc] initWithFrame:self.view.bounds];
+    
+    _cascadeView = [[FSPanesNavigationView alloc] initWithFrame:self.view.bounds];
     _cascadeView.delegate = self;
     _cascadeView.dataSource = self;
     [self.view addSubview:_cascadeView];
@@ -119,13 +124,13 @@
 #pragma marl CLCascadeViewDataSource
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIView*) cascadeView:(CLCascadeView *)cascadeView pageAtIndex:(NSInteger)index {
+- (UIView*) cascadeView:(FSPanesNavigationView *)cascadeView pageAtIndex:(NSInteger)index {
     return [[self.childViewControllers objectAtIndex:index] view];    
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSInteger) numberOfPagesInCascadeView:(CLCascadeView*)cascadeView {
+- (NSInteger) numberOfPagesInCascadeView:(FSPanesNavigationView*)cascadeView {
     return [self.childViewControllers count];
 }
 
@@ -134,59 +139,59 @@
 #pragma marl CLCascadeViewDelegate
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(CLCascadeView*)cascadeView didLoadPage:(UIView*)page {
-
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView didLoadPage:(UIView*)page {
+    
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(CLCascadeView*)cascadeView didUnloadPage:(UIView*)page {
-
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView didUnloadPage:(UIView*)page {
+    
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(CLCascadeView*)cascadeView didAddPage:(UIView*)page animated:(BOOL)animated {
-
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView didAddPage:(UIView*)page animated:(BOOL)animated {
+    
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(CLCascadeView*)cascadeView didPopPageAtIndex:(NSInteger)index {
-
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView didPopPageAtIndex:(NSInteger)index {
+    
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(CLCascadeView*)cascadeView pageDidAppearAtIndex:(NSInteger)index {
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView pageDidAppearAtIndex:(NSInteger)index {
     if (index > [self.childViewControllers count] - 1) return;
-
-//TODO: Decide whether we want to send -viewDidAppear: here or not
-//    UIViewController<CLViewControllerDelegate>* controller = [_viewControllers objectAtIndex: index];
-//    if ([controller respondsToSelector:@selector(pageDidAppear)]) {
-//        [controller pageDidAppear];
-//    }
+    
+    //TODO: Decide whether we want to send -viewDidAppear: here or not
+    //    UIViewController<CLViewControllerDelegate>* controller = [_viewControllers objectAtIndex: index];
+    //    if ([controller respondsToSelector:@selector(pageDidAppear)]) {
+    //        [controller pageDidAppear];
+    //    }
     
     [self addPagesRoundedCorners];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(CLCascadeView*)cascadeView pageDidDisappearAtIndex:(NSInteger)index {
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView pageDidDisappearAtIndex:(NSInteger)index {
     if (index > [self.childViewControllers count] - 1) return;
-
-//TODO: Decide whether we want to send -viewDidDisappear: here or not
-//    UIViewController<CLViewControllerDelegate>* controller = [_viewControllers objectAtIndex: index];
-//    if ([controller respondsToSelector:@selector(pageDidDisappear)]) {
-//        [controller pageDidDisappear];
-//    }
-
+    
+    //TODO: Decide whether we want to send -viewDidDisappear: here or not
+    //    UIViewController<CLViewControllerDelegate>* controller = [_viewControllers objectAtIndex: index];
+    //    if ([controller respondsToSelector:@selector(pageDidDisappear)]) {
+    //        [controller pageDidDisappear];
+    //    }
+    
     [self addPagesRoundedCorners];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeViewDidStartPullingToDetachPages:(CLCascadeView*)cascadeView {
+- (void) cascadeViewDidStartPullingToDetachPages:(FSPanesNavigationView*)cascadeView {
     /*
      Override this methods to implement own actions, animations
      */
@@ -196,12 +201,12 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeViewDidPullToDetachPages:(CLCascadeView*)cascadeView {
+- (void) cascadeViewDidPullToDetachPages:(FSPanesNavigationView*)cascadeView {
     /*
      Override this methods to implement own actions, animations
      */
     NSLog(@"cascadeViewDidPullToDetachPages");
-
+    
     // pop page from back
     [self popPagesFromLastIndexTo:0];
     //load first page
@@ -211,7 +216,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeViewDidCancelPullToDetachPages:(CLCascadeView*)cascadeView {
+- (void) cascadeViewDidCancelPullToDetachPages:(FSPanesNavigationView*)cascadeView {
     /*
      Override this methods to implement own actions, animations
      */
@@ -233,11 +238,11 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated {
-    [self addViewController:viewController sender:sender animated:animated viewSize:CLViewSizeNormal];
+    [self addViewController:viewController sender:sender animated:animated viewSize:FSViewSizeNormal];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated viewSize:(CLViewSize)size {
+- (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated viewSize:(FSViewSize)size {
     // if in not sent from categoirs view
     if (sender) {
         
@@ -266,7 +271,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (UIViewController*) firstVisibleViewController {
     NSInteger index = [_cascadeView indexOfFirstVisibleView: YES];
-
+    
     if (index != NSNotFound) {
         return [self.childViewControllers objectAtIndex: index];
     }
@@ -280,11 +285,11 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) addRoundedCorner:(UIRectCorner)rectCorner toPageAtIndex:(NSInteger)index {
-
+    
     if (index != NSNotFound) {
         UIViewController* firstVisibleController = [self.childViewControllers objectAtIndex: index];
         
-        CLSegmentedView* view = firstVisibleController.segmentedView;
+        FSPaneView* view = firstVisibleController.segmentedView;
         [view setShowRoundedCorners: YES];
         [view setRectCorner: rectCorner];
     }
@@ -297,24 +302,24 @@
     // unload all rounded corners
     for (id item in [_cascadeView visiblePages]) {
         if (item != [NSNull null]) {
-            if ([item isKindOfClass:[CLSegmentedView class]]) {
-                CLSegmentedView* view = (CLSegmentedView*)item;
+            if ([item isKindOfClass:[FSPaneView class]]) {
+                FSPaneView* view = (FSPaneView*)item;
                 [view setShowRoundedCorners: NO];
             }
         }
     }
-
+    
     // get index of first visible page
     NSInteger indexOfFirstVisiblePage = [_cascadeView indexOfFirstVisibleView: NO];
     
     // get index of last visible page
     NSInteger indexOfLastVisiblePage = [_cascadeView indexOfLastVisibleView: NO];
-
+    
     if (indexOfLastVisiblePage == indexOfFirstVisiblePage) {
         [self addRoundedCorner:UIRectCornerAllCorners toPageAtIndex: indexOfFirstVisiblePage];
         
     } else {
-
+        
         [self addRoundedCorner:UIRectCornerTopLeft | UIRectCornerBottomLeft toPageAtIndex:indexOfFirstVisiblePage];
         
         if (indexOfLastVisiblePage == [self.childViewControllers count] -1) {
@@ -327,11 +332,11 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) popPagesFromLastIndexTo:(NSInteger)toIndex {
     NSUInteger count = [self.childViewControllers count];
-
+    
     if (count == 0) {
         return;
     }
-        
+    
     if (toIndex < 0) toIndex = 0;
     
     // index of last page
@@ -347,10 +352,10 @@
         
         UIViewController* viewController = [self.childViewControllers objectAtIndex:index];
         [viewController willMoveToParentViewController:nil];
-
+        
         // pop page at index
         [_cascadeView popPageAtIndex:index animated:NO];
-
+        
         [viewController removeFromParentViewController];
         
         index--;
@@ -360,7 +365,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) removeAllPageViewControllers {
-
+    
     // pop page from back
     NSEnumerator* enumerator = [self.childViewControllers reverseObjectEnumerator];
     // enumarate pages

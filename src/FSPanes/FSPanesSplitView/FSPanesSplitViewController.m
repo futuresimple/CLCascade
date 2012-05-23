@@ -1,24 +1,28 @@
 //
-//  CLSplitCascadeViewController.m
-//  Cascade
+//  FSPanesSplitViewController.m
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 11-03-27.
-//  Copyright 2011 CreativeLabs.pl. All rights reserved.
+//  Copyright 2011 CreativeLabs.pl
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
-#import "CLSplitCascadeViewController.h"
-#import "CLSplitCascadeView.h"
+#import "FSPanesSplitViewController.h"
+#import "FSPanesSplitView.h"
+#import "FSPanesMenuViewController.h"
+#import "FSPanesNavigationController.h"
 
-#import "CLCategoriesViewController.h"
-#import "CLCascadeNavigationController.h"
-
-@implementation CLSplitCascadeViewController
+@implementation FSPanesSplitViewController
 
 @synthesize cascadeNavigationController = _cascadeNavigationController;
 @synthesize categoriesViewController = _categoriesViewController;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (id) initWithNavigationController:(CLCascadeNavigationController*)navigationController {
+- (id) initWithNavigationController:(FSPanesNavigationController*)navigationController {
     self = [super init];
     if (self) {
         _cascadeNavigationController = navigationController;
@@ -56,7 +60,7 @@
         
         if(path) {
             self.view = [[bundle loadNibNamed:nib owner:self options:nil] objectAtIndex: 0];
-            CLSplitCascadeView* view_ = (CLSplitCascadeView*)self.view;
+            FSPanesSplitView* view_ = (FSPanesSplitView*)self.view;
             [view_ setCategoriesView: self.categoriesViewController.view];
             [view_ setCascadeView: self.cascadeNavigationController.view];
             
@@ -64,7 +68,7 @@
         }
     }
     
-    CLSplitCascadeView* view_ = [[CLSplitCascadeView alloc] init];
+    FSPanesSplitView* view_ = [[FSPanesSplitView alloc] init];
     self.view = view_;
     
     [view_ setCategoriesView: self.categoriesViewController.view];
@@ -102,13 +106,13 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) setBackgroundView:(UIView*)backgroundView {
-    [(CLSplitCascadeView*)self.view setBackgroundView: backgroundView];
+    [(FSPanesSplitView*)self.view setBackgroundView: backgroundView];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) setDividerImage:(UIImage*)image {
-    [(CLSplitCascadeView*)self.view setVerticalDividerImage: image];
+    [(FSPanesSplitView*)self.view setVerticalDividerImage: image];
     
 }
 
@@ -117,11 +121,11 @@
 #pragma mark Setters 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setCategoriesViewController:(CLCategoriesViewController *)viewController {
+- (void) setCategoriesViewController:(FSPanesMenuViewController *)viewController {
     if (viewController != _categoriesViewController) {
         _categoriesViewController = viewController;
-        [(CLSplitCascadeView*)self.view setCategoriesView: viewController.view];
-                
+        [(FSPanesSplitView*)self.view setCategoriesView: viewController.view];
+        
         [self addChildViewController:viewController];
         [viewController didMoveToParentViewController:self];
     }
@@ -129,10 +133,10 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setCascadeNavigationController:(CLCascadeNavigationController *)viewController {
+- (void) setCascadeNavigationController:(FSPanesNavigationController *)viewController {
     if (viewController != _cascadeNavigationController) {
         _cascadeNavigationController = viewController;
-        [(CLSplitCascadeView*)self.view setCascadeView: viewController.view];
+        [(FSPanesSplitView*)self.view setCascadeView: viewController.view];
         
         [self addChildViewController:viewController];
         [viewController didMoveToParentViewController:self];

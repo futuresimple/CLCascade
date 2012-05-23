@@ -1,23 +1,25 @@
 //
-//  UIViewController+CLCascade.m
-//  Cascade
+//  UIViewController+FSPanes.m
+//  FSPanes
 //
 //  Created by Błażej Biesiada on 5/11/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
-#import "UIViewController+CLCascade.h"
-#import <Cascade/CLSplitViewController/CLSplitCascadeViewController.h>
-#import <Cascade/CLCascadeNavigationController/CLCascadeNavigationController.h>
+#import "UIViewController+FSPanes.h"
+#import "FSPanesSplitViewController.h"
+#import "FSPanesNavigationController.h"
 
-@implementation UIViewController (CLCascade)
+@implementation UIViewController (FSPanes)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (CLSplitCascadeViewController *)splitCascadeViewController {
+- (FSPanesSplitViewController *)splitCascadeViewController {
     UIViewController *parent = self.parentViewController;
     
-    if ([parent isKindOfClass:[CLSplitCascadeViewController class]]) {
-        return (CLSplitCascadeViewController *)parent;
+    if ([parent isKindOfClass:[FSPanesSplitViewController class]]) {
+        return (FSPanesSplitViewController *)parent;
     }
     else {
         return parent.splitCascadeViewController;
@@ -26,11 +28,11 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (CLCascadeNavigationController *)cascadeNavigationController {
+- (FSPanesNavigationController *)cascadeNavigationController {
     UIViewController *parent = self.parentViewController;
     
-    if ([parent isKindOfClass:[CLCascadeNavigationController class]]) {
-        return (CLCascadeNavigationController *)parent;
+    if ([parent isKindOfClass:[FSPanesNavigationController class]]) {
+        return (FSPanesNavigationController *)parent;
     }
     else {
         return parent.cascadeNavigationController;

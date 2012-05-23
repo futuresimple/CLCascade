@@ -1,18 +1,23 @@
 //
-//  CLSegmentedView.h
-//  Cascade
+//  FSPaneView.h
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 11-04-24.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 AppUnite
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
-#import "CLGlobal.h"
+#import "FSPanesGlobal.h"
 
-@interface CLSegmentedView : UIView {
-    CLViewSize _viewSize;
-
+@interface FSPaneView : UIView {
+    FSViewSize _viewSize;
+    
     UIView* _headerView;
     UIView* _footerView;
     UIView* _contentView;
@@ -69,9 +74,9 @@
 /*
  * Size of view
  */
-@property (nonatomic, assign, readonly) CLViewSize viewSize;
+@property (nonatomic, assign, readonly) FSViewSize viewSize;
 
-- (id) initWithSize:(CLViewSize)size;
+- (id) initWithSize:(FSViewSize)size;
 
 /* 
  * This methoad add left outer shadow view with proper width

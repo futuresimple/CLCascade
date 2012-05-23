@@ -1,25 +1,30 @@
 //
-//  CLSplitCascadeViewController.h
-//  Cascade
+//  FSPanesSplitViewController.h
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 11-03-27.
-//  Copyright 2011 CreativeLabs.pl. All rights reserved.
+//  Copyright 2011 CreativeLabs.pl
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
 #import <UIKit/UIKit.h>
 
-@class CLCategoriesViewController;
-@class CLCascadeNavigationController;
+@class FSPanesMenuViewController;
+@class FSPanesNavigationController;
 
-@interface CLSplitCascadeViewController : UIViewController {
-    CLCategoriesViewController*     _categoriesViewController;
-    CLCascadeNavigationController*  _cascadeNavigationController;
+@interface FSPanesSplitViewController : UIViewController {
+    FSPanesMenuViewController*     _categoriesViewController;
+    FSPanesNavigationController*  _cascadeNavigationController;
 }
 
-@property (nonatomic, strong) IBOutlet CLCategoriesViewController* categoriesViewController;
-@property (nonatomic, strong) IBOutlet CLCascadeNavigationController* cascadeNavigationController; //it should be readonly
+@property (nonatomic, strong) IBOutlet FSPanesMenuViewController* categoriesViewController;
+@property (nonatomic, strong) IBOutlet FSPanesNavigationController* cascadeNavigationController; //it should be readonly
 
-- (id) initWithNavigationController:(CLCascadeNavigationController*)navigationController;
+- (id) initWithNavigationController:(FSPanesNavigationController*)navigationController;
 
 - (void) setBackgroundView:(UIView*)backgroundView;
 - (void) setDividerImage:(UIImage*)image;

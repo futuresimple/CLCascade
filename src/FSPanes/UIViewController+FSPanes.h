@@ -1,19 +1,21 @@
 //
-//  UIViewController+CLCascade.h
-//  Cascade
+//  UIViewController+FSPanes.h
+//  FSPanes
 //
 //  Created by Błażej Biesiada on 5/11/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
 #import <UIKit/UIKit.h>
 
-@class CLCascadeNavigationController;
-@class CLSplitCascadeViewController;
+@class FSPanesNavigationController;
+@class FSPanesSplitViewController;
 
-@interface UIViewController (CLCascade)
+@interface UIViewController (FSPanes)
 
-@property(nonatomic, readonly, retain) CLSplitCascadeViewController *splitCascadeViewController;
-@property(nonatomic, readonly, retain) CLCascadeNavigationController *cascadeNavigationController;
+@property(nonatomic, readonly, retain) FSPanesSplitViewController *splitCascadeViewController;
+@property(nonatomic, readonly, retain) FSPanesNavigationController *cascadeNavigationController;
 
 @end

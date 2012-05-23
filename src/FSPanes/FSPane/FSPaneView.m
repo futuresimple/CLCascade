@@ -1,20 +1,25 @@
 //
-//  CLSegmentedView.m
-//  Cascade
+//  FSPaneView.m
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 11-04-24.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 AppUnite
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
-#import "CLSegmentedView.h"
-#import <Cascade/Other/CLBorderShadowView.h>
+#import "FSPaneView.h"
+#import "FSPaneBorderShadowView.h"
 
-@interface CLSegmentedView (Private)
+@interface FSPaneView (Private)
 - (void) setupViews;
 - (void) updateRoundedCorners;
 @end
 
-@implementation CLSegmentedView
+@implementation FSPaneView
 
 @synthesize footerView = _footerView;
 @synthesize headerView = _headerView;
@@ -36,16 +41,16 @@
 - (id)init {
     self = [super init];
     if (self) {
-
+        
         _roundedCornersView = [[UIView alloc] init];
         [_roundedCornersView setBackgroundColor: [UIColor clearColor]];
         [self addSubview: _roundedCornersView];
         
-        _viewSize = CLViewSizeNormal;
+        _viewSize = FSViewSizeNormal;
         _rectCorner = UIRectCornerAllCorners;
         _showRoundedCorners = NO;
         
-        [self addLeftBorderShadowView:[CLBorderShadowView new]
+        [self addLeftBorderShadowView:[FSPaneBorderShadowView new]
                             withWidth:20.0];
         [self setShadowOffset:10.0];
     }
@@ -54,7 +59,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (id) initWithSize:(CLViewSize)size {
+- (id) initWithSize:(FSViewSize)size {
     self = [self init];
     if (self) {
         _viewSize = size;
@@ -70,9 +75,9 @@
 - (void) setContentView:(UIView*)contentView {
     if (_contentView != contentView) {
         [_contentView removeFromSuperview];
-
+        
         _contentView = contentView;
-
+        
         if (_contentView) {
             [_contentView setAutoresizingMask:
              UIViewAutoresizingFlexibleLeftMargin | 
@@ -96,7 +101,7 @@
         [_headerView removeFromSuperview];
         
         _headerView = headerView;
-
+        
         if (_headerView) {
             [_headerView setAutoresizingMask:
              UIViewAutoresizingFlexibleLeftMargin | 
@@ -133,15 +138,15 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) addLeftBorderShadowView:(UIView *)view withWidth:(CGFloat)width {
-
+    
     [self setClipsToBounds: NO];
-
+    
     if (_shadowWidth != width) {
         _shadowWidth = width;
         [self setNeedsLayout];
         [self setNeedsDisplay];
     }
-
+    
     if (view != _shadowView) {
         _shadowView = view;
         
@@ -179,7 +184,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) layoutSubviews {
-
+    
     CGRect rect = self.bounds;
     
     CGFloat viewWidth = rect.size.width;
@@ -205,12 +210,12 @@
     }
     
     [_contentView setFrame: CGRectMake(0.0, headerHeight, viewWidth, viewHeight - headerHeight - footerHeight)];
-
+    
     if (_shadowView) {
         CGRect shadowFrame = CGRectMake(0 - _shadowWidth + _shadowOffset, 0.0, _shadowWidth, rect.size.height);
         _shadowView.frame = shadowFrame;
     }
-
+    
     [self updateRoundedCorners];
 }
 
@@ -223,7 +228,7 @@
     _contentView = nil;
     _roundedCornersView = nil;
     _shadowView = nil;
-
+    
 }
 
 #pragma mark

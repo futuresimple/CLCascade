@@ -1,25 +1,30 @@
 //
-//  CLCascadeView.h
-//  Cascade
+//  FSPanesNavigationView.h
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 11-05-26.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 AppUnite
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
 #import <UIKit/UIKit.h>
-#import <Cascade/Other/CLScrollView.h>
-#import <Cascade/Other/CLGlobal.h>
+#import "FSPanesGlobal.h"
+#import "FSPaneScrollView.h"
 
-@protocol CLCascadeViewDataSource;
-@protocol CLCascadeViewDelegate;
+@protocol FSPanesNavigationViewDataSource;
+@protocol FSPanesNavigationViewDelegate;
 
-@interface CLCascadeView : UIView <UIScrollViewDelegate> {
+@interface FSPanesNavigationView : UIView <UIScrollViewDelegate> {
     // delegate and dataSource
-    id<CLCascadeViewDelegate> __unsafe_unretained _delegate;
-    id<CLCascadeViewDataSource> __unsafe_unretained _dataSource;
-
+    id<FSPanesNavigationViewDelegate> __unsafe_unretained _delegate;
+    id<FSPanesNavigationViewDataSource> __unsafe_unretained _dataSource;
+    
     // scroll view
-    CLScrollView* _scrollView;
+    FSPaneScrollView* _scrollView;
     
     // contain all pages, if page is unloaded then page is respresented as [NSNull null]
     NSMutableArray* _pages;
@@ -28,22 +33,22 @@
     CGFloat _pageWidth;
     CGFloat _leftInset;
     CGFloat _widerLeftInset;
-
+    
     BOOL _pullToDetachPages;
-
+    
 @private
     struct {
         unsigned int willDetachPages:1;
         unsigned int isDetachPages:1;
         unsigned int hasWiderPage:1;
     } _flags;
-
+    
     NSInteger _indexOfFirstVisiblePage;
     NSInteger _indexOfLastVisiblePage;
 }
 
-@property(nonatomic, unsafe_unretained) id<CLCascadeViewDelegate> delegate;
-@property(nonatomic, unsafe_unretained) id<CLCascadeViewDataSource> dataSource;
+@property(nonatomic, unsafe_unretained) id<FSPanesNavigationViewDelegate> delegate;
+@property(nonatomic, unsafe_unretained) id<FSPanesNavigationViewDataSource> dataSource;
 
 /*
  * Left inset of normal page from left boarder. Default 58.0f
@@ -63,7 +68,7 @@
 
 
 - (void) pushPage:(UIView*)newPage fromPage:(UIView*)fromPage animated:(BOOL)animated;
-- (void) pushPage:(UIView*)newPage fromPage:(UIView*)fromPage animated:(BOOL)animated viewSize:(CLViewSize)viewSize;
+- (void) pushPage:(UIView*)newPage fromPage:(UIView*)fromPage animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
 
 - (void) popPageAtIndex:(NSInteger)index animated:(BOOL)animated;
 - (void) popAllPagesAnimated:(BOOL)animated;
@@ -81,33 +86,33 @@
 - (BOOL) canPopPageAtIndex:(NSInteger)index; // @dodikk
 @end
 
-@protocol CLCascadeViewDataSource <NSObject>
+@protocol FSPanesNavigationViewDataSource <NSObject>
 @required
-- (UIView*) cascadeView:(CLCascadeView*)cascadeView pageAtIndex:(NSInteger)index;
-- (NSInteger) numberOfPagesInCascadeView:(CLCascadeView*)cascadeView;
+- (UIView*) cascadeView:(FSPanesNavigationView*)cascadeView pageAtIndex:(NSInteger)index;
+- (NSInteger) numberOfPagesInCascadeView:(FSPanesNavigationView*)cascadeView;
 @end
 
-@protocol CLCascadeViewDelegate <NSObject>
+@protocol FSPanesNavigationViewDelegate <NSObject>
 @optional
-- (void) cascadeView:(CLCascadeView*)cascadeView didLoadPage:(UIView*)page;
-- (void) cascadeView:(CLCascadeView*)cascadeView didUnloadPage:(UIView*)page;
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView didLoadPage:(UIView*)page;
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView didUnloadPage:(UIView*)page;
 
-- (void) cascadeView:(CLCascadeView*)cascadeView didAddPage:(UIView*)page animated:(BOOL)animated;
-- (void) cascadeView:(CLCascadeView*)cascadeView didPopPageAtIndex:(NSInteger)index;
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView didAddPage:(UIView*)page animated:(BOOL)animated;
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView didPopPageAtIndex:(NSInteger)index;
 
 /*
  * Called when page will be unveiled by another page or will slide in CascadeView bounds
  */
-- (void) cascadeView:(CLCascadeView*)cascadeView pageDidAppearAtIndex:(NSInteger)index;
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView pageDidAppearAtIndex:(NSInteger)index;
 /*
  * Called when page will be shadowed by another page or will slide out CascadeView bounds
  */
-- (void) cascadeView:(CLCascadeView*)cascadeView pageDidDisappearAtIndex:(NSInteger)index;
+- (void) cascadeView:(FSPanesNavigationView*)cascadeView pageDidDisappearAtIndex:(NSInteger)index;
 
 /*
  */
-- (void) cascadeViewDidStartPullingToDetachPages:(CLCascadeView*)cascadeView;
-- (void) cascadeViewDidPullToDetachPages:(CLCascadeView*)cascadeView;
-- (void) cascadeViewDidCancelPullToDetachPages:(CLCascadeView*)cascadeView;
+- (void) cascadeViewDidStartPullingToDetachPages:(FSPanesNavigationView*)cascadeView;
+- (void) cascadeViewDidPullToDetachPages:(FSPanesNavigationView*)cascadeView;
+- (void) cascadeViewDidCancelPullToDetachPages:(FSPanesNavigationView*)cascadeView;
 
 @end

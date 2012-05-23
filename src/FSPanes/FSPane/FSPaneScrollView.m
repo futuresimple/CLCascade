@@ -1,14 +1,19 @@
 //
-//  CLScrollView.m
-//  Cascade
+//  FSPaneScrollView.m
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 26.07.2011.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 AppUnite
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
-#import "CLScrollView.h"
+#import "FSPaneScrollView.h"
 
-@implementation CLScrollView
+@implementation FSPaneScrollView
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)init
@@ -27,12 +32,12 @@
         [self setMultipleTouchEnabled:NO];
         [self setShowsVerticalScrollIndicator: NO];
         [self setShowsHorizontalScrollIndicator: NO];
-
+        
         [self setAutoresizingMask:
          UIViewAutoresizingFlexibleBottomMargin | 
          UIViewAutoresizingFlexibleTopMargin | 
          UIViewAutoresizingFlexibleHeight];
-
+        
     }
     
     return self;

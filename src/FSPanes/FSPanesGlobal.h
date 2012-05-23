@@ -1,9 +1,14 @@
 //
-//  CLGlobal.h
-//  Cascade
+//  FSPanesGlobal.h
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 12.08.2011.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 AppUnite
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
 
@@ -12,6 +17,6 @@
 
 // enums
 typedef enum {
-    CLViewSizeNormal   = 0,
-    CLViewSizeWider    = 1
-} CLViewSize;
+    FSViewSizeNormal   = 0,
+    FSViewSizeWider    = 1
+} FSViewSize;

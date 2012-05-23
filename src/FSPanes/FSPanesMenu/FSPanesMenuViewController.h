@@ -1,17 +1,22 @@
 //
-//  CLCategoriesViewController.h
-//  Cascade
+//  FSPanesMenuViewController.h
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 11-05-06.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 AppUnite
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
 #import <UIKit/UIKit.h>
-#import <Cascade/CLCategories/CLCategoriesView.h>
-#import <Cascade/CLCascadeNavigationController/CLCascadeNavigationController.h>
+#import "FSPanesMenuView.h"
+#import "FSPanesNavigationController.h"
 
-@interface CLCategoriesViewController : UITableViewController {
-
+@interface FSPanesMenuViewController : UITableViewController {
+    
 }
 
 @end

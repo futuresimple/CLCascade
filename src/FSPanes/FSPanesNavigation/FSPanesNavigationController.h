@@ -1,18 +1,23 @@
 //
-//  CLCascadeNavigationController.h
-//  Cascade
+//  FSPanesNavigationController.h
+//  Panes
 //
 //  Created by Emil Wojtaszek on 11-05-06.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 AppUnite
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
 #import <UIKit/UIKit.h>
-#import <Cascade/CLCascadeNavigationController/CLCascadeView.h>
-#import <Cascade/Other/CLGlobal.h>
+#import "FSPanesGlobal.h"
+#import "FSPanesNavigationView.h"
 
-@interface CLCascadeNavigationController : UIViewController <CLCascadeViewDataSource, CLCascadeViewDelegate> {
+@interface FSPanesNavigationController : UIViewController <FSPanesNavigationViewDataSource, FSPanesNavigationViewDelegate> {
     // view containing all views on stack
-    CLCascadeView* _cascadeView;
+    FSPanesNavigationView *_cascadeView;
 }
 
 
@@ -36,7 +41,7 @@
  * If sender is not last, then controller pop next controller and push new view from sender
  */
 - (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated;
-- (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated viewSize:(CLViewSize)size;
+- (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated viewSize:(FSViewSize)size;
 
 /* 
  First in hierarchy CascadeViewController (opposite to lastCascadeViewController)

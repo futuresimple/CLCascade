@@ -1,15 +1,20 @@
 //
-//  UIViewController+CLSegmentedView.m
-//  Cascade
+//  UIViewController+FSPaneView.m
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 11-05-07.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 AppUnite
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
-#import "UIViewController+CLSegmentedView.h"
+#import "UIViewController+FSPaneView.h"
 
 
-@implementation UIViewController (UIViewController_CLSegmentedView)
+@implementation UIViewController (UIViewController_FSPaneView)
 
 @dynamic segmentedView;
 @dynamic headerView;
@@ -18,37 +23,37 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (CLSegmentedView*) segmentedView {
+- (FSPaneView*) segmentedView {
     UIView *contentView = [self.view superview];
-    return (CLSegmentedView*)[contentView superview];
+    return (FSPaneView*)[contentView superview];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (UIView*) headerView {
-
-    if (![self.segmentedView isKindOfClass:[CLSegmentedView class]]) return nil;
     
-    CLSegmentedView* view_ = (CLSegmentedView*)self.segmentedView;
+    if (![self.segmentedView isKindOfClass:[FSPaneView class]]) return nil;
+    
+    FSPaneView* view_ = (FSPaneView*)self.segmentedView;
     return view_.headerView;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (UIView*) footerView {
-
-    if (![self.segmentedView isKindOfClass:[CLSegmentedView class]]) return nil;
     
-    CLSegmentedView* view_ = (CLSegmentedView*)self.segmentedView;
+    if (![self.segmentedView isKindOfClass:[FSPaneView class]]) return nil;
+    
+    FSPaneView* view_ = (FSPaneView*)self.segmentedView;
     return view_.footerView;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (UIView*) contentView {
-    if (![self.segmentedView isKindOfClass:[CLSegmentedView class]]) return self.view;
-
-    CLSegmentedView* view_ = (CLSegmentedView*)self.segmentedView;
+    if (![self.segmentedView isKindOfClass:[FSPaneView class]]) return self.view;
+    
+    FSPaneView* view_ = (FSPaneView*)self.segmentedView;
     return view_.contentView;
 }
 

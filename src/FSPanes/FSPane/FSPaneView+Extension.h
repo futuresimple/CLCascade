@@ -1,13 +1,18 @@
 //
-//  CLSegmentedView+Extension.h
-//  Cascade
+//  FSPaneView+Extension.h
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 09.04.2012.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 AppUnite
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
-#import "CLSegmentedView.h"
+#import "FSPaneView.h"
 
-@interface CLSegmentedView (Extension)
-@property (nonatomic, assign) CLViewSize viewSize;
+@interface FSPaneView (Extension)
+@property (nonatomic, assign) FSViewSize viewSize;
 @end

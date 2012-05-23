@@ -1,19 +1,30 @@
-#ifndef Cascade_Cascade_h
-#define Cascade_Cascade_h
+//
+//  FSPanes.h
+//
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
+//
 
+#ifndef FSPanes_FSPanes_h
+#define FSPanes_FSPanes_h
 
-//TODO : define trully public headers
-#import <Cascade/CLCascadeNavigationController/CLCascadeNavigationController.h>
-#import <Cascade/CLCascadeNavigationController/CLCascadeView.h>
-#import <Cascade/CLCategories/CLCategoriesView.h>
-#import <Cascade/CLCategories/CLCategoriesViewController.h>
-#import <Cascade/CLSplitViewController/CLSplitCascadeView.h>
-#import <Cascade/CLSplitViewController/CLSplitCascadeViewController.h>
-#import <Cascade/Other/CLBorderShadowView.h>
-#import <Cascade/Other/CLGlobal.h>
-#import <Cascade/Other/CLScrollView.h>
-#import <Cascade/Other/CLSegmentedView.h>
-#import <Cascade/Other/UIViewController+CLSegmentedView.h>
-#import <Cascade/Other/UIViewController+CLCascade.h>
+#import <Panes/FSPanesGlobal.h>
+#import <Panes/UIViewController+FSPanes.h>
+
+#import <Panes/FSPanesNavigation/FSPanesNavigationController.h>
+#import <Panes/FSPanesNavigation/FSPanesNavigationView.h>
+
+#import <Panes/FSPanesMenu/FSPanesMenuViewController.h>
+#import <Panes/FSPanesMenu/FSPanesMenuView.h>
+
+#import <Panes/FSPanesSplitView/FSPanesSplitViewController.h>
+#import <Panes/FSPanesSplitView/FSPanesSplitView.h>
+
+#import <Panes/FSPane/FSPaneView.h>
+#import <Panes/FSPane/FSPaneScrollView.h>
+#import <Panes/FSPane/FSPaneBorderShadowView.h>
+#import <Panes/FSPane/FSPaneView+Extension.h>
+#import <Panes/FSPane/UIViewController+FSPaneView.h>
 
 #endif

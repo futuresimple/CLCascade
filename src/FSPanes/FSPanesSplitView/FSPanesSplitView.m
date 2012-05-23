@@ -1,24 +1,27 @@
 //
-//  CLSplitCascadeView.m
-//  Cascade
+//  FSPanesSplitView.m
+//  FSPanes
 //
 //  Created by Emil Wojtaszek on 11-03-27.
-//  Copyright 2011 CreativeLabs.pl. All rights reserved.
+//  Copyright 2011 CreativeLabs.pl
+//
+//  Modified by Błażej Biesiada, Karol S. Mazur
+//  Copyright 2012 Future Simple Inc.
+//
+//  Licensed under the Apache License, Version 2.0.
 //
 
-#import "CLSplitCascadeView.h"
-#import "CLGlobal.h"
+#import "FSPanesSplitView.h"
+#import "FSPanesGlobal.h"
+#import "FSPanesNavigationController.h"
+#import "FSPanesSplitViewController.h"
 
-#import "CLCascadeNavigationController.h"
-#import "CLSplitCascadeViewController.h"
-#import "CLGlobal.h"
-
-@interface CLSplitCascadeView (Private)
+@interface FSPanesSplitView (Private)
 - (void) setupView;
 - (void) addDivierView;
 @end
 
-@implementation CLSplitCascadeView
+@implementation FSPanesSplitView
 
 @synthesize splitCascadeViewController = _splitCascadeViewController;
 
@@ -46,7 +49,7 @@
         [_dividerView removeFromSuperview];
         _dividerView = nil;
     }
-        
+    
     _dividerView = [[UIView alloc] init];
     _dividerWidth = _verticalDividerImage.size.width;
     [_dividerView setBackgroundColor:[UIColor colorWithPatternImage: _verticalDividerImage]];
@@ -100,33 +103,33 @@
     _categoriesView = nil;
     _verticalDividerImage = nil;
     _dividerView = nil;
-
+    
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-
-    CLCascadeNavigationController* cascadeNavigationController = _splitCascadeViewController.cascadeNavigationController;
+    
+    FSPanesNavigationController* cascadeNavigationController = _splitCascadeViewController.cascadeNavigationController;
     UIView* navigationView = [cascadeNavigationController view];
-
+    
     if (CGRectContainsPoint(_categoriesView.frame, point)) {
         
         UIView* rootView = [[cascadeNavigationController firstVisibleViewController] view];
         CGRect rootViewRect = [rootView convertRect:rootView.bounds toView:self];
-
+        
         if ((rootView) && (CGRectContainsPoint(rootViewRect, point))) {
             CGPoint newPoint = [self convertPoint:point toView:navigationView];
             return [navigationView hitTest:newPoint withEvent:event];
         } else {
             return [_categoriesView hitTest:point withEvent:event];
         }
-
+        
     } else {
         CGPoint newPoint = [self convertPoint:point toView:navigationView];
         return [navigationView hitTest:newPoint withEvent:event];
     }
-        
+    
 }
 
 
@@ -140,13 +143,13 @@
     
     CGRect cascadeNavigationFrame = bounds;
     _cascadeView.frame = cascadeNavigationFrame;
-
+    
     CGRect backgroundViewFrame = CGRectMake(CATEGORIES_VIEW_WIDTH, 0.0, bounds.size.width - CATEGORIES_VIEW_WIDTH, bounds.size.height);
     _backgroundView.frame = backgroundViewFrame;
-
+    
     CGRect dividerViewFrame = CGRectMake(0.0, 0.0, _dividerWidth, bounds.size.height);
     _dividerView.frame = dividerViewFrame;
-
+    
 }
 
 
@@ -168,7 +171,7 @@
 - (void) setCascadeView:(UIView*) aView {
     if (_cascadeView != aView) {
         _cascadeView = aView;
-                
+        
         [self addSubview: _cascadeView];
         [self bringSubviewToFront: _cascadeView];
     }
@@ -189,7 +192,7 @@
             NSUInteger index = [self.subviews indexOfObject: _cascadeView];
             [self insertSubview:_backgroundView atIndex:index];
         }
-
+        
         [self addDivierView];
     }
 }
