@@ -29,14 +29,15 @@
     // contain all pages, if page is unloaded then page is respresented as [NSNull null]
     NSMutableArray* _pages;
     
-    //sizes
+@private
+    // sizes
     CGFloat _pageWidth;
+    CGFloat _widePageWidth;
     CGFloat _leftInset;
     CGFloat _widerLeftInset;
     
     BOOL _pullToDetachPages;
     
-@private
     struct {
         unsigned int willDetachPages:1;
         unsigned int isDetachPages:1;
@@ -51,8 +52,8 @@
 @property(nonatomic, unsafe_unretained) id<FSPanesNavigationViewDataSource> dataSource;
 
 /*
- * Left inset of normal page from left boarder. Default 58.0f
- * If you change this property, width of page will change
+ * Left inset of normal pane from left screen edge. Default 70.0f
+ * If you change this property, width of single pane will change.
  */
 @property(nonatomic) CGFloat leftInset;
 

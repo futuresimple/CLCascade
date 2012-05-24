@@ -57,7 +57,7 @@
 - (void) setProperPositionOfPageAtIndex:(NSInteger)index;
 @end
 
-#define DEFAULT_LEFT_INSET 58.0f
+#define DEFAULT_LEFT_INSET 70.0f
 #define DEFAULT_WIDER_LEFT_INSET 220.0f
 #define PULL_TO_DETACH_FACTOR 0.32f
 
@@ -719,12 +719,10 @@
     }];
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (CGFloat) widerPageWidth {
-    return self.frame.size.width - _widerLeftInset;
+- (CGFloat)widerPageWidth
+{
+    return _widePageWidth;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) setProperPositionOfPageAtIndex:(NSInteger)index {
@@ -1002,17 +1000,17 @@
 
 #pragma mark -
 #pragma mark Setters
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setLeftInset:(CGFloat)newLeftInset {
-    CGFloat width = [UIScreen mainScreen].bounds.size.height;
+- (void)setLeftInset:(CGFloat)newLeftInset
+{
+    CGFloat landscapeScreenWidth = [UIScreen mainScreen].bounds.size.height;
+    CGFloat portraitScreenWidth = [UIScreen mainScreen].bounds.size.width;
     
     _leftInset = newLeftInset;
-    _pageWidth = (width - _leftInset) / 2.0f;
+    _pageWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
+    _widePageWidth = portraitScreenWidth - _leftInset;
     
-    // by @dodikk
-    if (_pageWidth == 0.0f ) {
-        NSAssert(NO, @"CLCascadeView->_pageWidth == 0. Possible zero division crashes");
+    if (_widePageWidth <= 0.0f) {
+        NSAssert(NO, @"Left inset is too small!");
     }
     
     _scrollView.frame = CGRectMake(_leftInset, 0.0, _pageWidth, self.frame.size.height);
