@@ -121,7 +121,7 @@
 #pragma mark Setters 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setCategoriesViewController:(FSPanesMenuViewController *)viewController {
+- (void)setPanesMenuViewController:(FSPanesMenuViewController *)viewController {
     if (viewController != _panesMenuViewController) {
         _panesMenuViewController = viewController;
         [(FSPanesSplitView*)self.view setMenuView: viewController.view];
