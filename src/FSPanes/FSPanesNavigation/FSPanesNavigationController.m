@@ -228,12 +228,17 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated {
+    [self setRootViewController:viewController animated:animated viewSize:CLViewSizeNormal];
+}
+
+- (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated viewSize:(CLViewSize)viewSize
+{
     // pop all pages
     [_navigationView popAllPagesAnimated: NO];
     // remove all controllers
     [self removeAllPageViewControllers];
     // add root view controller
-    [self addViewController:viewController sender:nil animated:animated];
+    [self addViewController:viewController sender:nil animated:animated viewSize:viewSize];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
