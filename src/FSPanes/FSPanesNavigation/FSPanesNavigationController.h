@@ -35,7 +35,7 @@
  * Set and push root view controller
  */
 - (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated;
-- (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated viewSize:(CLViewSize)viewSize;
+- (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
 
 /*
  * Push new view controller from sender.

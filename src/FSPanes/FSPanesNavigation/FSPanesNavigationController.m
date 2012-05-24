@@ -228,10 +228,10 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated {
-    [self setRootViewController:viewController animated:animated viewSize:CLViewSizeNormal];
+    [self setRootViewController:viewController animated:animated viewSize:FSViewSizeNormal];
 }
 
-- (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated viewSize:(CLViewSize)viewSize
+- (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated viewSize:(FSViewSize)viewSize
 {
     // pop all pages
     [_navigationView popAllPagesAnimated: NO];
