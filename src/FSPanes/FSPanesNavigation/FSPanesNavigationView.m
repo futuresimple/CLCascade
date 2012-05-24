@@ -123,8 +123,7 @@
     
     NSEnumerator *enumerator = [[self visiblePages] reverseObjectEnumerator];
     
-    UIView *page;
-    while (page = [enumerator nextObject]) {
+    for (UIView *page in enumerator) {
         CGRect rect = [_scrollView convertRect:page.frame toView:self];
         
         if (CGRectContainsPoint(rect, point)) {
