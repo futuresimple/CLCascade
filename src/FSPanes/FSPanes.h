@@ -9,22 +9,22 @@
 #ifndef FSPanes_FSPanes_h
 #define FSPanes_FSPanes_h
 
-#import <Panes/FSPanesGlobal.h>
-#import <Panes/UIViewController+FSPanes.h>
+#import <FSPanes/FSPanesGlobal.h>
+#import <FSPanes/UIViewController+FSPanes.h>
 
-#import <Panes/FSPanesNavigation/FSPanesNavigationController.h>
-#import <Panes/FSPanesNavigation/FSPanesNavigationView.h>
+#import <FSPanes/FSPanesNavigation/FSPanesNavigationController.h>
+#import <FSPanes/FSPanesNavigation/FSPanesNavigationView.h>
 
-#import <Panes/FSPanesMenu/FSPanesMenuViewController.h>
-#import <Panes/FSPanesMenu/FSPanesMenuView.h>
+#import <FSPanes/FSPanesMenu/FSPanesMenuViewController.h>
+#import <FSPanes/FSPanesMenu/FSPanesMenuView.h>
 
-#import <Panes/FSPanesSplitView/FSPanesSplitViewController.h>
-#import <Panes/FSPanesSplitView/FSPanesSplitView.h>
+#import <FSPanes/FSPanesSplitView/FSPanesSplitViewController.h>
+#import <FSPanes/FSPanesSplitView/FSPanesSplitView.h>
 
-#import <Panes/FSPane/FSPaneView.h>
-#import <Panes/FSPane/FSPaneScrollView.h>
-#import <Panes/FSPane/FSPaneBorderShadowView.h>
-#import <Panes/FSPane/FSPaneView+Extension.h>
-#import <Panes/FSPane/UIViewController+FSPaneView.h>
+#import <FSPanes/FSPane/FSPaneView.h>
+#import <FSPanes/FSPane/FSPaneScrollView.h>
+#import <FSPanes/FSPane/FSPaneBorderShadowView.h>
+#import <FSPanes/FSPane/FSPaneView+Extension.h>
+#import <FSPanes/FSPane/UIViewController+FSPaneView.h>
 
 #endif
