@@ -41,7 +41,6 @@
     struct {
         unsigned int willDetachPages:1;
         unsigned int isDetachPages:1;
-        unsigned int hasWiderPage:1;
     } _flags;
     
     NSInteger _indexOfFirstVisiblePage;
@@ -80,7 +79,7 @@
 
 - (NSInteger) indexOfFirstVisibleView:(BOOL)loadIfNeeded;
 - (NSInteger) indexOfLastVisibleView:(BOOL)loadIfNeeded;
-- (NSArray*) visiblePages;
+- (NSArray *)visiblePanes;
 
 - (void) updateContentLayoutToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration;
 

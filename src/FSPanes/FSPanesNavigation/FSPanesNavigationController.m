@@ -305,7 +305,7 @@
 - (void) addPagesRoundedCorners {
     
     // unload all rounded corners
-    for (id item in [_navigationView visiblePages]) {
+    for (id item in [_navigationView visiblePanes]) {
         if (item != [NSNull null]) {
             if ([item isKindOfClass:[FSPaneView class]]) {
                 FSPaneView* view = (FSPaneView*)item;
