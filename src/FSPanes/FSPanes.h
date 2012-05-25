@@ -13,6 +13,7 @@
 #import <FSPanes/UIViewController+FSPanes.h>
 
 #import <FSPanes/FSPanesNavigation/FSPanesNavigationController.h>
+#import <FSPanes/FSPanesNavigation/FSPanesNavigationScrollView.h>
 #import <FSPanes/FSPanesNavigation/FSPanesNavigationView.h>
 
 #import <FSPanes/FSPanesMenu/FSPanesMenuViewController.h>
@@ -22,7 +23,6 @@
 #import <FSPanes/FSPanesSplitView/FSPanesSplitView.h>
 
 #import <FSPanes/FSPane/FSPaneView.h>
-#import <FSPanes/FSPane/FSPaneScrollView.h>
 #import <FSPanes/FSPane/FSPaneBorderShadowView.h>
 #import <FSPanes/FSPane/FSPaneView+Extension.h>
 #import <FSPanes/FSPane/UIViewController+FSPaneView.h>

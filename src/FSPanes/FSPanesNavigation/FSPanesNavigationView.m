@@ -83,7 +83,7 @@
         _indexOfFirstVisiblePage = -1;
         _indexOfLastVisiblePage = -1;
         
-        _scrollView = [[FSPaneScrollView alloc] init]; // frame will be set in setter of _leftInset
+        _scrollView = [[FSPanesNavigationScrollView alloc] init]; // frame will be set in setter of _leftInset
         [_scrollView setDelegate: self];
         
         self.leftInset = DEFAULT_LEFT_INSET;
