@@ -68,8 +68,8 @@
 @property(nonatomic, assign) BOOL pullToDetachPages;
 
 
-- (void) pushPage:(UIView*)newPage fromPage:(UIView*)fromPage animated:(BOOL)animated;
-- (void) pushPage:(UIView*)newPage fromPage:(UIView*)fromPage animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
+- (void) pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated;
+- (void) pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
 
 - (void) popPageAtIndex:(NSInteger)index animated:(BOOL)animated;
 - (void) popAllPagesAnimated:(BOOL)animated;

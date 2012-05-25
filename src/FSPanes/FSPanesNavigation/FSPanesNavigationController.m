@@ -265,8 +265,8 @@
     [self addChildViewController:viewController];
     
     // push view
-    [_navigationView pushPage:[viewController view] 
-                  fromPage:[sender view] 
+    [_navigationView pushView:[viewController view] 
+                  fromView:[sender view] 
                   animated:animated
                   viewSize:size];
     

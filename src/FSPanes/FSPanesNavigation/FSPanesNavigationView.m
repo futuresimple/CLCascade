@@ -46,7 +46,7 @@
 - (void) setProperEdgeInset:(BOOL)animated forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 - (void) setProperSizesForLoadedPages:(UIInterfaceOrientation)interfaceOrientation;
 
-- (FSPaneView *)createPageFromView:(UIView*)view size:(FSViewSize)viewSize;
+- (FSPaneView *)createPaneWithView:(UIView*)view size:(FSViewSize)viewSize;
 - (void) unloadPage:(FSPaneView*)page remove:(BOOL)remove;
 - (void) loadBoundaryPagesIfNeeded;
 
@@ -155,74 +155,76 @@
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) pushPage:(UIView*)newPage fromPage:(UIView*)fromPage animated:(BOOL)animated {
-    [self pushPage:newPage fromPage:fromPage animated:animated viewSize:FSViewSizeNormal];
+- (void)pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated
+{
+    [self pushView:newView fromView:fromView animated:animated viewSize:FSViewSizeNormal];
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) pushPage:(UIView*)newPage fromPage:(UIView*)fromPage animated:(BOOL)animated viewSize:(FSViewSize)viewSize {
-    // put the newPage view into a segmentedView container
-    FSPaneView *newPageContainer = [self createPageFromView:newPage size:viewSize];
+- (void)pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated viewSize:(FSViewSize)viewSize
+{
+    FSPaneView *newPane = [self createPaneWithView:newView size:viewSize];
     
     if (viewSize == FSViewSizeWider) {
         _flags.hasWiderPage = YES;
     }
     
     NSInteger index = [_pages count];
-    CGSize size = [self calculatePageSize: newPageContainer];
+    CGSize size = [self calculatePageSize: newPane];
     CGPoint origin = [self calculateOriginOfPageAtIndex: index];
-    CGRect frame = {.origin = origin, .size = size};
+    CGRect paneFrame = {.origin = origin, .size = size};
     
-    if (fromPage == nil) {
+    if (fromView == nil) {
         [self popAllPagesAnimated: animated];
-        frame.origin.x = 0.0f;
+        paneFrame.origin.x = 0.0f;
     }
     
-    // animation, from left to right
-    if (animated && (fromPage == nil) && (([_scrollView contentOffset].x >= 0))) {
-        // start frame animation
-        CGRect startRect = CGRectMake(origin.x - size.width, origin.y, size.width, size.height);
-        // set new page frame
-        [newPageContainer setFrame: startRect];
-        // animation
+    // animation of inserting a new root pane (from left to right)
+    if (animated && fromView == nil && [_scrollView contentOffset].x >= 0) {
+        CGRect initialAnimationFrame = CGRectMake(origin.x - size.width, origin.y, size.width, size.height);
+        newPane.frame = initialAnimationFrame;
+        
         [UIView animateWithDuration:0.15 
                          animations: ^{
-                             // set new page frame aimated
-                             [newPageContainer setFrame: frame];
+                             newPane.frame = paneFrame;
                          }];
-    } else {
-        // set new page frame
-        [newPageContainer setFrame: frame];
+    }
+    else {
+        newPane.frame = paneFrame;
     }
     
-    [_pages addObject: newPageContainer];
+    [_pages addObject:newPane];
     
     [self setProperContentSize];
-    [self setProperEdgeInset: NO];
+    [self setProperEdgeInset:NO];
     
-    [_scrollView addSubview: newPageContainer];
+    [_scrollView addSubview:newPane];
     
     // inform delegate
-    [self didAddPage:newPageContainer animated:animated];
+    [self didAddPage:newPane animated:animated];
     
     UIInterfaceOrientation interfaceOrienation = [[UIApplication sharedApplication] statusBarOrientation];
     
     if (index > 0) {
-        // scroll to new page frame
+        // scroll to new pane frame
+        CGPoint offsetPoint;
+        
         if (!_flags.hasWiderPage) {
             if (UIInterfaceOrientationIsPortrait(interfaceOrienation)) {
-                [_scrollView setContentOffset:CGPointMake(index * _pageWidth - (self.bounds.size.width - _pageWidth - _leftInset), 0.0f) animated:animated];
-            } else {
-                [_scrollView setContentOffset:CGPointMake(index * _pageWidth - _pageWidth, 0.0f) animated:animated];
+                offsetPoint = CGPointMake(index * _pageWidth - (self.bounds.size.width - _pageWidth - _leftInset), 0.0f);
             }
-        } else {
-            if (UIInterfaceOrientationIsPortrait(interfaceOrienation)) {
-                [_scrollView setContentOffset:CGPointMake(index * _pageWidth - _widerLeftInset + _leftInset, 0.0f) animated:animated];
-            } else {
-                [_scrollView setContentOffset:CGPointMake(index * _pageWidth + _pageWidth  - _widePageWidth - _leftInset + _widerLeftInset, 0.0f) animated:animated];
+            else {
+                offsetPoint = CGPointMake(index * _pageWidth - _pageWidth, 0.0f);
             }
         }
+        else {
+            if (UIInterfaceOrientationIsPortrait(interfaceOrienation)) {
+                offsetPoint = CGPointMake(index * _pageWidth - _widerLeftInset + _leftInset, 0.0f);
+            }
+            else {
+                offsetPoint = CGPointMake(index * _pageWidth + _pageWidth - _widePageWidth - _leftInset + _widerLeftInset, 0.0f);
+            }
+        }
+        [_scrollView setContentOffset:offsetPoint animated:animated];
     }
 }
 
@@ -578,7 +580,6 @@
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
 - (CGSize)calculateContentSize
 {
     CGFloat width = 0.0f;
@@ -674,7 +675,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (FSPaneView *)createPageFromView:(UIView*)view size:(FSViewSize)viewSize {
+- (FSPaneView *)createPaneWithView:(UIView*)view size:(FSViewSize)viewSize {
     FSPaneView *page = [[FSPaneView alloc] initWithSize:viewSize];
     page.showRoundedCorners = YES;
     [page setAutoresizingMask:
