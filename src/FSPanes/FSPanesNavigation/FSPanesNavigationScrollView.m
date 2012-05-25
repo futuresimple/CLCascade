@@ -1,5 +1,5 @@
 //
-//  FSPaneScrollView.m
+//  FSPanesNavigationScrollView.m
 //  FSPanes
 //
 //  Created by Emil Wojtaszek on 26.07.2011.
@@ -11,9 +11,9 @@
 //  Licensed under the Apache License, Version 2.0.
 //
 
-#import "FSPaneScrollView.h"
+#import "FSPanesNavigationScrollView.h"
 
-@implementation FSPaneScrollView
+@implementation FSPanesNavigationScrollView
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)init

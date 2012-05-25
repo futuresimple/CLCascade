@@ -13,7 +13,7 @@
 
 #import <UIKit/UIKit.h>
 #import "FSPanesGlobal.h"
-#import "FSPaneScrollView.h"
+#import "FSPanesNavigationScrollView.h"
 
 @protocol FSPanesNavigationViewDataSource;
 @protocol FSPanesNavigationViewDelegate;
@@ -24,7 +24,7 @@
     id<FSPanesNavigationViewDataSource> __unsafe_unretained _dataSource;
     
     // scroll view
-    FSPaneScrollView *_scrollView;
+    FSPanesNavigationScrollView *_scrollView;
     
     // contain all pages, if page is unloaded then page is respresented as [NSNull null]
     NSMutableArray *_pages;

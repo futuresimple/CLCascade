@@ -70,20 +70,6 @@
 @synthesize widerLeftInset = _widerLeftInset;
 @synthesize pullToDetachPages = _pullToDetachPages;
 
-#pragma mark -
-#pragma mark Init & dealloc
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)dealloc
-{
-    _delegate = nil;
-    _dataSource = nil;    
-    _scrollView = nil;
-    _pages = nil;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -96,7 +82,7 @@
         _indexOfFirstVisiblePage = -1;
         _indexOfLastVisiblePage = -1;
         
-        _scrollView = [[FSPaneScrollView alloc] init]; // frame will be set in setter of _leftInset
+        _scrollView = [[FSPanesNavigationScrollView alloc] init]; // frame will be set in setter of _leftInset
         [_scrollView setDelegate: self];
         
         self.leftInset = DEFAULT_LEFT_INSET;
@@ -113,11 +99,40 @@
          UIViewAutoresizingFlexibleWidth | 
          UIViewAutoresizingFlexibleHeight];
     }
+    
     return self;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+- (void)dealloc
+{
+    _delegate = nil;
+    _dataSource = nil;    
+    _scrollView = nil;
+    _pages = nil;
+}
+
+#pragma mark Custom accessors
+
+- (void)setLeftInset:(CGFloat)newLeftInset
+{
+    CGFloat landscapeScreenWidth = [UIScreen mainScreen].bounds.size.height;
+    CGFloat portraitScreenWidth = [UIScreen mainScreen].bounds.size.width;
+    
+    _leftInset = newLeftInset;
+    _pageWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
+    _widePageWidth = portraitScreenWidth - _leftInset;
+    
+    if (_widePageWidth <= 0.0f) {
+        NSAssert(NO, @"Left inset is too small!");
+    }
+    
+    _scrollView.frame = CGRectMake(_leftInset, 0.0, _pageWidth, self.frame.size.height);
+    
+    [self setProperEdgeInset: NO];
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event 
+{
     UIView *view = nil;
     
     NSEnumerator *enumerator = [[self visiblePages] reverseObjectEnumerator];
@@ -139,9 +154,6 @@
         return [super hitTest:point withEvent:event];
     }
 }
-
-#pragma mark -
-#pragma mark Class methods
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) pushPage:(UIView*)newPage fromPage:(UIView*)fromPage animated:(BOOL)animated {
@@ -1010,26 +1022,6 @@
             [self didCancelPullToDetachPages];
         }
     }
-}
-
-#pragma mark -
-#pragma mark Setters
-- (void)setLeftInset:(CGFloat)newLeftInset
-{
-    CGFloat landscapeScreenWidth = [UIScreen mainScreen].bounds.size.height;
-    CGFloat portraitScreenWidth = [UIScreen mainScreen].bounds.size.width;
-    
-    _leftInset = newLeftInset;
-    _pageWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
-    _widePageWidth = portraitScreenWidth - _leftInset;
-    
-    if (_widePageWidth <= 0.0f) {
-        NSAssert(NO, @"Left inset is too small!");
-    }
-    
-    _scrollView.frame = CGRectMake(_leftInset, 0.0, _pageWidth, self.frame.size.height);
-    
-    [self setProperEdgeInset: NO];
 }
 
 @end

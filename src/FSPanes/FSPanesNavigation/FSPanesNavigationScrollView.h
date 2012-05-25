@@ -1,5 +1,5 @@
 //
-//  FSPaneScrollView.h
+//  FSPanesNavigationScrollView.h
 //  FSPanes
 //
 //  Created by Emil Wojtaszek on 26.07.2011.
@@ -13,6 +13,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FSPaneScrollView : UIScrollView
+@interface FSPanesNavigationScrollView : UIScrollView
 
 @end
