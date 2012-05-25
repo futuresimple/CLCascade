@@ -52,7 +52,6 @@
 
 - (NSInteger) indexOfFirstVisiblePage;
 - (NSInteger) visiblePagesCount;
-- (CGFloat) widerPageWidth;
 
 - (void) setProperPositionOfPageAtIndex:(NSInteger)index;
 @end
@@ -161,7 +160,7 @@
     NSInteger index = [_pages count];
     CGSize size = [self calculatePageSize: newPageContainer];
     CGPoint origin = [self calculateOriginOfPageAtIndex: index];
-    CGRect frame = CGRectMake(origin.x, origin.y, size.width, size.height);
+    CGRect frame = {.origin = origin, .size = size};
     
     if (fromPage == nil) {
         [self popAllPagesAnimated: animated];
@@ -185,15 +184,14 @@
         [newPageContainer setFrame: frame];
     }
     
-    // add page to array of pages
     [_pages addObject: newPageContainer];
-    // update content size
+    
     [self setProperContentSize];
-    // update edge inset
     [self setProperEdgeInset: NO];
-    // add subview
+    
     [_scrollView addSubview: newPageContainer];
-    // send message to delegate
+    
+    // inform delegate
     [self didAddPage:newPageContainer animated:animated];
     
     UIInterfaceOrientation interfaceOrienation = [[UIApplication sharedApplication] statusBarOrientation];
@@ -210,7 +208,7 @@
             if (UIInterfaceOrientationIsPortrait(interfaceOrienation)) {
                 [_scrollView setContentOffset:CGPointMake(index * _pageWidth - _widerLeftInset + _leftInset, 0.0f) animated:animated];
             } else {
-                [_scrollView setContentOffset:CGPointMake(index * _pageWidth + _pageWidth  - ([self widerPageWidth]) - _leftInset + _widerLeftInset, 0.0f) animated:animated];
+                [_scrollView setContentOffset:CGPointMake(index * _pageWidth + _pageWidth  - _widePageWidth - _leftInset + _widerLeftInset, 0.0f) animated:animated];
             }
         }
     }
@@ -562,24 +560,46 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setProperContentSize { 
-    // set proper content size
+- (void)setProperContentSize
+{
     _scrollView.contentSize = [self calculateContentSize];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (CGSize) calculateContentSize {
-    
+- (CGSize)calculateContentSize
+{
     CGFloat width = 0.0f;
     
-    if (!_flags.hasWiderPage) {
-        width = ([_pages count] -1) * _pageWidth;
-    } else {
-        width = ([_pages count] -1) * _pageWidth + ([self widerPageWidth] - _pageWidth);
+    for (FSPaneView *pane in _pages) {
+        switch (pane.viewSize) {
+            case FSViewSizeNormal:
+                width += _pageWidth;
+                break;
+            case FSViewSizeWider:
+                width += _widePageWidth;
+                break;
+        }
     }
     
-    //    return CGSizeMake(width, UIInterfaceOrientationIsPortrait(interfaceOrientation) ? self.bounds.size.height : self.bounds.size.height);
+    FSPaneView *pane = [_pages lastObject];
+    switch (pane.viewSize) {
+        case FSViewSizeNormal:
+            width -= _pageWidth;
+            break;
+        case FSViewSizeWider:
+            width -= _widePageWidth;
+            break;
+    }
+    
+//    if (!_flags.hasWiderPage) {
+//        width = ([_pages count] -1) * _pageWidth;
+//    }
+//    else {
+//        width = ([_pages count] -1) * _pageWidth + (_widePageWidth - _pageWidth);
+//    }
+    
+//    return CGSizeMake(width, UIInterfaceOrientationIsPortrait(interfaceOrientation) ? self.bounds.size.height : self.bounds.size.height);
     return CGSizeMake(width, 0.0f);
 }
 
@@ -695,7 +715,7 @@
     CGFloat width = _pageWidth;
     
     if (size == FSViewSizeWider) {
-        width = [self widerPageWidth];
+        width = _widePageWidth;
     }
     
     return CGSizeMake(width, height);
@@ -716,11 +736,6 @@
             [view setNeedsLayout];
         }
     }];
-}
-
-- (CGFloat)widerPageWidth
-{
-    return _widePageWidth;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -24,10 +24,10 @@
     id<FSPanesNavigationViewDataSource> __unsafe_unretained _dataSource;
     
     // scroll view
-    FSPaneScrollView* _scrollView;
+    FSPaneScrollView *_scrollView;
     
     // contain all pages, if page is unloaded then page is respresented as [NSNull null]
-    NSMutableArray* _pages;
+    NSMutableArray *_pages;
     
 @private
     // sizes
