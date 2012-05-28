@@ -13,20 +13,44 @@
 
 #import "FSPaneBorderShadowView.h"
 
+@interface FSPaneBorderShadowView ()
+{
+    BOOL _rightSide;
+}
+
+@end
+
 @implementation FSPaneBorderShadowView
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (id)init {
-    self = [super init];
-    if (self) {
+- (id)initWithFrame:(CGRect)frame
+{
+    if (self = [super initWithFrame:frame]) {
         [self setBackgroundColor:[UIColor clearColor]];
     }
     return self;
 }
 
+- (id)init 
+{
+    return [self initWithFrame:CGRectZero];
+}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) drawRect:(CGRect)rect {
+- (id)initForLeftSide {
+    if (self = [self init]) {
+        _rightSide = NO;
+    }
+    return self;
+}
+
+- (id)initForRightSide {
+    if (self = [self init]) {
+        _rightSide = YES;
+    }
+    return self;
+}
+
+- (void)drawRect:(CGRect)rect 
+{
     CGFloat colors [] = { 
         0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 0.3
@@ -41,6 +65,12 @@
     CGPoint startPoint = CGPointMake(0, CGRectGetMidY(rect));
     CGPoint endPoint = CGPointMake(CGRectGetMaxX(rect), CGRectGetMidY(rect));
     
+    if (_rightSide) {
+        CGPoint temp = startPoint;
+        startPoint = endPoint;
+        endPoint = temp;
+    }
+
     CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
     CGGradientRelease(gradient), gradient = NULL;
 }

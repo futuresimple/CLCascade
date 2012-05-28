@@ -39,7 +39,4 @@
 
 - (id)initWithSize:(FSViewSize)size;
 
-/** Adds left outer shadow view with proper width. */
-- (void)addLeftBorderShadowView:(UIView *)view withWidth:(CGFloat)width;
-
 @end

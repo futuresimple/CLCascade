@@ -16,11 +16,14 @@
 
 @interface FSPaneView () 
 {
-    UIView *_shadowView;
+    UIView *_leftShadowView;
+    UIView *_rightShadowView;
     UIView *_roundedCornersView;
 }
 
 - (void)updateRoundedCorners;
+- (void)addLeftBorderShadowView:(UIView *)view withWidth:(CGFloat)width;
+- (void)addRightBorderShadowView:(UIView *)view withWidth:(CGFloat)width;
 
 @end
 
@@ -41,6 +44,8 @@
 - (id)initWithSize:(FSViewSize)size
 {
     if (self = [super init]) {
+        self.clipsToBounds = NO;
+        
         _roundedCornersView = [[UIView alloc] init];
         [_roundedCornersView setBackgroundColor:[UIColor clearColor]];
         [self addSubview:_roundedCornersView];
@@ -49,9 +54,11 @@
         _rectCorner = UIRectCornerAllCorners;
         _showRoundedCorners = NO;
         
-        [self addLeftBorderShadowView:[FSPaneBorderShadowView new]
-                            withWidth:20.0];
-        [self setShadowOffset:10.0];
+        [self addLeftBorderShadowView:[[FSPaneBorderShadowView alloc] initForLeftSide]
+                            withWidth:20.0f];
+        [self addRightBorderShadowView:[[FSPaneBorderShadowView alloc] initForRightSide]
+                            withWidth:20.0f];
+        [self setShadowOffset:10.0f];
     }
     
     return self;
@@ -143,18 +150,33 @@
 
 - (void)addLeftBorderShadowView:(UIView *)view withWidth:(CGFloat)width
 {
-    self.clipsToBounds = NO;
-    
     if (_shadowWidth != width) {
         _shadowWidth = width;
         [self setNeedsLayout];
         [self setNeedsDisplay];
     }
     
-    if (view != _shadowView) {
-        _shadowView = view;
+    if (view != _leftShadowView) {
+        _leftShadowView = view;
         
-        [self insertSubview:_shadowView atIndex:0];
+        [self insertSubview:_leftShadowView atIndex:0];
+        
+        [self setNeedsLayout];
+        [self setNeedsDisplay];
+    }
+}
+
+- (void)addRightBorderShadowView:(UIView *)view withWidth:(CGFloat)width {
+    if (_shadowWidth != width) {
+        _shadowWidth = width;
+        [self setNeedsLayout];
+        [self setNeedsDisplay];
+    }
+    
+    if (view != _rightShadowView) {
+        _rightShadowView = view;
+        
+        [self insertSubview:_rightShadowView atIndex:0];
         
         [self setNeedsLayout];
         [self setNeedsDisplay];
@@ -215,9 +237,13 @@
     
     _contentView.frame = CGRectMake(0.0f, headerHeight, viewWidth, viewHeight - headerHeight - footerHeight);
     
-    if (_shadowView) {
+    if (_leftShadowView) {
         CGRect shadowFrame = CGRectMake(0.0f - _shadowWidth + _shadowOffset, 0.0f, _shadowWidth, rect.size.height);
-        _shadowView.frame = shadowFrame;
+        _leftShadowView.frame = shadowFrame;
+    }
+    if (_rightShadowView) {
+        CGRect shadowFrame = CGRectMake(viewWidth - _shadowOffset, 0.0f, _shadowWidth, rect.size.height);
+        _rightShadowView.frame = shadowFrame;
     }
     
     [self updateRoundedCorners];
