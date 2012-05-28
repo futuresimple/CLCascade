@@ -15,72 +15,31 @@
 #import <QuartzCore/QuartzCore.h>
 #import "FSPanesGlobal.h"
 
-@interface FSPaneView : UIView {
-    FSViewSize _viewSize;
-    
-    UIView* _headerView;
-    UIView* _footerView;
-    UIView* _contentView;
-    UIView* _roundedCornersView;
-    
-    CGFloat _shadowWidth;
-    CGFloat _shadowOffset;
-    UIView* _shadowView;
-    
-    BOOL _showRoundedCorners;
-    UIRectCorner _rectCorner;
-}
+@interface FSPaneView : UIView
 
-/*
- * Header view - located on the top of view
- */
-@property (nonatomic, strong) IBOutlet UIView* headerView;
+@property (nonatomic, strong) IBOutlet UIView *headerView;
+@property (nonatomic, strong) IBOutlet UIView *contentView;
+@property (nonatomic, strong) IBOutlet UIView *footerView;
 
-/*
- * Footer view - located on the bottom of view
- */
-@property (nonatomic, strong) IBOutlet UIView* footerView;
+@property CGFloat shadowWidth;
 
-/*
- * Content view - located between header and footer view 
- */
-@property (nonatomic, strong) IBOutlet UIView* contentView;
+/** X-axis shadow offset. Default is 0.0f. */
+@property CGFloat shadowOffset;
 
-/*
- * The width of the shadow
- */
-@property (nonatomic, assign) CGFloat shadowWidth;
+/** Set YES if you want rounded corners. Default is NO. */
+@property BOOL showRoundedCorners;
 
-/*
- * The offset of the shadow in X-axis. Default 0.0
- */
-@property (nonatomic, assign) CGFloat shadowOffset;
+/** Type of rect corners. Default UIRectCornerAllCorners. */
+@property UIRectCorner rectCorner;
 
-/*
- * Set YES if you want rounded corners. Default NO.
- */
-@property (nonatomic, assign) BOOL showRoundedCorners;
+/** @return YES if loaded within container hierarchy, othwerise NO. */
+@property (readonly) BOOL isLoaded;
 
-/*
- * Type of rect corners. Default UIRectCornerAllCorners.
- */
-@property (nonatomic, assign) UIRectCorner rectCorner;
+@property FSViewSize viewSize;
 
-/*
- * Returns view's load status within container's hierarchy 
- */
-@property (nonatomic, readonly) BOOL isLoaded;
+- (id)initWithSize:(FSViewSize)size;
 
-/*
- * Size of view
- */
-@property (nonatomic, assign, readonly) FSViewSize viewSize;
-
-- (id) initWithSize:(FSViewSize)size;
-
-/* 
- * This methoad add left outer shadow view with proper width
- */
-- (void) addLeftBorderShadowView:(UIView *)view withWidth:(CGFloat)width;
+/** Adds left outer shadow view with proper width. */
+- (void)addLeftBorderShadowView:(UIView *)view withWidth:(CGFloat)width;
 
 @end

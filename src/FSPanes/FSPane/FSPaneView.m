@@ -14,39 +14,38 @@
 #import "FSPaneView.h"
 #import "FSPaneBorderShadowView.h"
 
-@interface FSPaneView (Private)
-- (void) setupViews;
-- (void) updateRoundedCorners;
+@interface FSPaneView () 
+{
+    UIView *_shadowView;
+    UIView *_roundedCornersView;
+}
+
+- (void)updateRoundedCorners;
+
 @end
 
 @implementation FSPaneView
 
 @synthesize footerView = _footerView;
-@synthesize headerView = _headerView;
 @synthesize contentView = _contentView;
+@synthesize headerView = _headerView;
+
 @synthesize shadowWidth = _shadowWidth;
-@synthesize viewSize = _viewSize;
-@synthesize showRoundedCorners = _showRoundedCorners;
-@synthesize rectCorner = _rectCorner;
 @synthesize shadowOffset = _shadowOffset;
 
-- (BOOL)isLoaded
+@synthesize showRoundedCorners = _showRoundedCorners;
+@synthesize rectCorner = _rectCorner;
+
+@synthesize viewSize = _viewSize;
+
+- (id)initWithSize:(FSViewSize)size
 {
-    return self.superview != nil;
-}
-
-#pragma mark - Init & dealloc
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (id)init {
-    self = [super init];
-    if (self) {
-        
+    if (self = [super init]) {
         _roundedCornersView = [[UIView alloc] init];
-        [_roundedCornersView setBackgroundColor: [UIColor clearColor]];
+        [_roundedCornersView setBackgroundColor:[UIColor clearColor]];
         [self addSubview: _roundedCornersView];
         
-        _viewSize = FSViewSizeNormal;
+        _viewSize = size;
         _rectCorner = UIRectCornerAllCorners;
         _showRoundedCorners = NO;
         
@@ -54,25 +53,28 @@
                             withWidth:20.0];
         [self setShadowOffset:10.0];
     }
+    
     return self;
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (id) initWithSize:(FSViewSize)size {
-    self = [self init];
-    if (self) {
-        _viewSize = size;
-    }
-    return self;
+- (id)init 
+{    
+    return [self initWithSize:FSViewSizeNormal];
 }
 
+- (void)dealloc
+{
+    _footerView = nil;
+    _headerView = nil;
+    _contentView = nil;
+    _roundedCornersView = nil;
+    _shadowView = nil;
+}
 
-#pragma mark -
-#pragma mark Setters
+#pragma mark Custom accessors
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setContentView:(UIView*)contentView {
+- (void) setContentView:(UIView *)contentView
+{
     if (_contentView != contentView) {
         [_contentView removeFromSuperview];
         
@@ -93,10 +95,8 @@
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setHeaderView:(UIView*)headerView {
-    
+- (void)setHeaderView:(UIView *)headerView
+{
     if (_headerView != headerView) {
         [_headerView removeFromSuperview];
         
@@ -115,9 +115,8 @@
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setFooterView:(UIView*)footerView {
-    
+- (void)setFooterView:(UIView *)footerView
+{    
     if (_footerView != footerView) {
         [_footerView removeFromSuperview];
         
@@ -135,10 +134,24 @@
     }
 }
 
+- (void)setRectCorner:(UIRectCorner)corners
+{
+    if (corners != _rectCorner) {
+        _rectCorner = corners;
+        [self setNeedsLayout];
+    }
+}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) addLeftBorderShadowView:(UIView *)view withWidth:(CGFloat)width {
-    
+- (void)setShowRoundedCorners:(BOOL)show
+{
+    if (show != _showRoundedCorners) {
+        _showRoundedCorners = show;
+        [self setNeedsLayout];
+    }
+}
+
+- (void)addLeftBorderShadowView:(UIView *)view withWidth:(CGFloat)width
+{
     [self setClipsToBounds: NO];
     
     if (_shadowWidth != width) {
@@ -157,13 +170,15 @@
     }
 }
 
+- (BOOL)isLoaded
+{
+    return self.superview != nil;
+}
 
-#pragma mark -
-#pragma mark Private
+#pragma mark Private methods
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) updateRoundedCorners {
-    
+- (void)updateRoundedCorners
+{
     if (_showRoundedCorners) {
         CGRect toolbarBounds = self.bounds;
         CAShapeLayer *maskLayer = [CAShapeLayer layer];
@@ -181,10 +196,8 @@
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) layoutSubviews {
-    
+- (void)layoutSubviews 
+{
     CGRect rect = self.bounds;
     
     CGFloat viewWidth = rect.size.width;
@@ -218,38 +231,5 @@
     
     [self updateRoundedCorners];
 }
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)dealloc
-{
-    _footerView = nil;
-    _headerView = nil;
-    _contentView = nil;
-    _roundedCornersView = nil;
-    _shadowView = nil;
-    
-}
-
-#pragma mark
-#pragma mark Setters
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setRectCorner:(UIRectCorner)corners {
-    if (corners != _rectCorner) {
-        _rectCorner = corners;
-        [self setNeedsLayout];
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setShowRoundedCorners:(BOOL)show {
-    if (show != _showRoundedCorners) {
-        _showRoundedCorners = show;
-        [self setNeedsLayout];
-    }
-}
-
 
 @end
