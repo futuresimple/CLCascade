@@ -36,8 +36,6 @@
     CGFloat _leftInset;
     CGFloat _widerLeftInset;
     
-    BOOL _pullToDetachPages;
-    
     struct {
         unsigned int willDetachPages:1;
         unsigned int isDetachPages:1;
@@ -60,12 +58,6 @@
  * Left inset of wider page from left boarder. Default 220.0f
  */
 @property(nonatomic) CGFloat widerLeftInset;
-
-/*
- * If YES, then pull to detach pages is enabled, default YES
- */
-@property(nonatomic, assign) BOOL pullToDetachPages;
-
 
 - (void) pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated;
 - (void) pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated viewSize:(FSViewSize)viewSize;

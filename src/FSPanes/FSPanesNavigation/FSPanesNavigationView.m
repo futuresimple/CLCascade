@@ -25,7 +25,7 @@
 - (void) didPullToDetachPages;
 - (void) didCancelPullToDetachPages;
 - (void) sendAppearanceDelegateMethodsIfNeeded;
-- (void) sendDetachDelegateMethodsIfNeeded;
+- (void)sendDetachDelegateMethodsIfNeeded;
 @end
 
 @interface FSPanesNavigationView (Private)
@@ -68,7 +68,6 @@
 @synthesize delegate = _delegate;
 @synthesize dataSource = _dataSource;
 @synthesize widerLeftInset = _widerLeftInset;
-@synthesize pullToDetachPages = _pullToDetachPages;
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -86,7 +85,6 @@
         
         self.leftInset = DEFAULT_LEFT_INSET;
         self.widerLeftInset = DEFAULT_WIDER_LEFT_INSET;
-        self.pullToDetachPages = YES;
         
         [self addSubview: _scrollView];
         
@@ -612,6 +610,7 @@
 - (void)_unloadPageIfPossible:(NSInteger)index
 {
     //TODO: USE THIS METHOD INSTEAD OF -UNLOADPAGE: !!! (WHEN APPROPRIATE :)
+    // (otherwise -visiblePanes: shouldn't include wide views)
     FSPaneView *pane = [_pages objectAtIndex:index];
     
     if (pane.isLoaded) {
@@ -704,11 +703,9 @@
 }
 
 #pragma mark -
-#pragma mark UIScrollView delegates methods
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
+#pragma mark <UIScrollViewDelegate>
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
     if(scrollView.dragging && scrollView.tracking && !scrollView.pagingEnabled) {
         [scrollView setPagingEnabled:YES];
     }
@@ -729,7 +726,7 @@
     // bug fix with bad position of first page
     if ((firstVisiblePageIndex == 0) && (-_scrollView.contentOffset.x >= _scrollView.contentInset.left)) {
         // get page at index
-        FSPaneView* page = [_pages objectAtIndex: firstVisiblePageIndex];
+        FSPaneView *page = [_pages objectAtIndex:firstVisiblePageIndex];
         if (page.isLoaded) {
             CGRect rect = [page frame];
             rect.origin.x = 0;
@@ -741,21 +738,18 @@
     
     // operations connected with blocking pages on stock
     for (NSInteger i=0; i<=firstVisiblePageIndex; i++) {
-        
-        // check if page index is in bounds 
-        if ([self _pageExistAtIndex: i]) {
-            // get page at index
-            FSPaneView* page = [_pages objectAtIndex: i];
+        // check if page index is in bounds
+        if ([self _pageExistAtIndex:i]) {
+            FSPaneView *page = [_pages objectAtIndex:i];
             
             if (i == firstVisiblePageIndex) {
-                
                 CGFloat contentOffset = _scrollView.contentOffset.x;
                 
                 if (((i == 0) && (contentOffset <= 0)) || ([_pages count] == 1)) {
                     return;
                 }
                 
-                UIView* view = (UIView*)page;
+                UIView *view = (UIView *)page;
                 
                 CGRect rect = [view frame];
                 rect.origin.x = contentOffset;
@@ -771,19 +765,17 @@
     
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
     
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
 //- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
 //    [scrollView setPagingEnabled:NO];
 //}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
     if (_flags.isDetachPages) _flags.isDetachPages = NO;
     
 #ifdef CONTESTED_CASE
@@ -801,10 +793,8 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    
-    if (!_pullToDetachPages) return;
-    
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
     CGFloat realContentOffsetX = _scrollView.contentOffset.x + _scrollView.contentInset.left;
     
     if ((_flags.willDetachPages) && (realContentOffsetX < - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
@@ -941,10 +931,11 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) sendDetachDelegateMethodsIfNeeded {
+- (void)sendDetachDelegateMethodsIfNeeded
+{
     CGFloat realContentOffsetX = _scrollView.contentOffset.x + _scrollView.contentInset.left;
     
-    if ((_pullToDetachPages) && (!_flags.isDetachPages)) {
+    if (!_flags.isDetachPages) {
         if ((!_flags.willDetachPages) && (realContentOffsetX < - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
             [self didStartPullingToDetachPages];
         }
