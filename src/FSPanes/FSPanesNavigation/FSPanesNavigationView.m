@@ -14,6 +14,12 @@
 #import "FSPanesNavigationView.h"
 #import "FSPaneView.h"
 
+#define DEFAULT_LEFT_INSET 70.0f
+#define DEFAULT_WIDER_LEFT_INSET 220.0f
+#define PULL_TO_DETACH_FACTOR 0.32f
+
+//#define CONTESTED_CASE
+
 @interface FSPanesNavigationView (DelegateMethods)
 - (void) didLoadPage:(UIView*)page;
 - (void) didAddPage:(UIView*)page animated:(BOOL)animated;
@@ -29,38 +35,31 @@
 @end
 
 @interface FSPanesNavigationView (Private)
-- (NSArray*) pagesOnStock;
+- (NSArray *)_panesOnStock;
 
-- (BOOL)_pageExistAtIndex:(NSInteger)index;
-- (void) unloadInvisiblePagesOnStock;
+- (BOOL)_paneExistsAtIndex:(NSInteger)index;
+- (void)_unloadInvisiblePanesOnStock;
 
-- (NSInteger) normalizePageIndex:(NSInteger)index;
 - (CGSize)_calculatePaneSize:(FSPaneView *)pane;
 - (CGFloat)_calculateContentWidth;
 - (UIEdgeInsets)_calculateEdgeInset:(UIInterfaceOrientation)interfaceOrientation;
-- (CGPoint)_calculateOriginOfPageAtIndex:(NSInteger)index;
+- (CGPoint)_calculateOriginOfPaneAtIndex:(NSInteger)index;
 
-- (void) setProperContentSize;
+- (void)_setProperContentSize;
 - (void)_setProperEdgeInset:(BOOL)animated;
 - (void)_setProperEdgeInset:(BOOL)animated forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
-- (void) setProperSizesForLoadedPages:(UIInterfaceOrientation)interfaceOrientation;
+- (void)_setProperSizesForLoadedPanes:(UIInterfaceOrientation)interfaceOrientation;
 
 - (FSPaneView *)_createPaneWithView:(UIView*)view size:(FSViewSize)viewSize;
-- (void)_unloadPageIfPossible:(NSInteger)index;
-- (void)_unloadPage:(FSPaneView*)page remove:(BOOL)remove;
-- (void) loadBoundaryPagesIfNeeded;
+- (void)_unloadPaneIfPossible:(NSInteger)index;
+- (void)_unloadPane:(FSPaneView*)pane remove:(BOOL)remove;
+- (void)_loadBoundaryPanesIfNeeded;
 
-- (NSInteger) indexOfFirstVisiblePage;
-- (NSInteger) visiblePagesCount;
+- (NSInteger)_indexOfFirstVisiblePane;
+- (NSInteger)_visiblePanesCount;
 
-- (void) setProperPositionOfPageAtIndex:(NSInteger)index;
+- (void)_setProperPositionOfPaneAtIndex:(NSInteger)index;
 @end
-
-#define DEFAULT_LEFT_INSET 70.0f
-#define DEFAULT_WIDER_LEFT_INSET 220.0f
-#define PULL_TO_DETACH_FACTOR 0.32f
-
-//#define CONTESTED_CASE
 
 @implementation FSPanesNavigationView
 
@@ -69,16 +68,17 @@
 @synthesize dataSource = _dataSource;
 @synthesize widerLeftInset = _widerLeftInset;
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame
+{
     self = [super initWithFrame:frame];
     if (self) {
         _panes = [[NSMutableArray alloc] init];
         
-        _flags.willDetachPages = NO;
-        _flags.isDetachPages = NO;
+        _flags.willDetachPanes = NO;
+        _flags.isDetachPanes = NO;
         
-        _indexOfFirstVisiblePage = -1;
-        _indexOfLastVisiblePage = -1;
+        _indexOfFirstVisiblePane = -1;
+        _indexOfLastVisiblePane = -1;
         
         _scrollView = [[FSPanesNavigationScrollView alloc] init]; // frame will be set in setter of _leftInset
         [_scrollView setDelegate:self];
@@ -116,14 +116,14 @@
     CGFloat portraitScreenWidth = [UIScreen mainScreen].bounds.size.width;
     
     _leftInset = newLeftInset;
-    _pageWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
-    _widePageWidth = portraitScreenWidth - _leftInset;
+    _paneWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
+    _widePaneWidth = portraitScreenWidth - _leftInset;
     
-    if (_widePageWidth <= 0.0f) {
+    if (_widePaneWidth <= 0.0f) {
         NSAssert(NO, @"Left inset is too small!");
     }
     
-    _scrollView.frame = CGRectMake(_leftInset, 0.0, _pageWidth, self.frame.size.height);
+    _scrollView.frame = CGRectMake(_leftInset, 0.0, _paneWidth, self.frame.size.height);
     
     [self _setProperEdgeInset:NO];
 }
@@ -134,12 +134,12 @@
     
     NSEnumerator *enumerator = [[self visiblePanes] reverseObjectEnumerator];
     
-    for (UIView *page in enumerator) {
-        CGRect rect = [_scrollView convertRect:page.frame toView:self];
+    for (UIView *pane in enumerator) {
+        CGRect rect = [_scrollView convertRect:pane.frame toView:self];
         
         if (CGRectContainsPoint(rect, point)) {
-            CGPoint newPoint = [self convertPoint:point toView:page];
-            view = [page hitTest:newPoint withEvent:event];
+            CGPoint newPoint = [self convertPoint:point toView:pane];
+            view = [pane hitTest:newPoint withEvent:event];
             break;
         }
     }
@@ -164,11 +164,11 @@
     NSInteger paneIndex = [_panes count];
     
     CGSize paneSize = [self _calculatePaneSize:newPane];
-    CGPoint paneOrigin = [self _calculateOriginOfPageAtIndex:paneIndex];
+    CGPoint paneOrigin = [self _calculateOriginOfPaneAtIndex:paneIndex];
     CGRect paneFrame = {.origin = paneOrigin, .size = paneSize};
     
     if (fromView == nil) {
-        [self popAllPagesAnimated: animated];
+        [self popAllPanesAnimated: animated];
         paneFrame.origin.x = 0.0f;
     }
     
@@ -190,7 +190,7 @@
     
     [_panes addObject:newPane];
     
-    [self setProperContentSize];
+    [self _setProperContentSize];
     [self _setProperEdgeInset:NO];
     
     [_scrollView addSubview:newPane];
@@ -218,86 +218,77 @@
                          animated:animated];
 }
 
-- (void)popPageAtIndex:(NSInteger)index animated:(BOOL)animated {
-    if ([_panes count] == 0) return;
-    
-    // normalize index - by @dodikk
-    index = [self normalizePageIndex: index];
-    
-    // get item at index
-    __unsafe_unretained FSPaneView *page = [_panes objectAtIndex:index];
-    
-    // check if page is unloaded
-    if (page.isLoaded) {
+- (void)popPaneAtIndex:(NSInteger)index animated:(BOOL)animated
+{
+    if (index >= 0 && index < [_panes count]) {
+        __unsafe_unretained FSPaneView *pane = [_panes objectAtIndex:index];
         
-        if (animated) {
-            // animate pop
-            [UIView animateWithDuration:0.4f 
-                             animations:^ {
-                                 [page setAlpha: 0.0f];
-                             }
-                             completion:^(BOOL finished) {
-                                 [self _unloadPage:page remove:YES];
-                                 [self _setProperEdgeInset: NO];
-                                 // send delegate message
-                                 [self didPopPageAtIndex: index];
-                             }];
-            
-        } else {
-            [self _unloadPage:page remove:YES];
-            [self _setProperEdgeInset: NO];
-            // send delegate message
-            [self didPopPageAtIndex: index];
+        if (pane.isLoaded) {
+            if (animated) {
+                [UIView animateWithDuration:0.4f 
+                                 animations:^ {
+                                     pane.alpha = 0.0f;
+                                 }
+                                 completion:^(BOOL finished) {
+                                     [self _unloadPane:pane remove:YES];
+                                     [self _setProperEdgeInset:NO];
+                                     // send delegate message
+                                     [self didPopPageAtIndex:index];
+                                 }];
+            }
+            else {
+                [self _unloadPane:pane remove:YES];
+                [self _setProperEdgeInset:NO];
+                // send delegate message
+                [self didPopPageAtIndex:index];
+            }
         }
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) popAllPagesAnimated:(BOOL)animated {
-    // index of last page
+- (void)popAllPanesAnimated:(BOOL)animated
+{
+    // index of last pane
     NSUInteger index = [_panes count] - 1;
-    // pop page from back
-    NSEnumerator* enumerator = [_panes reverseObjectEnumerator];
-    // enumarate pages
+    
+    NSEnumerator *enumerator = [_panes reverseObjectEnumerator];
+    
     while ([enumerator nextObject]) {
-        // pop page at index
-        [self popPageAtIndex:index animated:NO];
+        [self popPaneAtIndex:index animated:NO];
         index--;
     }    
     
     [_panes removeAllObjects];
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIView*) loadPageAtIndex:(NSInteger)index {
-    UIView *page = nil; // nil == index out of range
+- (UIView *)loadPaneAtIndex:(NSInteger)index
+{
+    FSPaneView *pane = nil; // nil == index out of range
     
-    // check the page exists
-    if ([self _pageExistAtIndex:index]) {
-        FSPaneView *page = [_panes objectAtIndex:index];
+    if ([self _paneExistsAtIndex:index]) {
+        pane = [_panes objectAtIndex:index];
         
-        // rebuild page if necessery
-        if (page.contentView == nil) {
-            // get page from dataSource
-            UIView* view = [_dataSource cascadeView:self pageAtIndex:index];
+        // rebuild pane if necessery
+        if (pane.contentView == nil) {
+            // get content view from dataSource
+            UIView *view = [_dataSource cascadeView:self pageAtIndex:index];
             
             if (view != nil) {
-                //preventive, set frame
-                CGSize pageSize = [self _calculatePaneSize:page];
-                CGRect pageFrame = CGRectMake(index * _pageWidth, 0.0f, pageSize.width, pageSize.height);
-                page.frame = pageFrame;
+                // preventive, set frame
+                CGSize paneSize = [self _calculatePaneSize:pane];
+                CGRect paneFrame = CGRectMake(index * _paneWidth, 0.0f, paneSize.width, paneSize.height);
+                pane.frame = paneFrame;
                 
-                page.contentView = view;
+                pane.contentView = view;
                 
                 // calculate direction of movement (if move left add view at index 0 else add at last position)
-                if ((_scrollView.contentOffset.x + _scrollView.contentInset.left) > index * _pageWidth) {
+                if ((_scrollView.contentOffset.x + _scrollView.contentInset.left) > index * _paneWidth) {
                     // add subview
-                    [_scrollView insertSubview:page atIndex:0];
+                    [_scrollView insertSubview:pane atIndex:0];
                 }
                 else {
                     // add subview
-                    [_scrollView addSubview:page];
+                    [_scrollView addSubview:pane];
                 }
                 
                 // send delegate
@@ -306,144 +297,101 @@
         }
     }
     
-    return page;
+    return pane;
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) unloadInvisiblePages {
+- (void)unloadInvisiblePanes
+{
+    NSMutableArray *panesToUnload = [NSMutableArray array];
     
-    BOOL canUnload = YES;
+    NSArray *visiblePanes = [self visiblePanes];
     
-    // temp array with pages to unload
-    NSMutableArray* pagesToUnload = [NSMutableArray array];
-    
-    // get array of visible pages
-    NSArray* visiblePages = [self visiblePanes];
-    
-    // if visible page exist in array of pages then can't unload
-    for (FSPaneView *page in _panes) {
-        
-        if (page.isLoaded) {
+    // if visible pane exist in array of panes then can't unload
+    for (FSPaneView *pane in _panes) {
+        BOOL canUnload;
+        if (pane.isLoaded) {
+            canUnload = YES;
             
-            for (UIView* visiblePage in visiblePages) {
-                
-                if (page == visiblePage) {
+            for (UIView *visiblePane in visiblePanes) {
+                if (pane == visiblePane) {
                     canUnload = NO;
                     break;
                 }
             }
-            // if can, add to array - pages to unlaod
+            
             if (canUnload) {
-                [pagesToUnload addObject:page];
+                [panesToUnload addObject:pane];
             } 
-            // set flag to YES
-            canUnload = YES;
         }
     }
     
-    // unload pages
-    // check if page contain in array of visible pages
-    [pagesToUnload enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [self _unloadPage:obj remove:NO];
+    [panesToUnload enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [self _unloadPane:obj remove:NO];
     }];
-    
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)layoutSubviews {
-    /*
-     * dodikk update -  Added size adjustments on layoutSubviews
-     */
-    
+- (void)layoutSubviews
+{
     UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation]; 
     
-    // recalculate pages height and width
-    [self setProperSizesForLoadedPages:interfaceOrientation];
+    [self _setProperSizesForLoadedPanes:interfaceOrientation];
     
     [[self visiblePanes] makeObjectsPerformSelector:@selector(setNeedsLayout)];
 }
 
 - (void)updateContentLayoutToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
-    [self setProperContentSize];
+    [self _setProperContentSize];
     [self _setProperEdgeInset:YES forInterfaceOrientation:interfaceOrientation];
-    // recalculate pages height and width
-    [self setProperSizesForLoadedPages: interfaceOrientation];
+    [self _setProperSizesForLoadedPanes:interfaceOrientation];
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (BOOL) canPopPageAtIndex:(NSInteger)index {
-    NSRange range = {0, [_panes count]};
-    return NSLocationInRange(index, range);
-}
-
-#pragma mark -
-#pragma mark Private methods
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSInteger) indexOfFirstVisibleView:(BOOL)loadIfNeeded {
-    // calculate first visible page
-    NSInteger firstVisiblePageIndex = [self indexOfFirstVisiblePage];
+- (NSInteger)indexOfFirstVisibleView:(BOOL)loadIfNeeded
+{
+    NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
     
-    if ([self _pageExistAtIndex: firstVisiblePageIndex]) {
+    if ([self _paneExistsAtIndex: firstVisiblePaneIndex]) {
         
         if (loadIfNeeded) {
-            // get first visible page
-            FSPaneView* page = [_panes objectAtIndex: firstVisiblePageIndex];
+            // get first visible pane
+            FSPaneView *pane = [_panes objectAtIndex:firstVisiblePaneIndex];
             
             // chceck if is loaded, and load if needed
-            if (page.isLoaded == NO) {
-                [self loadPageAtIndex: firstVisiblePageIndex];
+            if (pane.isLoaded == NO) {
+                [self loadPaneAtIndex:firstVisiblePaneIndex];
             }
         }        
         
-        return firstVisiblePageIndex;
+        return firstVisiblePaneIndex;
     } 
     
     return NSNotFound;
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSInteger) indexOfLastVisibleView:(BOOL)loadIfNeeded {
-    // calculate visible pages count, first visible and last visible page
-    NSInteger visiblePagesCount = [self visiblePagesCount];
-    NSInteger firstVisiblePageIndex = [self indexOfFirstVisiblePage];
-    NSInteger lastVisiblePageIndex = MIN([_panes count]-1, firstVisiblePageIndex + visiblePagesCount -1);
-    return lastVisiblePageIndex;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSInteger) visiblePagesCount {
-    NSInteger firstVisiblePageIndex = [self indexOfFirstVisiblePage];
-    return ceil((_scrollView.contentOffset.x - firstVisiblePageIndex * _pageWidth + _pageWidth - _scrollView.contentInset.right) / _pageWidth) + 1;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSInteger) indexOfFirstVisiblePage {
-    // calculate first visible page
-    CGFloat contentOffset = _scrollView.contentOffset.x;// + _scrollView.contentInset.left;
-    NSInteger index = floor((contentOffset) / _pageWidth);
-    
-    return (index < 0) ? 0 : index;
+- (NSInteger)indexOfLastVisibleView:(BOOL)loadIfNeeded
+{
+    // calculate visible panes count, first visible and last visible pane
+    NSInteger visiblePanesCount = [self _visiblePanesCount];
+    NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
+    NSInteger lastVisiblePaneIndex = MIN([_panes count]-1, firstVisiblePaneIndex + visiblePanesCount -1);
+    return lastVisiblePaneIndex;
 }
 
 - (NSArray *)visiblePanes
 {
     NSMutableArray *visiblePanes = [NSMutableArray arrayWithCapacity:[_panes count]];
     
-    NSInteger firstVisiblePageIndex = [self indexOfFirstVisiblePage];
-    NSInteger visiblePagesCount = [self visiblePagesCount];
+    NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
+    NSInteger visiblePanesCount = [self _visiblePanesCount];
     
-    for (NSInteger i=0; i<=visiblePagesCount + firstVisiblePageIndex - 1; i++) {
-        if ([self _pageExistAtIndex:i]) {
+    for (NSInteger i=0; i<=visiblePanesCount + firstVisiblePaneIndex - 1; i++) {
+        if ([self _paneExistsAtIndex:i]) {
             FSPaneView *pane = [_panes objectAtIndex:i];
             
             if (pane.isLoaded) {
-                if (i < firstVisiblePageIndex) {
+                if (i < firstVisiblePaneIndex) {
                     if (pane.viewSize == FSViewSizeWider) {
                         [visiblePanes addObject:pane];
                     }
@@ -458,71 +406,74 @@
     return visiblePanes;
 }
 
+#pragma mark -
+#pragma mark Private methods
+- (NSInteger)_visiblePanesCount
+{
+    NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
+    return ceil((_scrollView.contentOffset.x - firstVisiblePaneIndex * _paneWidth + _paneWidth - _scrollView.contentInset.right) / _paneWidth) + 1;
+}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) loadBoundaryPagesIfNeeded {
-    FSPaneView* page = nil;
+- (NSInteger)_indexOfFirstVisiblePane
+{
+    // calculate first visible pane
+    CGFloat contentOffset = _scrollView.contentOffset.x;// + _scrollView.contentInset.left;
+    NSInteger index = floor((contentOffset) / _paneWidth);
     
-    // calculate first visible page
-    NSInteger firstVisiblePageIndex = [self indexOfFirstVisiblePage];
+    return (index < 0) ? 0 : index;
+}
+
+- (void)_loadBoundaryPanesIfNeeded
+{
+    FSPaneView *pane = nil;
     
-    if ([self _pageExistAtIndex: firstVisiblePageIndex]) {
-        // get first visible page
-        page = [_panes objectAtIndex: firstVisiblePageIndex];
+    NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
+    
+    if ([self _paneExistsAtIndex:firstVisiblePaneIndex]) {
+        // get first visible pane
+        pane = [_panes objectAtIndex:firstVisiblePaneIndex];
         
         // load if needed
-        if (page.isLoaded == NO) {
-            [self loadPageAtIndex: firstVisiblePageIndex];
+        if (pane.isLoaded == NO) {
+            [self loadPaneAtIndex:firstVisiblePaneIndex];
         }
         
-        // calculate last visible page
-        NSInteger lastVisiblePageIndex = [self indexOfLastVisibleView: NO];
+        NSInteger lastVisiblePaneIndex = [self indexOfLastVisibleView: NO];
         
-        // check if first page is last page    
-        if (lastVisiblePageIndex != firstVisiblePageIndex) {
-            // get last visible page
-            page = [_panes objectAtIndex: lastVisiblePageIndex];
+        if (lastVisiblePaneIndex != firstVisiblePaneIndex) {
+            // get last visible pane
+            pane = [_panes objectAtIndex:lastVisiblePaneIndex];
             
             // load if needed
-            if (page.isLoaded == NO) {
-                [self loadPageAtIndex: lastVisiblePageIndex];
+            if (pane.isLoaded == NO) {
+                [self loadPaneAtIndex:lastVisiblePaneIndex];
             }
         }
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSArray*) pagesOnStock {
+- (NSArray *)_panesOnStock
+{
+    NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
     
-    // clalculate first visible page index
-    NSInteger firstVisiblePageIndex = [self indexOfFirstVisiblePage];
+    NSMutableArray *panesOnStock = [NSMutableArray arrayWithCapacity:[_panes count]];
     
-    // create array
-    NSMutableArray* array = [NSMutableArray array];
-    
-    for (NSInteger i=0; i<=firstVisiblePageIndex; i++) {
-        
-        // check if page index is in bounds 
-        if ([self _pageExistAtIndex: i]) {
-            // get page at index
-            id item = [_panes objectAtIndex: i];
-            
-            // adds all parties, even if they are not loaded
-            [array addObject: item];
+    for (NSInteger i=0; i<=firstVisiblePaneIndex; i++) {
+        if ([self _paneExistsAtIndex:i]) {
+            FSPaneView *pane = [_panes objectAtIndex:i];
+            [panesOnStock addObject: pane];
         }
     }
     
-    // return array of visible pages
-    return array;
+    return panesOnStock;
 }
 
-- (BOOL)_pageExistAtIndex:(NSInteger)index
+- (BOOL)_paneExistsAtIndex:(NSInteger)index
 {
     return index >= 0 && index < [_panes count];
 }
 
-- (void)setProperContentSize
+- (void)_setProperContentSize
 {
 //  CGSizeMake(width, UIInterfaceOrientationIsPortrait(interfaceOrientation) ? self.bounds.size.height : self.bounds.size.height);
     CGFloat width = [self _calculateContentWidth];
@@ -532,7 +483,7 @@
 - (CGFloat)_calculateContentWidth
 {
     NSInteger panesCount = [_panes count] - 1;
-    return panesCount * _pageWidth;
+    return panesCount * _paneWidth;
 }
 
 - (void)_setProperEdgeInset:(BOOL)animated
@@ -562,7 +513,7 @@
     // right inset depends on interface orientation and panes count
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
         if ([_panes count] > 1) {
-            rightInset = 2 * _pageWidth + _leftInset - self.bounds.size.width;
+            rightInset = 2 * _paneWidth + _leftInset - self.bounds.size.width;
         }
         else {
             rightInset = _scrollView.bounds.size.width;
@@ -572,45 +523,39 @@
     return UIEdgeInsetsMake(0.0f, leftInset, 0.0f, rightInset);
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) unloadInvisiblePagesOnStock {
-    // get pages on stock
-    NSArray* array = [self pagesOnStock];
+- (void)_unloadInvisiblePanesOnStock
+{
+    NSArray *panesOnStock = [self _panesOnStock];
     
-    // get lat index of array
-    __block NSUInteger lastIndex = [array count] -1;
+    __block NSUInteger lastIndex = [panesOnStock count] -1;
     
-    // enumerate all pages on stock
-    [array enumerateObjectsUsingBlock:^(FSPaneView* page, NSUInteger idx, BOOL *stop) {
-        // if item is not null and is not last page (first visible page on stock)
-        if ((page.isLoaded) && (idx != lastIndex)) {
-            // unload page
-            [self _unloadPage:page remove:NO];
+    [panesOnStock enumerateObjectsUsingBlock:^(FSPaneView *pane, NSUInteger idx, BOOL *stop) {
+        // if item is loaded and is not last pane (first visible pane on stock)
+        if (pane.isLoaded && idx != lastIndex) {
+            [self _unloadPane:pane remove:NO];
         }
     }];
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (FSPaneView *)_createPaneWithView:(UIView*)view size:(FSViewSize)viewSize {
-    FSPaneView *page = [[FSPaneView alloc] initWithSize:viewSize];
-    page.showRoundedCorners = YES;
-    [page setAutoresizingMask:
+- (FSPaneView *)_createPaneWithView:(UIView*)view size:(FSViewSize)viewSize
+{
+    FSPaneView *pane = [[FSPaneView alloc] initWithSize:viewSize];
+    pane.showRoundedCorners = YES;
+    [pane setAutoresizingMask:
      UIViewAutoresizingFlexibleLeftMargin |
      UIViewAutoresizingFlexibleRightMargin |
      UIViewAutoresizingFlexibleBottomMargin |
      UIViewAutoresizingFlexibleTopMargin |
      UIViewAutoresizingFlexibleWidth |
      UIViewAutoresizingFlexibleHeight];
-    page.contentView = view;
+    pane.contentView = view;
     
-    return page;
+    return pane;
 }
 
-- (void)_unloadPageIfPossible:(NSInteger)index
+- (void)_unloadPaneIfPossible:(NSInteger)index
 {
-    //TODO: USE THIS METHOD INSTEAD OF -UNLOADPAGE: !!! (WHEN APPROPRIATE :)
+    //TODO: USE THIS METHOD INSTEAD OF -UNLOADPANE: !!! (WHEN APPROPRIATE :)
     // (otherwise -visiblePanes: shouldn't include wide views)
     FSPaneView *pane = [_panes objectAtIndex:index];
     
@@ -621,32 +566,25 @@
         
         // unload a pane only if it's not visible
         if (!isPaneVisible) {
-            [self _unloadPage:pane remove:NO];
+            [self _unloadPane:pane remove:NO];
         }
     }
 }
 
-- (void)_unloadPage:(FSPaneView*)page remove:(BOOL)remove {
-    NSUInteger index = [_panes indexOfObject:page];
+- (void)_unloadPane:(FSPaneView*)pane remove:(BOOL)remove {
+    NSUInteger index = [_panes indexOfObject:pane];
     
     if (index != NSNotFound) {
-        [page removeFromSuperview];
-        page.contentView = nil;
+        [pane removeFromSuperview];
+        pane.contentView = nil;
         
         // send message to delegate
-        [self didUnloadPage:page];        
+        [self didUnloadPage:pane];        
         
-        // check if remove
         if (remove) {
-            [_panes removeObject: page];
+            [_panes removeObject:pane];
         }
     }    
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSInteger)normalizePageIndex:(NSInteger)index {
-    return MAX(0, MIN(index, [_panes count] -1));
 }
 
 - (CGSize)_calculatePaneSize:(FSPaneView *)pane
@@ -656,51 +594,47 @@
     
     switch (pane.viewSize) {
         case FSViewSizeNormal:
-            width = _pageWidth;
+            width = _paneWidth;
             break;
         case FSViewSizeWider:
-            width = _widePageWidth;
+            width = _widePaneWidth;
             break;
     }
     
     return CGSizeMake(width, height);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setProperSizesForLoadedPages:(UIInterfaceOrientation)interfaceOrientation {
-    [_panes enumerateObjectsUsingBlock:^(FSPaneView* page, NSUInteger idx, BOOL *stop) {
-        if (page.isLoaded) {
-            UIView* view = (UIView*)page;
-            CGRect rect = view.frame;
-            CGPoint point = [self _calculateOriginOfPageAtIndex: idx];
-            CGSize size = [self _calculatePaneSize: page];
+- (void)_setProperSizesForLoadedPanes:(UIInterfaceOrientation)interfaceOrientation
+{
+    [_panes enumerateObjectsUsingBlock:^(FSPaneView *pane, NSUInteger idx, BOOL *stop) {
+        if (pane.isLoaded) {
+            CGRect rect = pane.frame;
+            CGPoint point = [self _calculateOriginOfPaneAtIndex:idx];
+            CGSize size = [self _calculatePaneSize:pane];
             rect.size = size;
             rect.origin = point;
-            [view setFrame:rect];
-            [view setNeedsLayout];
+            [pane setFrame:rect];
+            [pane setNeedsLayout];
         }
     }];
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setProperPositionOfPageAtIndex:(NSInteger)index {
-    
-    if ([self _pageExistAtIndex: index]) {
-        FSPaneView* page = [_panes objectAtIndex: index]; 
+- (void)_setProperPositionOfPaneAtIndex:(NSInteger)index
+{    
+    if ([self _paneExistsAtIndex:index]) {
+        FSPaneView *pane = [_panes objectAtIndex:index]; 
         
-        if (page.isLoaded) {
-            UIView* page = (UIView*)page;
-            
-            CGRect rect = [page frame];
-            rect.origin = [self _calculateOriginOfPageAtIndex: index];
-            [page setFrame: rect];
+        if (pane.isLoaded) {            
+            CGRect rect = [pane frame];
+            rect.origin = [self _calculateOriginOfPaneAtIndex:index];
+            [pane setFrame:rect];
         }
     }
 }
 
-- (CGPoint)_calculateOriginOfPageAtIndex:(NSInteger)index
+- (CGPoint)_calculateOriginOfPaneAtIndex:(NSInteger)index
 {
-    return CGPointMake(MAX(0, _pageWidth * index), 0.0f);
+    return CGPointMake(MAX(0, _paneWidth * index), 0.0f);
 }
 
 #pragma mark -
@@ -713,21 +647,21 @@
     
     if ([_panes count] == 0) return;
     
-    // operations connected with Pull To Detach Pages action
+    // operations connected with Pull To Detach Panes action
     [self sendDetachDelegateMethodsIfNeeded];
     
-    // operations connected with Page Did Appear/Disappear delegate metgods
+    // operations connected with Pane Did Appear/Disappear delegate metgods
     [self sendAppearanceDelegateMethodsIfNeeded];
     
-    if (_flags.isDetachPages) return;
+    if (_flags.isDetachPanes) return;
     
-    // calculate first visible page
-    NSInteger firstVisiblePageIndex = [self indexOfFirstVisiblePage];
+    // calculate first visible pane
+    NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
     
-    // bug fix with bad position of first page
-    if ((firstVisiblePageIndex == 0) && (-_scrollView.contentOffset.x >= _scrollView.contentInset.left)) {
-        // get page at index
-        FSPaneView *pane = [_panes objectAtIndex:firstVisiblePageIndex];
+    // bug fix with bad position of first pane
+    if ((firstVisiblePaneIndex == 0) && (-_scrollView.contentOffset.x >= _scrollView.contentInset.left)) {
+        // get pane at index
+        FSPaneView *pane = [_panes objectAtIndex:firstVisiblePaneIndex];
         if (pane.isLoaded) {
             CGRect rect = [pane frame];
             rect.origin.x = 0;
@@ -735,15 +669,15 @@
         }
     }
     
-    [self loadBoundaryPagesIfNeeded];    
+    [self _loadBoundaryPanesIfNeeded];    
     
-    // operations connected with blocking pages on stock
-    for (NSInteger i=0; i<=firstVisiblePageIndex; i++) {
-        // check if page index is in bounds
-        if ([self _pageExistAtIndex:i]) {
+    // operations connected with blocking panes on stock
+    for (NSInteger i=0; i<=firstVisiblePaneIndex; i++) {
+        // check if pane index is in bounds
+        if ([self _paneExistsAtIndex:i]) {
             FSPaneView *pane = [_panes objectAtIndex:i];
             
-            if (i == firstVisiblePageIndex) {
+            if (i == firstVisiblePaneIndex) {
                 CGFloat contentOffset = _scrollView.contentOffset.x;
                 
                 if (((i == 0) && (contentOffset <= 0)) || ([_panes count] == 1)) {
@@ -758,7 +692,7 @@
                 
             } else {
                 if (pane.isLoaded) {
-                    [self _unloadPage:pane remove:NO];
+                    [self _unloadPane:pane remove:NO];
                 }
             }
         }
@@ -777,7 +711,7 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    if (_flags.isDetachPages) _flags.isDetachPages = NO;
+    if (_flags.isDetachPanes) _flags.isDetachPanes = NO;
     
 #ifdef CONTESTED_CASE
     [_scrollView setPagingEnabled: NO];
@@ -798,11 +732,11 @@
 {
     CGFloat realContentOffsetX = _scrollView.contentOffset.x + _scrollView.contentInset.left;
     
-    if ((_flags.willDetachPages) && (realContentOffsetX < - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
+    if ((_flags.willDetachPanes) && (realContentOffsetX < - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
         [self didPullToDetachPages];
     }
     
-    if ((_flags.willDetachPages) && (realContentOffsetX > - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
+    if ((_flags.willDetachPanes) && (realContentOffsetX > - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
         [self didCancelPullToDetachPages];
     }
 }
@@ -811,8 +745,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
     
-    NSInteger secondVisiblePageIndex = [self indexOfFirstVisiblePage] + 1;
-    [self setProperPositionOfPageAtIndex: secondVisiblePageIndex];
+    NSInteger secondVisiblePaneIndex = [self _indexOfFirstVisiblePane] + 1;
+    [self _setProperPositionOfPaneAtIndex: secondVisiblePaneIndex];
 }
 
 #pragma mark -
@@ -852,7 +786,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) pageDidAppearAtIndex:(NSInteger)index {
-    if (![self _pageExistAtIndex: index]) return;
+    if (![self _paneExistsAtIndex: index]) return;
     
     //    NSInteger secondVisiblePageIndex = [self indexOfFirstVisiblePage] +1;
     //    [self setProperPositionOfPageAtIndex: secondVisiblePageIndex];
@@ -865,7 +799,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) pageDidDisappearAtIndex:(NSInteger)index {
-    if (![self _pageExistAtIndex: index]) return;
+    if (![self _paneExistsAtIndex: index]) return;
     
     if ([_delegate respondsToSelector:@selector(cascadeView:pageDidDisappearAtIndex:)]) {
         [_delegate cascadeView:self pageDidDisappearAtIndex:index];
@@ -875,7 +809,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) didStartPullingToDetachPages {
-    _flags.willDetachPages = YES;
+    _flags.willDetachPanes = YES;
     if ([_delegate respondsToSelector:@selector(cascadeViewDidStartPullingToDetachPages:)]) {
         [_delegate cascadeViewDidStartPullingToDetachPages:self];
     }
@@ -884,19 +818,19 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) didPullToDetachPages {
-    _flags.willDetachPages = NO;
-    _flags.isDetachPages = YES;
+    _flags.willDetachPanes = NO;
+    _flags.isDetachPanes = YES;
     if ([_delegate respondsToSelector:@selector(cascadeViewDidPullToDetachPages:)]) {
         [_delegate cascadeViewDidPullToDetachPages:self];
     }
     
-    [self performSelector:@selector(setProperContentSize) withObject:nil afterDelay:0.3];
+    [self performSelector:@selector(_setProperContentSize) withObject:nil afterDelay:0.3];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) didCancelPullToDetachPages {
-    _flags.willDetachPages = NO;
+    _flags.willDetachPanes = NO;
     if ([_delegate respondsToSelector:@selector(cascadeViewDidCancelPullToDetachPages:)]) {
         [_delegate cascadeViewDidCancelPullToDetachPages:self];
     }
@@ -906,27 +840,27 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) sendAppearanceDelegateMethodsIfNeeded {
     // calculate first visible page
-    NSInteger firstVisiblePageIndex = [self indexOfFirstVisiblePage];
+    NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
     
-    if (_indexOfFirstVisiblePage > firstVisiblePageIndex) {
-        [self pageDidAppearAtIndex: firstVisiblePageIndex];
-        _indexOfFirstVisiblePage = firstVisiblePageIndex;
+    if (_indexOfFirstVisiblePane > firstVisiblePaneIndex) {
+        [self pageDidAppearAtIndex: firstVisiblePaneIndex];
+        _indexOfFirstVisiblePane = firstVisiblePaneIndex;
     }
-    else if (_indexOfFirstVisiblePage < firstVisiblePageIndex) {
-        [self pageDidDisappearAtIndex: _indexOfFirstVisiblePage];
-        _indexOfFirstVisiblePage = firstVisiblePageIndex;
+    else if (_indexOfFirstVisiblePane < firstVisiblePaneIndex) {
+        [self pageDidDisappearAtIndex: _indexOfFirstVisiblePane];
+        _indexOfFirstVisiblePane = firstVisiblePaneIndex;
     }
     
     // calculate last visible page
-    NSInteger lastVisiblePageIndex = [self indexOfLastVisibleView: NO];
+    NSInteger lastVisiblePaneIndex = [self indexOfLastVisibleView: NO];
     
-    if (_indexOfLastVisiblePage < lastVisiblePageIndex) {
-        [self pageDidAppearAtIndex: lastVisiblePageIndex];
-        _indexOfLastVisiblePage = lastVisiblePageIndex;
+    if (_indexOfLastVisiblePane < lastVisiblePaneIndex) {
+        [self pageDidAppearAtIndex: lastVisiblePaneIndex];
+        _indexOfLastVisiblePane = lastVisiblePaneIndex;
     }
-    else if (_indexOfLastVisiblePage > lastVisiblePageIndex) {
-        [self pageDidDisappearAtIndex: _indexOfLastVisiblePage];
-        _indexOfLastVisiblePage = lastVisiblePageIndex;
+    else if (_indexOfLastVisiblePane > lastVisiblePaneIndex) {
+        [self pageDidDisappearAtIndex: _indexOfLastVisiblePane];
+        _indexOfLastVisiblePane = lastVisiblePaneIndex;
     }
 }
 
@@ -936,12 +870,12 @@
 {
     CGFloat realContentOffsetX = _scrollView.contentOffset.x + _scrollView.contentInset.left;
     
-    if (!_flags.isDetachPages) {
-        if ((!_flags.willDetachPages) && (realContentOffsetX < - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
+    if (!_flags.isDetachPanes) {
+        if ((!_flags.willDetachPanes) && (realContentOffsetX < - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
             [self didStartPullingToDetachPages];
         }
         
-        if ((_flags.willDetachPages) && (realContentOffsetX > - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
+        if ((_flags.willDetachPanes) && (realContentOffsetX > - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
             [self didCancelPullToDetachPages];
         }
     }

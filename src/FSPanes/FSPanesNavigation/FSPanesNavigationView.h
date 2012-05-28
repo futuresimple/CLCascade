@@ -31,18 +31,18 @@
     
 @private
     // sizes
-    CGFloat _pageWidth;
-    CGFloat _widePageWidth;
+    CGFloat _paneWidth;
+    CGFloat _widePaneWidth;
     CGFloat _leftInset;
     CGFloat _widerLeftInset;
     
     struct {
-        unsigned int willDetachPages:1;
-        unsigned int isDetachPages:1;
+        unsigned int willDetachPanes:1;
+        unsigned int isDetachPanes:1;
     } _flags;
     
-    NSInteger _indexOfFirstVisiblePage;
-    NSInteger _indexOfLastVisiblePage;
+    NSInteger _indexOfFirstVisiblePane;
+    NSInteger _indexOfLastVisiblePane;
 }
 
 @property(nonatomic, unsafe_unretained) id<FSPanesNavigationViewDelegate> delegate;
@@ -59,23 +59,22 @@
  */
 @property(nonatomic) CGFloat widerLeftInset;
 
-- (void) pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated;
-- (void) pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
+- (void)pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated;
+- (void)pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
 
-- (void) popPageAtIndex:(NSInteger)index animated:(BOOL)animated;
-- (void) popAllPagesAnimated:(BOOL)animated;
+- (void)popPaneAtIndex:(NSInteger)index animated:(BOOL)animated;
+- (void)popAllPanesAnimated:(BOOL)animated;
 
-- (UIView*) loadPageAtIndex:(NSInteger)index;
+- (UIView *)loadPaneAtIndex:(NSInteger)index;
 
-- (void) unloadInvisiblePages;
+- (void)unloadInvisiblePanes;
 
-- (NSInteger) indexOfFirstVisibleView:(BOOL)loadIfNeeded;
-- (NSInteger) indexOfLastVisibleView:(BOOL)loadIfNeeded;
+- (NSInteger)indexOfFirstVisibleView:(BOOL)loadIfNeeded;
+- (NSInteger)indexOfLastVisibleView:(BOOL)loadIfNeeded;
 - (NSArray *)visiblePanes;
 
 - (void)updateContentLayoutToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration;
 
-- (BOOL) canPopPageAtIndex:(NSInteger)index; // @dodikk
 @end
 
 @protocol FSPanesNavigationViewDataSource <NSObject>

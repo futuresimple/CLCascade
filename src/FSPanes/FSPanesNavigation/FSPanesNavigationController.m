@@ -38,7 +38,7 @@
     [super didReceiveMemoryWarning];
     
     // unload all invisible pages in cascadeView
-    [_navigationView unloadInvisiblePages];
+    [_navigationView unloadInvisiblePanes];
 }
 
 #pragma mark - View lifecycle
@@ -209,9 +209,6 @@
     
     // pop page from back
     [self popPagesFromLastIndexTo:0];
-    //load first page
-    [cascadeView loadPageAtIndex:0];
-    
 }
 
 
@@ -234,7 +231,7 @@
 - (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated viewSize:(FSViewSize)viewSize
 {
     // pop all pages
-    [_navigationView popAllPagesAnimated: NO];
+    [_navigationView popAllPanesAnimated: NO];
     // remove all controllers
     [self removeAllPageViewControllers];
     // add root view controller
@@ -334,38 +331,31 @@
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) popPagesFromLastIndexTo:(NSInteger)toIndex {
-    NSUInteger count = [self.childViewControllers count];
+- (void)popPagesFromLastIndexTo:(NSInteger)toIndex
+{
+    NSUInteger childControllersCount = [self.childViewControllers count];
     
-    if (count == 0) {
-        return;
-    }
-    
-    if (toIndex < 0) toIndex = 0;
-    
-    // index of last page
-    NSUInteger index = count - 1;
-    // pop page from back
-    NSEnumerator* enumerator = [self.childViewControllers reverseObjectEnumerator];
-    // enumarate pages
-    while ([enumerator nextObject] && self.childViewControllers.count > toIndex+1) {
-        if (![_navigationView canPopPageAtIndex: index]) {
-            //dodikk - maybe break fits better
-            continue;
+    if (childControllersCount > 0) {
+        if (toIndex < 0) {
+            toIndex = 0;
         }
         
-        UIViewController* viewController = [self.childViewControllers objectAtIndex:index];
-        [viewController willMoveToParentViewController:nil];
+        // index of last page
+        NSUInteger index = childControllersCount - 1;
         
-        // pop page at index
-        [_navigationView popPageAtIndex:index animated:NO];
+        NSEnumerator *enumerator = [self.childViewControllers reverseObjectEnumerator];
         
-        [viewController removeFromParentViewController];
-        
-        index--;
-    }
-    
+        while ([enumerator nextObject] && self.childViewControllers.count > toIndex+1) {
+            UIViewController *viewController = [self.childViewControllers objectAtIndex:index];
+            [viewController willMoveToParentViewController:nil];
+            
+            [_navigationView popPaneAtIndex:index animated:NO];
+            
+            [viewController removeFromParentViewController];
+            
+            index--;
+        }
+    }    
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
