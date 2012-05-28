@@ -17,25 +17,25 @@
 
 @interface FSPaneView : UIView
 
-@property (nonatomic, strong) IBOutlet UIView *headerView;
-@property (nonatomic, strong) IBOutlet UIView *contentView;
-@property (nonatomic, strong) IBOutlet UIView *footerView;
+@property (strong, nonatomic) IBOutlet UIView *headerView;
+@property (strong, nonatomic) IBOutlet UIView *contentView;
+@property (strong, nonatomic) IBOutlet UIView *footerView;
 
-@property CGFloat shadowWidth;
+@property (nonatomic) CGFloat shadowWidth;
 
 /** X-axis shadow offset. Default is 0.0f. */
-@property CGFloat shadowOffset;
+@property (nonatomic) CGFloat shadowOffset;
 
 /** Set YES if you want rounded corners. Default is NO. */
-@property BOOL showRoundedCorners;
+@property (nonatomic) BOOL showRoundedCorners;
 
 /** Type of rect corners. Default UIRectCornerAllCorners. */
-@property UIRectCorner rectCorner;
+@property (nonatomic) UIRectCorner rectCorner;
 
 /** @return YES if loaded within container hierarchy, othwerise NO. */
 @property (readonly) BOOL isLoaded;
 
-@property FSViewSize viewSize;
+@property (nonatomic) FSViewSize viewSize;
 
 - (id)initWithSize:(FSViewSize)size;
 

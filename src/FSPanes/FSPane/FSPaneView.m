@@ -43,7 +43,7 @@
     if (self = [super init]) {
         _roundedCornersView = [[UIView alloc] init];
         [_roundedCornersView setBackgroundColor:[UIColor clearColor]];
-        [self addSubview: _roundedCornersView];
+        [self addSubview:_roundedCornersView];
         
         _viewSize = size;
         _rectCorner = UIRectCornerAllCorners;
@@ -62,18 +62,9 @@
     return [self initWithSize:FSViewSizeNormal];
 }
 
-- (void)dealloc
-{
-    _footerView = nil;
-    _headerView = nil;
-    _contentView = nil;
-    _roundedCornersView = nil;
-    _shadowView = nil;
-}
-
 #pragma mark Custom accessors
 
-- (void) setContentView:(UIView *)contentView
+- (void)setContentView:(UIView *)contentView
 {
     if (_contentView != contentView) {
         [_contentView removeFromSuperview];
@@ -152,7 +143,7 @@
 
 - (void)addLeftBorderShadowView:(UIView *)view withWidth:(CGFloat)width
 {
-    [self setClipsToBounds: NO];
+    self.clipsToBounds = NO;
     
     if (_shadowWidth != width) {
         _shadowWidth = width;
@@ -182,7 +173,7 @@
     if (_showRoundedCorners) {
         CGRect toolbarBounds = self.bounds;
         CAShapeLayer *maskLayer = [CAShapeLayer layer];
-        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect: toolbarBounds
+        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:toolbarBounds
                                                    byRoundingCorners:_rectCorner
                                                          cornerRadii:CGSizeMake(6.0f, 6.0f)];
         [maskLayer setPath:[path CGPath]];
@@ -192,7 +183,7 @@
     } 
     else {
         _roundedCornersView.layer.masksToBounds = NO;
-        [_roundedCornersView.layer setMask: nil];
+        _roundedCornersView.layer.mask = nil;
     }
 }
 
@@ -202,30 +193,30 @@
     
     CGFloat viewWidth = rect.size.width;
     CGFloat viewHeight = rect.size.height;
-    CGFloat headerHeight = 0.0;
-    CGFloat footerHeight = 0.0;
+    CGFloat headerHeight = 0.0f;
+    CGFloat footerHeight = 0.0f;
     
     _roundedCornersView.frame = rect;
     
     if (_headerView) {
         headerHeight = _headerView.frame.size.height;
         
-        CGRect newHeaderViewFrame = CGRectMake(0.0, 0.0, viewWidth, headerHeight);
-        [_headerView setFrame: newHeaderViewFrame];
+        CGRect newHeaderViewFrame = CGRectMake(0.0f, 0.0f, viewWidth, headerHeight);
+        _headerView.frame = newHeaderViewFrame;
     }
     
     if (_footerView) {
         footerHeight = _footerView.frame.size.height;
         CGFloat footerY = viewHeight - footerHeight;
         
-        CGRect newFooterViewFrame = CGRectMake(0.0, footerY, viewWidth, footerHeight);
-        [_footerView setFrame: newFooterViewFrame];
+        CGRect newFooterViewFrame = CGRectMake(0.0f, footerY, viewWidth, footerHeight);
+        _footerView.frame = newFooterViewFrame;
     }
     
-    [_contentView setFrame: CGRectMake(0.0, headerHeight, viewWidth, viewHeight - headerHeight - footerHeight)];
+    _contentView.frame = CGRectMake(0.0f, headerHeight, viewWidth, viewHeight - headerHeight - footerHeight);
     
     if (_shadowView) {
-        CGRect shadowFrame = CGRectMake(0 - _shadowWidth + _shadowOffset, 0.0, _shadowWidth, rect.size.height);
+        CGRect shadowFrame = CGRectMake(0.0f - _shadowWidth + _shadowOffset, 0.0f, _shadowWidth, rect.size.height);
         _shadowView.frame = shadowFrame;
     }
     
