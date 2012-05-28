@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		95353C27156D68FD003B78FB /* FSPaneBorderShadowView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C1D156D68FD003B78FB /* FSPaneBorderShadowView.h */; };
 		95353C28156D68FD003B78FB /* FSPaneBorderShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C1E156D68FD003B78FB /* FSPaneBorderShadowView.m */; };
-		95353C2B156D68FD003B78FB /* FSPaneView+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C21156D68FD003B78FB /* FSPaneView+Extension.h */; };
-		95353C2C156D68FD003B78FB /* FSPaneView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C22156D68FD003B78FB /* FSPaneView+Extension.m */; };
 		95353C2D156D68FD003B78FB /* FSPaneView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C23156D68FD003B78FB /* FSPaneView.h */; };
 		95353C2E156D68FD003B78FB /* FSPaneView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C24156D68FD003B78FB /* FSPaneView.m */; };
 		95353C2F156D68FD003B78FB /* UIViewController+FSPaneView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C25156D68FD003B78FB /* UIViewController+FSPaneView.h */; };
@@ -39,8 +37,6 @@
 /* Begin PBXFileReference section */
 		95353C1D156D68FD003B78FB /* FSPaneBorderShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPaneBorderShadowView.h; sourceTree = "<group>"; };
 		95353C1E156D68FD003B78FB /* FSPaneBorderShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSPaneBorderShadowView.m; sourceTree = "<group>"; };
-		95353C21156D68FD003B78FB /* FSPaneView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FSPaneView+Extension.h"; sourceTree = "<group>"; };
-		95353C22156D68FD003B78FB /* FSPaneView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FSPaneView+Extension.m"; sourceTree = "<group>"; };
 		95353C23156D68FD003B78FB /* FSPaneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPaneView.h; sourceTree = "<group>"; };
 		95353C24156D68FD003B78FB /* FSPaneView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSPaneView.m; sourceTree = "<group>"; };
 		95353C25156D68FD003B78FB /* UIViewController+FSPaneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+FSPaneView.h"; sourceTree = "<group>"; };
@@ -86,8 +82,6 @@
 			children = (
 				95353C1D156D68FD003B78FB /* FSPaneBorderShadowView.h */,
 				95353C1E156D68FD003B78FB /* FSPaneBorderShadowView.m */,
-				95353C21156D68FD003B78FB /* FSPaneView+Extension.h */,
-				95353C22156D68FD003B78FB /* FSPaneView+Extension.m */,
 				95353C23156D68FD003B78FB /* FSPaneView.h */,
 				95353C24156D68FD003B78FB /* FSPaneView.m */,
 				95353C25156D68FD003B78FB /* UIViewController+FSPaneView.h */,
@@ -190,7 +184,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				95353C27156D68FD003B78FB /* FSPaneBorderShadowView.h in Headers */,
-				95353C2B156D68FD003B78FB /* FSPaneView+Extension.h in Headers */,
 				95353C2D156D68FD003B78FB /* FSPaneView.h in Headers */,
 				95353C2F156D68FD003B78FB /* UIViewController+FSPaneView.h in Headers */,
 				95353C36156D6907003B78FB /* FSPanesMenuView.h in Headers */,
@@ -257,7 +250,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				95353C28156D68FD003B78FB /* FSPaneBorderShadowView.m in Sources */,
-				95353C2C156D68FD003B78FB /* FSPaneView+Extension.m in Sources */,
 				95353C2E156D68FD003B78FB /* FSPaneView.m in Sources */,
 				95353C30156D68FD003B78FB /* UIViewController+FSPaneView.m in Sources */,
 				95353C37156D6907003B78FB /* FSPanesMenuView.m in Sources */,
