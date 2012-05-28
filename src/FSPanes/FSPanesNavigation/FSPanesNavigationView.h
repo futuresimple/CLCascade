@@ -27,7 +27,7 @@
     FSPanesNavigationScrollView *_scrollView;
     
     // contain all pages, if page is unloaded then page is respresented as [NSNull null]
-    NSMutableArray *_pages;
+    NSMutableArray *_panes;
     
 @private
     // sizes
@@ -73,7 +73,7 @@
 - (NSInteger) indexOfLastVisibleView:(BOOL)loadIfNeeded;
 - (NSArray *)visiblePanes;
 
-- (void) updateContentLayoutToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration;
+- (void)updateContentLayoutToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration;
 
 - (BOOL) canPopPageAtIndex:(NSInteger)index; // @dodikk
 @end
