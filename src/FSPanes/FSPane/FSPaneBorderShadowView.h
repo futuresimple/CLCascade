@@ -15,4 +15,7 @@
 
 @interface FSPaneBorderShadowView : UIView
 
+- (id)initForLeftSide;
+- (id)initForRightSide;
+
 @end
