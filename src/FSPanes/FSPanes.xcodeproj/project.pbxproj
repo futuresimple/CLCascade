@@ -30,6 +30,8 @@
 		95353C53156D6934003B78FB /* UIViewController+FSPanes.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C51156D6934003B78FB /* UIViewController+FSPanes.h */; };
 		95353C54156D6934003B78FB /* UIViewController+FSPanes.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C52156D6934003B78FB /* UIViewController+FSPanes.m */; };
 		B6EA8CB01456D25200817157 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6EA8CAF1456D25200817157 /* Foundation.framework */; };
+		F96528691574CFB7006BE030 /* FSPanesNavigationItem.h in Headers */ = {isa = PBXBuildFile; fileRef = F96528671574CFB7006BE030 /* FSPanesNavigationItem.h */; };
+		F965286A1574CFB7006BE030 /* FSPanesNavigationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F96528681574CFB7006BE030 /* FSPanesNavigationItem.m */; };
 		F9D6C36A156FBA2900A6B916 /* FSPanesNavigationScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = F9D6C368156FBA2900A6B916 /* FSPanesNavigationScrollView.h */; };
 		F9D6C36B156FBA2900A6B916 /* FSPanesNavigationScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F9D6C369156FBA2900A6B916 /* FSPanesNavigationScrollView.m */; };
 /* End PBXBuildFile section */
@@ -61,6 +63,8 @@
 		B6EA8CAC1456D25200817157 /* libFSPanes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFSPanes.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6EA8CAF1456D25200817157 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B6EA8CB31456D25200817157 /* FSPanes-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FSPanes-Prefix.pch"; sourceTree = "<group>"; };
+		F96528671574CFB7006BE030 /* FSPanesNavigationItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPanesNavigationItem.h; sourceTree = "<group>"; };
+		F96528681574CFB7006BE030 /* FSPanesNavigationItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSPanesNavigationItem.m; sourceTree = "<group>"; };
 		F9D6C368156FBA2900A6B916 /* FSPanesNavigationScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPanesNavigationScrollView.h; sourceTree = "<group>"; };
 		F9D6C369156FBA2900A6B916 /* FSPanesNavigationScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSPanesNavigationScrollView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,6 +114,8 @@
 				F9D6C369156FBA2900A6B916 /* FSPanesNavigationScrollView.m */,
 				95353C3D156D690F003B78FB /* FSPanesNavigationView.h */,
 				95353C3E156D690F003B78FB /* FSPanesNavigationView.m */,
+				F96528671574CFB7006BE030 /* FSPanesNavigationItem.h */,
+				F96528681574CFB7006BE030 /* FSPanesNavigationItem.m */,
 			);
 			path = FSPanesNavigation;
 			sourceTree = SOURCE_ROOT;
@@ -196,6 +202,7 @@
 				95353C50156D6928003B78FB /* FSPanes.h in Headers */,
 				95353C53156D6934003B78FB /* UIViewController+FSPanes.h in Headers */,
 				F9D6C36A156FBA2900A6B916 /* FSPanesNavigationScrollView.h in Headers */,
+				F96528691574CFB7006BE030 /* FSPanesNavigationItem.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,6 +267,7 @@
 				95353C4C156D6915003B78FB /* FSPanesSplitViewController.m in Sources */,
 				95353C54156D6934003B78FB /* UIViewController+FSPanes.m in Sources */,
 				F9D6C36B156FBA2900A6B916 /* FSPanesNavigationScrollView.m in Sources */,
+				F965286A1574CFB7006BE030 /* FSPanesNavigationItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

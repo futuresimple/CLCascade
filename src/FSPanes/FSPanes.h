@@ -15,6 +15,7 @@
 #import <FSPanes/FSPanesNavigation/FSPanesNavigationController.h>
 #import <FSPanes/FSPanesNavigation/FSPanesNavigationScrollView.h>
 #import <FSPanes/FSPanesNavigation/FSPanesNavigationView.h>
+#import <FSPanes/FSPanesNavigation/FSPanesNavigationItem.h>
 
 #import <FSPanes/FSPanesMenu/FSPanesMenuViewController.h>
 #import <FSPanes/FSPanesMenu/FSPanesMenuView.h>
