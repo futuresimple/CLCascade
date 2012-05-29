@@ -120,48 +120,40 @@
 
 #pragma mark -
 #pragma marl CLCascadeViewDataSource
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIView*) cascadeView:(FSPanesNavigationView *)cascadeView pageAtIndex:(NSInteger)index {
+- (UIView *)navigationView:(FSPanesNavigationView *)navigationView viewAtIndex:(NSInteger)index
+{
     return [[self.childViewControllers objectAtIndex:index] view];    
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSInteger) numberOfPagesInCascadeView:(FSPanesNavigationView*)cascadeView {
+- (NSInteger)numberOfPanesInCascadeView:(FSPanesNavigationView *)navigationView
+{
     return [self.childViewControllers count];
 }
 
-
 #pragma mark -
 #pragma marl CLCascadeViewDelegate
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(FSPanesNavigationView*)cascadeView didLoadPage:(UIView*)page {
+- (void)cascadeView:(FSPanesNavigationView *)navigationView didLoadPane:(UIView *)pane
+{
     
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(FSPanesNavigationView*)cascadeView didUnloadPage:(UIView*)page {
+- (void)cascadeView:(FSPanesNavigationView *)navigationView didUnloadPane:(UIView *)pane
+{
     
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(FSPanesNavigationView*)cascadeView didAddPage:(UIView*)page animated:(BOOL)animated {
+- (void)cascadeView:(FSPanesNavigationView *)navigationView didAddPane:(UIView *)pane animated:(BOOL)animated
+{
     
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(FSPanesNavigationView*)cascadeView didPopPageAtIndex:(NSInteger)index {
+- (void)cascadeView:(FSPanesNavigationView *)navigationView didPopPaneAtIndex:(NSInteger)index
+{
     
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(FSPanesNavigationView*)cascadeView pageDidAppearAtIndex:(NSInteger)index {
+- (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidAppearAtIndex:(NSInteger)index
+{
     if (index > [self.childViewControllers count] - 1) return;
     
     //TODO: Decide whether we want to send -viewDidAppear: here or not
@@ -173,9 +165,8 @@
     [self addPagesRoundedCorners];
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeView:(FSPanesNavigationView*)cascadeView pageDidDisappearAtIndex:(NSInteger)index {
+- (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidDisappearAtIndex:(NSInteger)index
+{
     if (index > [self.childViewControllers count] - 1) return;
     
     //TODO: Decide whether we want to send -viewDidDisappear: here or not
@@ -187,40 +178,32 @@
     [self addPagesRoundedCorners];
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeViewDidStartPullingToDetachPages:(FSPanesNavigationView*)cascadeView {
+- (void)navigationViewDidStartPullingToDetachPanes:(FSPanesNavigationView *)navigationView
+{
     /*
      Override this methods to implement own actions, animations
      */
-    
-    NSLog(@"cascadeViewDidStartPullingToDetachPages");
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeViewDidPullToDetachPages:(FSPanesNavigationView*)cascadeView {
+- (void)navigationViewDidPullToDetachPanes:(FSPanesNavigationView *)navigationView
+{
     /*
      Override this methods to implement own actions, animations
      */
-    NSLog(@"cascadeViewDidPullToDetachPages");
     
     // pop page from back
     [self popPagesFromLastIndexTo:0];
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) cascadeViewDidCancelPullToDetachPages:(FSPanesNavigationView*)cascadeView {
+- (void)navigationViewDidCancelPullToDetachPanes:(FSPanesNavigationView *)navigationView
+{
     /*
      Override this methods to implement own actions, animations
      */
-    NSLog(@"cascadeViewDidCancelPullToDetachPages");
 }
 
 #pragma mark -
 #pragma mark Calss methods
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated {
     [self setRootViewController:viewController animated:animated viewSize:FSViewSizeNormal];

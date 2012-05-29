@@ -19,10 +19,10 @@
 #define PULL_TO_DETACH_FACTOR 0.32f
 
 @interface FSPanesNavigationView (DelegateMethods)
-- (void)didLoadPane:(UIView*)page;
-- (void)didAddPane:(UIView*)page animated:(BOOL)animated;
+- (void)didLoadPane:(FSPaneView *)pane;
+- (void)didAddPane:(FSPaneView *)pane animated:(BOOL)animated;
 - (void)didPopPaneAtIndex:(NSInteger)index;
-- (void)didUnloadPane:(UIView*)page;
+- (void)didUnloadPane:(FSPaneView *)pane;
 - (void)paneDidAppearAtIndex:(NSInteger)index;
 - (void)paneDidDisappearAtIndex:(NSInteger)index;
 - (void)didStartPullingToDetachPanes;
@@ -300,24 +300,21 @@
 {
     NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
     
-    if ([self _paneExistsAtIndex: firstVisiblePaneIndex]) {
-        
+    if ([self _paneExistsAtIndex:firstVisiblePaneIndex]) {
         if (loadIfNeeded) {
-            // get first visible pane
             FSPaneView *pane = [_panes objectAtIndex:firstVisiblePaneIndex];
             
-            // chceck if is loaded, and load if needed
             if (pane.isLoaded == NO) {
                 [self _loadPaneAtIndex:firstVisiblePaneIndex];
             }
-        }        
-        
-        return firstVisiblePaneIndex;
-    } 
+        }
+    }
+    else {
+        firstVisiblePaneIndex = NSNotFound;
+    }
     
-    return NSNotFound;
+    return firstVisiblePaneIndex;
 }
-
 
 - (NSInteger)indexOfLastVisibleView:(BOOL)loadIfNeeded
 {
@@ -518,7 +515,7 @@
         
         // rebuild pane if necessery
         if (pane.contentView == nil) {
-            UIView *contentView = [_dataSource cascadeView:self pageAtIndex:index];
+            UIView *contentView = [_dataSource navigationView:self viewAtIndex:index];
             
             if (contentView != nil) {
                 // preventive, set frame
@@ -707,31 +704,31 @@
 
 #pragma mark -
 #pragma mark FSPanesNavigationView (DelegateMethods)
-- (void)didLoadPane:(UIView*)pane
+- (void)didLoadPane:(FSPaneView *)pane
 {
-    if ([_delegate respondsToSelector:@selector(cascadeView:didLoadPage:)]) {
-        [_delegate cascadeView:self didLoadPage:pane];
+    if ([_delegate respondsToSelector:@selector(cascadeView:didLoadPane:)]) {
+        [_delegate cascadeView:self didLoadPane:pane];
     }
 }
 
-- (void)didAddPane:(UIView*)pane animated:(BOOL)animated
+- (void)didAddPane:(FSPaneView *)pane animated:(BOOL)animated
 {
-    if ([_delegate respondsToSelector:@selector(cascadeView:didAddPage:animated:)]) {
-        [_delegate cascadeView:self didAddPage:pane animated:YES];
+    if ([_delegate respondsToSelector:@selector(cascadeView:didAddPane:animated:)]) {
+        [_delegate cascadeView:self didAddPane:pane animated:YES];
     }
 }
 
 - (void)didPopPaneAtIndex:(NSInteger)index
 {
-    if ([_delegate respondsToSelector:@selector(cascadeView:didPopPageAtIndex:)]) {
-        [_delegate cascadeView:self didPopPageAtIndex:index];
+    if ([_delegate respondsToSelector:@selector(cascadeView:didPopPaneAtIndex:)]) {
+        [_delegate cascadeView:self didPopPaneAtIndex:index];
     }
 }
 
-- (void)didUnloadPane:(UIView*)pane
+- (void)didUnloadPane:(FSPaneView *)pane
 {
-    if ([_delegate respondsToSelector:@selector(cascadeView:didUnloadPage:)]) {
-        [_delegate cascadeView:self didUnloadPage:pane];
+    if ([_delegate respondsToSelector:@selector(cascadeView:didUnloadPane:)]) {
+        [_delegate cascadeView:self didUnloadPane:pane];
     }
 }
 
@@ -742,8 +739,8 @@
         //    NSInteger secondVisiblePageIndex = [self indexOfFirstVisiblePage] +1;
         //    [self setProperPositionOfPageAtIndex: secondVisiblePageIndex];
         
-        if ([_delegate respondsToSelector:@selector(cascadeView:pageDidAppearAtIndex:)]) {
-            [_delegate cascadeView:self pageDidAppearAtIndex:index];
+        if ([_delegate respondsToSelector:@selector(cascadeView:paneDidAppearAtIndex:)]) {
+            [_delegate cascadeView:self paneDidAppearAtIndex:index];
         }
     }
 }
@@ -751,8 +748,8 @@
 - (void)paneDidDisappearAtIndex:(NSInteger)index
 {
     if ([self _paneExistsAtIndex: index]) {
-        if ([_delegate respondsToSelector:@selector(cascadeView:pageDidDisappearAtIndex:)]) {
-            [_delegate cascadeView:self pageDidDisappearAtIndex:index];
+        if ([_delegate respondsToSelector:@selector(cascadeView:paneDidDisappearAtIndex:)]) {
+            [_delegate cascadeView:self paneDidDisappearAtIndex:index];
         }
     }
 }
@@ -760,8 +757,8 @@
 - (void)didStartPullingToDetachPanes
 {
     _flags.willDetachPanes = YES;
-    if ([_delegate respondsToSelector:@selector(cascadeViewDidStartPullingToDetachPages:)]) {
-        [_delegate cascadeViewDidStartPullingToDetachPages:self];
+    if ([_delegate respondsToSelector:@selector(navigationViewDidStartPullingToDetachPanes:)]) {
+        [_delegate navigationViewDidStartPullingToDetachPanes:self];
     }
 }
 
@@ -769,8 +766,8 @@
 {
     _flags.willDetachPanes = NO;
     _flags.isDetachPanes = YES;
-    if ([_delegate respondsToSelector:@selector(cascadeViewDidPullToDetachPages:)]) {
-        [_delegate cascadeViewDidPullToDetachPages:self];
+    if ([_delegate respondsToSelector:@selector(navigationViewDidPullToDetachPanes:)]) {
+        [_delegate navigationViewDidPullToDetachPanes:self];
     }
     
     [self performSelector:@selector(_setProperContentSize) withObject:nil afterDelay:0.3];
@@ -779,8 +776,8 @@
 - (void)didCancelPullToDetachPanes
 {
     _flags.willDetachPanes = NO;
-    if ([_delegate respondsToSelector:@selector(cascadeViewDidCancelPullToDetachPages:)]) {
-        [_delegate cascadeViewDidCancelPullToDetachPages:self];
+    if ([_delegate respondsToSelector:@selector(navigationViewDidCancelPullToDetachPanes:)]) {
+        [_delegate navigationViewDidCancelPullToDetachPanes:self];
     }
 }
 
