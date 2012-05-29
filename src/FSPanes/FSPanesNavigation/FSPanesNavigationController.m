@@ -68,10 +68,11 @@
 }
 
 
-- (void)willAnimateRotationToInterfaceOrientation:( UIInterfaceOrientation )interfaceOrientation
-                                         duration:( NSTimeInterval )duration {
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+                                         duration:(NSTimeInterval)duration
+{
     [_navigationView updateContentLayoutToInterfaceOrientation:interfaceOrientation
-                                                   duration:duration ];
+                                                      duration:duration];
 }
 
 

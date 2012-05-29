@@ -365,10 +365,8 @@
 
 - (NSInteger)_indexOfFirstVisiblePane
 {
-    // calculate first visible pane
-    CGFloat contentOffset = _scrollView.contentOffset.x;// + _scrollView.contentInset.left;
-    NSInteger index = floor((contentOffset) / _paneWidth);
-    
+    CGFloat contentOffset = _scrollView.contentOffset.x;
+    NSInteger index = floorf(contentOffset / _paneWidth);
     return (index < 0) ? 0 : index;
 }
 
@@ -419,9 +417,11 @@
 
 - (FSPaneView *)_paneAtIndex:(NSInteger)index
 {
+    FSPaneView *pane = nil;
     if ([self _paneExistsAtIndex:index]) {
-        return [_panes objectAtIndex:index];
+        pane = [_panes objectAtIndex:index];
     }
+    return pane;
 }
 
 - (BOOL)_paneExistsAtIndex:(NSInteger)index
@@ -592,12 +592,10 @@
 {
     [_panes enumerateObjectsUsingBlock:^(FSPaneView *pane, NSUInteger idx, BOOL *stop) {
         if (pane.isLoaded) {
-            CGRect rect = pane.frame;
             CGPoint point = [self _calculateOriginOfPaneAtIndex:idx];
             CGSize size = [self _calculatePaneSize:pane];
-            rect.size = size;
-            rect.origin = point;
-            [pane setFrame:rect];
+            CGRect newFrame = {.origin = point, .size = size };
+            pane.frame = newFrame;
             [pane setNeedsLayout];
         }
     }];
@@ -618,7 +616,15 @@
 
 - (CGPoint)_calculateOriginOfPaneAtIndex:(NSInteger)index
 {
-    return CGPointMake(MAX(0, _paneWidth * index), 0.0f);
+    CGFloat x;
+    if (index >= [self _indexOfFirstVisiblePane]) {
+        x = MAX(0, _paneWidth * index);
+    }
+    else {
+        // if pane/index is on stock then keep it on fixed position
+        x = _scrollView.contentOffset.x;
+    }
+    return CGPointMake(x, 0.0f);
 }
 
 #pragma mark -
