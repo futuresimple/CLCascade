@@ -14,6 +14,7 @@
 #import <UIKit/UIKit.h>
 #import "FSPanesGlobal.h"
 #import "FSPanesNavigationScrollView.h"
+#import "FSPaneView.h"
 
 @protocol FSPanesNavigationViewDataSource;
 @protocol FSPanesNavigationViewDelegate;
@@ -65,8 +66,6 @@
 - (void)popPaneAtIndex:(NSInteger)index animated:(BOOL)animated;
 - (void)popAllPanesAnimated:(BOOL)animated;
 
-- (UIView *)loadPaneAtIndex:(NSInteger)index;
-
 - (void)unloadInvisiblePanes;
 
 - (NSInteger)indexOfFirstVisibleView:(BOOL)loadIfNeeded;
@@ -79,8 +78,8 @@
 
 @protocol FSPanesNavigationViewDataSource <NSObject>
 @required
-- (UIView*) cascadeView:(FSPanesNavigationView*)cascadeView pageAtIndex:(NSInteger)index;
-- (NSInteger) numberOfPagesInCascadeView:(FSPanesNavigationView*)cascadeView;
+- (UIView *)cascadeView:(FSPanesNavigationView *)cascadeView pageAtIndex:(NSInteger)index;
+- (NSInteger)numberOfPagesInCascadeView:(FSPanesNavigationView *)cascadeView;
 @end
 
 @protocol FSPanesNavigationViewDelegate <NSObject>

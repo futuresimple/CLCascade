@@ -34,10 +34,7 @@
 
 - (void)didReceiveMemoryWarning
 {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // unload all invisible pages in cascadeView
+    [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview.
     [_navigationView unloadInvisiblePanes];
 }
 

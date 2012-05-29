@@ -37,6 +37,7 @@
 @interface FSPanesNavigationView (Private)
 - (NSArray *)_panesOnStock;
 
+- (FSPaneView *)_paneAtIndex:(NSInteger)index;
 - (BOOL)_paneExistsAtIndex:(NSInteger)index;
 - (void)_unloadInvisiblePanesOnStock;
 
@@ -51,7 +52,7 @@
 - (void)_setProperSizesForLoadedPanes:(UIInterfaceOrientation)interfaceOrientation;
 
 - (FSPaneView *)_createPaneWithView:(UIView*)view size:(FSViewSize)viewSize;
-- (void)_unloadPaneIfPossible:(NSInteger)index;
+- (FSPaneView *)_loadPaneAtIndex:(NSInteger)index;
 - (void)_unloadPane:(FSPaneView*)pane remove:(BOOL)remove;
 - (void)_loadBoundaryPanesIfNeeded;
 
@@ -261,73 +262,23 @@
     [_panes removeAllObjects];
 }
 
-- (UIView *)loadPaneAtIndex:(NSInteger)index
-{
-    FSPaneView *pane = nil; // nil == index out of range
-    
-    if ([self _paneExistsAtIndex:index]) {
-        pane = [_panes objectAtIndex:index];
-        
-        // rebuild pane if necessery
-        if (pane.contentView == nil) {
-            // get content view from dataSource
-            UIView *view = [_dataSource cascadeView:self pageAtIndex:index];
-            
-            if (view != nil) {
-                // preventive, set frame
-                CGSize paneSize = [self _calculatePaneSize:pane];
-                CGRect paneFrame = CGRectMake(index * _paneWidth, 0.0f, paneSize.width, paneSize.height);
-                pane.frame = paneFrame;
-                
-                pane.contentView = view;
-                
-                // calculate direction of movement (if move left add view at index 0 else add at last position)
-                if ((_scrollView.contentOffset.x + _scrollView.contentInset.left) > index * _paneWidth) {
-                    // add subview
-                    [_scrollView insertSubview:pane atIndex:0];
-                }
-                else {
-                    // add subview
-                    [_scrollView addSubview:pane];
-                }
-                
-                // send delegate
-                [self didLoadPage:view];
-            }
-        }
-    }
-    
-    return pane;
-}
-
-
 - (void)unloadInvisiblePanes
 {
     NSMutableArray *panesToUnload = [NSMutableArray array];
     
     NSArray *visiblePanes = [self visiblePanes];
     
-    // if visible pane exist in array of panes then can't unload
+    // if a visible pane exists in array of panes then can't unload
     for (FSPaneView *pane in _panes) {
-        BOOL canUnload;
         if (pane.isLoaded) {
-            canUnload = YES;
-            
-            for (UIView *visiblePane in visiblePanes) {
-                if (pane == visiblePane) {
-                    canUnload = NO;
-                    break;
-                }
-            }
-            
-            if (canUnload) {
+            if ([visiblePanes containsObject:pane] == NO) {
                 [panesToUnload addObject:pane];
-            } 
+            }
         }
     }
     
-    [panesToUnload enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [self _unloadPane:obj remove:NO];
+    [panesToUnload enumerateObjectsUsingBlock:^(FSPaneView *pane, NSUInteger idx, BOOL *stop) {
+        [self _unloadPane:pane remove:NO];
     }];
 }
 
@@ -359,7 +310,7 @@
             
             // chceck if is loaded, and load if needed
             if (pane.isLoaded == NO) {
-                [self loadPaneAtIndex:firstVisiblePaneIndex];
+                [self _loadPaneAtIndex:firstVisiblePaneIndex];
             }
         }        
         
@@ -435,7 +386,7 @@
         
         // load if needed
         if (pane.isLoaded == NO) {
-            [self loadPaneAtIndex:firstVisiblePaneIndex];
+            [self _loadPaneAtIndex:firstVisiblePaneIndex];
         }
         
         NSInteger lastVisiblePaneIndex = [self indexOfLastVisibleView: NO];
@@ -446,7 +397,7 @@
             
             // load if needed
             if (pane.isLoaded == NO) {
-                [self loadPaneAtIndex:lastVisiblePaneIndex];
+                [self _loadPaneAtIndex:lastVisiblePaneIndex];
             }
         }
     }
@@ -466,6 +417,13 @@
     }
     
     return panesOnStock;
+}
+
+- (FSPaneView *)_paneAtIndex:(NSInteger)index
+{
+    if ([self _paneExistsAtIndex:index]) {
+        return [_panes objectAtIndex:index];
+    }
 }
 
 - (BOOL)_paneExistsAtIndex:(NSInteger)index
@@ -549,42 +507,70 @@
      UIViewAutoresizingFlexibleWidth |
      UIViewAutoresizingFlexibleHeight];
     pane.contentView = view;
+
+    return pane;
+}
+
+- (FSPaneView *)_loadPaneAtIndex:(NSInteger)index
+{
+    FSPaneView *pane = nil; // nil == index out of range
+    
+    if ([self _paneExistsAtIndex:index]) {
+        pane = [_panes objectAtIndex:index];
+        
+        // rebuild pane if necessery
+        if (pane.contentView == nil) {
+            UIView *contentView = [_dataSource cascadeView:self pageAtIndex:index];
+            
+            if (contentView != nil) {
+                // preventive, set frame
+                CGSize paneSize = [self _calculatePaneSize:pane];
+                CGRect paneFrame = CGRectMake(index * _paneWidth, 0.0f, paneSize.width, paneSize.height);
+                pane.frame = paneFrame;
+                
+                pane.contentView = contentView;
+                
+                FSPaneView *paneBelow = [self _paneAtIndex:index-1];
+                FSPaneView *paneAbove = [self _paneAtIndex:index+1];
+                if (paneBelow.isLoaded && paneAbove.isLoaded) {
+                    NSUInteger indexOfPaneAbove = [_scrollView.subviews indexOfObject:paneAbove];
+                    [_scrollView insertSubview:pane atIndex:indexOfPaneAbove];
+                }
+                else if (paneBelow.isLoaded) {
+                    [_scrollView insertSubview:pane aboveSubview:paneBelow];
+                }
+                else if (paneAbove.isLoaded) {
+                    [_scrollView insertSubview:pane belowSubview:paneAbove];
+                }
+                else {
+                    [_scrollView addSubview:pane];
+                }
+                
+                // inform delegate
+                [self didLoadPage:contentView];
+            }
+        }
+    }
     
     return pane;
 }
 
-- (void)_unloadPaneIfPossible:(NSInteger)index
+- (void)_unloadPane:(FSPaneView *)pane remove:(BOOL)remove
 {
-    //TODO: USE THIS METHOD INSTEAD OF -UNLOADPANE: !!! (WHEN APPROPRIATE :)
-    // (otherwise -visiblePanes: shouldn't include wide views)
-    FSPaneView *pane = [_panes objectAtIndex:index];
-    
-    if (pane.isLoaded) {
-        NSArray *visiblePanes = [self visiblePanes];
-        
-        BOOL isPaneVisible = [visiblePanes containsObject:pane];
-        
-        // unload a pane only if it's not visible
-        if (!isPaneVisible) {
-            [self _unloadPane:pane remove:NO];
+    if ([_panes containsObject:pane]) {
+        // don't unload views wider then normal because they might be visible
+        // (unless we want to remove them permanently)
+        if (pane.viewSize == FSViewSizeNormal || remove == YES) {
+            [pane removeFromSuperview];
+            pane.contentView = nil;
+            // inform delegate
+            [self didUnloadPage:pane];
         }
-    }
-}
-
-- (void)_unloadPane:(FSPaneView*)pane remove:(BOOL)remove {
-    NSUInteger index = [_panes indexOfObject:pane];
-    
-    if (index != NSNotFound) {
-        [pane removeFromSuperview];
-        pane.contentView = nil;
         
-        // send message to delegate
-        [self didUnloadPage:pane];        
-        
-        if (remove) {
+        if (remove == YES) {
             [_panes removeObject:pane];
         }
-    }    
+    }
 }
 
 - (CGSize)_calculatePaneSize:(FSPaneView *)pane
@@ -669,35 +655,32 @@
         }
     }
     
-    [self _loadBoundaryPanesIfNeeded];    
+    [self _loadBoundaryPanesIfNeeded];
     
-    // operations connected with blocking panes on stock
+    // keep panes that are on stock in place
     for (NSInteger i=0; i<=firstVisiblePaneIndex; i++) {
-        // check if pane index is in bounds
         if ([self _paneExistsAtIndex:i]) {
             FSPaneView *pane = [_panes objectAtIndex:i];
             
-            if (i == firstVisiblePaneIndex) {
+            if (pane.isLoaded) {
                 CGFloat contentOffset = _scrollView.contentOffset.x;
                 
                 if (((i == 0) && (contentOffset <= 0)) || ([_panes count] == 1)) {
-                    return;
+                    break;
                 }
                 
-                UIView *view = (UIView *)pane;
+                CGRect newFrame = pane.frame;
                 
-                CGRect rect = [view frame];
-                rect.origin.x = contentOffset;
-                [view setFrame: rect];
+                newFrame.origin.x = contentOffset;
                 
-            } else {
-                if (pane.isLoaded) {
+                pane.frame = newFrame;
+                
+                if (i != firstVisiblePaneIndex) {
                     [self _unloadPane:pane remove:NO];
                 }
             }
         }
     }
-    
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
