@@ -18,19 +18,17 @@
 #define DEFAULT_WIDER_LEFT_INSET 220.0f
 #define PULL_TO_DETACH_FACTOR 0.32f
 
-//#define CONTESTED_CASE
-
 @interface FSPanesNavigationView (DelegateMethods)
-- (void) didLoadPage:(UIView*)page;
-- (void) didAddPage:(UIView*)page animated:(BOOL)animated;
-- (void) didPopPageAtIndex:(NSInteger)index;
-- (void) didUnloadPage:(UIView*)page;
-- (void) pageDidAppearAtIndex:(NSInteger)index;
-- (void) pageDidDisappearAtIndex:(NSInteger)index;
-- (void) didStartPullingToDetachPages;
-- (void) didPullToDetachPages;
-- (void) didCancelPullToDetachPages;
-- (void) sendAppearanceDelegateMethodsIfNeeded;
+- (void)didLoadPane:(UIView*)page;
+- (void)didAddPane:(UIView*)page animated:(BOOL)animated;
+- (void)didPopPaneAtIndex:(NSInteger)index;
+- (void)didUnloadPane:(UIView*)page;
+- (void)paneDidAppearAtIndex:(NSInteger)index;
+- (void)paneDidDisappearAtIndex:(NSInteger)index;
+- (void)didStartPullingToDetachPanes;
+- (void)didPullToDetachPanes;
+- (void)didCancelPullToDetachPanes;
+- (void)sendAppearanceDelegateMethodsIfNeeded;
 - (void)sendDetachDelegateMethodsIfNeeded;
 @end
 
@@ -197,7 +195,7 @@
     [_scrollView addSubview:newPane];
     
     // inform delegate
-    [self didAddPage:newPane animated:animated];
+    [self didAddPane:newPane animated:animated];
     
     // scroll to new pane frame
     CGFloat horizontalOffset = contentWidthBeforePush;
@@ -234,14 +232,14 @@
                                      [self _unloadPane:pane remove:YES];
                                      [self _setProperEdgeInset:NO];
                                      // send delegate message
-                                     [self didPopPageAtIndex:index];
+                                     [self didPopPaneAtIndex:index];
                                  }];
             }
             else {
                 [self _unloadPane:pane remove:YES];
                 [self _setProperEdgeInset:NO];
                 // send delegate message
-                [self didPopPageAtIndex:index];
+                [self didPopPaneAtIndex:index];
             }
         }
     }
@@ -547,7 +545,7 @@
                 }
                 
                 // inform delegate
-                [self didLoadPage:contentView];
+                [self didLoadPane:contentView];
             }
         }
     }
@@ -564,7 +562,7 @@
             [pane removeFromSuperview];
             pane.contentView = nil;
             // inform delegate
-            [self didUnloadPage:pane];
+            [self didUnloadPane:pane];
         }
         
         if (remove == YES) {
@@ -627,180 +625,142 @@
 #pragma mark <UIScrollViewDelegate>
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if(scrollView.dragging && scrollView.tracking && !scrollView.pagingEnabled) {
-        [scrollView setPagingEnabled:YES];
-    }
-    
-    if ([_panes count] == 0) return;
-    
-    // operations connected with Pull To Detach Panes action
-    [self sendDetachDelegateMethodsIfNeeded];
-    
-    // operations connected with Pane Did Appear/Disappear delegate metgods
-    [self sendAppearanceDelegateMethodsIfNeeded];
-    
-    if (_flags.isDetachPanes) return;
-    
-    // calculate first visible pane
-    NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
-    
-    // bug fix with bad position of first pane
-    if ((firstVisiblePaneIndex == 0) && (-_scrollView.contentOffset.x >= _scrollView.contentInset.left)) {
-        // get pane at index
-        FSPaneView *pane = [_panes objectAtIndex:firstVisiblePaneIndex];
-        if (pane.isLoaded) {
-            CGRect rect = [pane frame];
-            rect.origin.x = 0;
-            [pane setFrame:rect];
-        }
-    }
-    
-    [self _loadBoundaryPanesIfNeeded];
-    
-    // keep panes that are on stock in place
-    for (NSInteger i=0; i<=firstVisiblePaneIndex; i++) {
-        if ([self _paneExistsAtIndex:i]) {
-            FSPaneView *pane = [_panes objectAtIndex:i];
+    if ([_panes count] > 0)
+    {
+        [self sendDetachDelegateMethodsIfNeeded];
+        
+        [self sendAppearanceDelegateMethodsIfNeeded];
+        
+        if (_flags.isDetachPanes == NO)
+        {
+            NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
             
-            if (pane.isLoaded) {
+            // bug fix with bad position of first pane
+            if (firstVisiblePaneIndex == 0 && -_scrollView.contentOffset.x >= _scrollView.contentInset.left) {
+                FSPaneView *pane = [_panes objectAtIndex:firstVisiblePaneIndex];
+                
+                if (pane.isLoaded) {
+                    CGRect rect = [pane frame];
+                    rect.origin.x = 0;
+                    [pane setFrame:rect];
+                }
+            }
+            
+            [self _loadBoundaryPanesIfNeeded];
+            
+            // keep panes that are on stock in place
+            if ([_panes count] > 1) {
                 CGFloat contentOffset = _scrollView.contentOffset.x;
                 
-                if (((i == 0) && (contentOffset <= 0)) || ([_panes count] == 1)) {
-                    break;
-                }
-                
-                CGRect newFrame = pane.frame;
-                
-                newFrame.origin.x = contentOffset;
-                
-                pane.frame = newFrame;
-                
-                if (i != firstVisiblePaneIndex) {
-                    [self _unloadPane:pane remove:NO];
+                for (NSInteger i=0; i<=firstVisiblePaneIndex; i++) {
+                    if ([self _paneExistsAtIndex:i]) {
+                        FSPaneView *pane = [_panes objectAtIndex:i];
+                        
+                        if (pane.isLoaded) {
+                            if (i != 0 || contentOffset > 0) {
+                                CGRect newFrame = pane.frame;
+                                newFrame.origin.x = contentOffset;
+                                pane.frame = newFrame;
+                            }
+                                                        
+                            if (i < firstVisiblePaneIndex) {
+                                [self _unloadPane:pane remove:NO];
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    
-}
-
-//- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-//    [scrollView setPagingEnabled:NO];
-//}
-
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     if (_flags.isDetachPanes) _flags.isDetachPanes = NO;
-    
-#ifdef CONTESTED_CASE
-    [_scrollView setPagingEnabled: NO];
-#endif
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-    [_scrollView setPagingEnabled: YES];
-    [_scrollView setPagingEnabled: NO];
-    [_scrollView setScrollEnabled: YES];
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
     CGFloat realContentOffsetX = _scrollView.contentOffset.x + _scrollView.contentInset.left;
     
-    if ((_flags.willDetachPanes) && (realContentOffsetX < - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
-        [self didPullToDetachPages];
-    }
-    
-    if ((_flags.willDetachPanes) && (realContentOffsetX > - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
-        [self didCancelPullToDetachPages];
+    if (_flags.willDetachPanes) {
+        if (realContentOffsetX < - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR) {
+            [self didPullToDetachPanes];
+        }
+        else {
+            [self didCancelPullToDetachPanes];
+        }
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-    
+- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
+{    
     NSInteger secondVisiblePaneIndex = [self _indexOfFirstVisiblePane] + 1;
     [self _setProperPositionOfPaneAtIndex: secondVisiblePaneIndex];
 }
 
 #pragma mark -
-#pragma mark Delegate methods
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) didLoadPage:(UIView*)page {
+#pragma mark FSPanesNavigationView (DelegateMethods)
+- (void)didLoadPane:(UIView*)pane
+{
     if ([_delegate respondsToSelector:@selector(cascadeView:didLoadPage:)]) {
-        [_delegate cascadeView:self didLoadPage:page];
+        [_delegate cascadeView:self didLoadPage:pane];
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) didAddPage:(UIView*)page animated:(BOOL)animated {
+- (void)didAddPane:(UIView*)pane animated:(BOOL)animated
+{
     if ([_delegate respondsToSelector:@selector(cascadeView:didAddPage:animated:)]) {
-        [_delegate cascadeView:self didAddPage:page animated:YES];
+        [_delegate cascadeView:self didAddPage:pane animated:YES];
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) didPopPageAtIndex:(NSInteger)index {
+- (void)didPopPaneAtIndex:(NSInteger)index
+{
     if ([_delegate respondsToSelector:@selector(cascadeView:didPopPageAtIndex:)]) {
         [_delegate cascadeView:self didPopPageAtIndex:index];
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) didUnloadPage:(UIView*)page {
+- (void)didUnloadPane:(UIView*)pane
+{
     if ([_delegate respondsToSelector:@selector(cascadeView:didUnloadPage:)]) {
-        [_delegate cascadeView:self didUnloadPage:page];
+        [_delegate cascadeView:self didUnloadPage:pane];
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) pageDidAppearAtIndex:(NSInteger)index {
-    if (![self _paneExistsAtIndex: index]) return;
-    
-    //    NSInteger secondVisiblePageIndex = [self indexOfFirstVisiblePage] +1;
-    //    [self setProperPositionOfPageAtIndex: secondVisiblePageIndex];
-    
-    if ([_delegate respondsToSelector:@selector(cascadeView:pageDidAppearAtIndex:)]) {
-        [_delegate cascadeView:self pageDidAppearAtIndex:index];
+- (void)paneDidAppearAtIndex:(NSInteger)index
+{
+    if ([self _paneExistsAtIndex: index]) 
+    {
+        //    NSInteger secondVisiblePageIndex = [self indexOfFirstVisiblePage] +1;
+        //    [self setProperPositionOfPageAtIndex: secondVisiblePageIndex];
+        
+        if ([_delegate respondsToSelector:@selector(cascadeView:pageDidAppearAtIndex:)]) {
+            [_delegate cascadeView:self pageDidAppearAtIndex:index];
+        }
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) pageDidDisappearAtIndex:(NSInteger)index {
-    if (![self _paneExistsAtIndex: index]) return;
-    
-    if ([_delegate respondsToSelector:@selector(cascadeView:pageDidDisappearAtIndex:)]) {
-        [_delegate cascadeView:self pageDidDisappearAtIndex:index];
+- (void)paneDidDisappearAtIndex:(NSInteger)index
+{
+    if ([self _paneExistsAtIndex: index]) {
+        if ([_delegate respondsToSelector:@selector(cascadeView:pageDidDisappearAtIndex:)]) {
+            [_delegate cascadeView:self pageDidDisappearAtIndex:index];
+        }
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) didStartPullingToDetachPages {
+- (void)didStartPullingToDetachPanes
+{
     _flags.willDetachPanes = YES;
     if ([_delegate respondsToSelector:@selector(cascadeViewDidStartPullingToDetachPages:)]) {
         [_delegate cascadeViewDidStartPullingToDetachPages:self];
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) didPullToDetachPages {
+- (void)didPullToDetachPanes
+{
     _flags.willDetachPanes = NO;
     _flags.isDetachPanes = YES;
     if ([_delegate respondsToSelector:@selector(cascadeViewDidPullToDetachPages:)]) {
@@ -810,56 +770,50 @@
     [self performSelector:@selector(_setProperContentSize) withObject:nil afterDelay:0.3];
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) didCancelPullToDetachPages {
+- (void)didCancelPullToDetachPanes
+{
     _flags.willDetachPanes = NO;
     if ([_delegate respondsToSelector:@selector(cascadeViewDidCancelPullToDetachPages:)]) {
         [_delegate cascadeViewDidCancelPullToDetachPages:self];
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) sendAppearanceDelegateMethodsIfNeeded {
-    // calculate first visible page
+- (void)sendAppearanceDelegateMethodsIfNeeded
+{
     NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
     
     if (_indexOfFirstVisiblePane > firstVisiblePaneIndex) {
-        [self pageDidAppearAtIndex: firstVisiblePaneIndex];
+        [self paneDidAppearAtIndex:firstVisiblePaneIndex];
         _indexOfFirstVisiblePane = firstVisiblePaneIndex;
     }
     else if (_indexOfFirstVisiblePane < firstVisiblePaneIndex) {
-        [self pageDidDisappearAtIndex: _indexOfFirstVisiblePane];
+        [self paneDidDisappearAtIndex:_indexOfFirstVisiblePane];
         _indexOfFirstVisiblePane = firstVisiblePaneIndex;
     }
     
-    // calculate last visible page
     NSInteger lastVisiblePaneIndex = [self indexOfLastVisibleView: NO];
     
     if (_indexOfLastVisiblePane < lastVisiblePaneIndex) {
-        [self pageDidAppearAtIndex: lastVisiblePaneIndex];
+        [self paneDidAppearAtIndex:lastVisiblePaneIndex];
         _indexOfLastVisiblePane = lastVisiblePaneIndex;
     }
     else if (_indexOfLastVisiblePane > lastVisiblePaneIndex) {
-        [self pageDidDisappearAtIndex: _indexOfLastVisiblePane];
+        [self paneDidDisappearAtIndex:_indexOfLastVisiblePane];
         _indexOfLastVisiblePane = lastVisiblePaneIndex;
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)sendDetachDelegateMethodsIfNeeded
 {
     CGFloat realContentOffsetX = _scrollView.contentOffset.x + _scrollView.contentInset.left;
     
     if (!_flags.isDetachPanes) {
         if ((!_flags.willDetachPanes) && (realContentOffsetX < - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
-            [self didStartPullingToDetachPages];
+            [self didStartPullingToDetachPanes];
         }
         
         if ((_flags.willDetachPanes) && (realContentOffsetX > - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
-            [self didCancelPullToDetachPages];
+            [self didCancelPullToDetachPanes];
         }
     }
 }

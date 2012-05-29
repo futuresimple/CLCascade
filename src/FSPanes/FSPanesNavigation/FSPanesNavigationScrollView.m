@@ -15,12 +15,9 @@
 
 @implementation FSPanesNavigationScrollView
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)init
 {
-    self = [super init];
-    if (self) {
-        // Initialization code here.
+    if (self = [super init]) {
         [self setClipsToBounds: NO];
         [self setDecelerationRate: UIScrollViewDecelerationRateFast];
         [self setScrollsToTop: NO];
@@ -32,6 +29,7 @@
         [self setMultipleTouchEnabled:NO];
         [self setShowsVerticalScrollIndicator: NO];
         [self setShowsHorizontalScrollIndicator: NO];
+        [self setPagingEnabled:YES];
         
         [self setAutoresizingMask:
          UIViewAutoresizingFlexibleBottomMargin | 
@@ -39,16 +37,13 @@
          UIViewAutoresizingFlexibleHeight];
         
     }
-    
     return self;
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated {
+- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated
+{
     // bug fix with auto scrolling when become first responder
     // do not overide it
 }
-
 
 @end
