@@ -95,7 +95,7 @@
         _panes = [[NSMutableArray alloc] initWithCapacity:8];
         
         _flags.willDetachPanes = NO;
-        _flags.isDetachPanes = NO;
+        _flags.isDetachingPanes = NO;
         
         _indexOfFirstVisiblePane = -1;
         _indexOfLastVisiblePane = -1;
@@ -226,23 +226,25 @@
         __unsafe_unretained FSPaneView *pane = [_panes objectAtIndex:index];
         
         if (pane.isLoaded) {
+            void (^panePopBlock) (BOOL) = ^ (BOOL finished) {
+                [self _unloadPane:pane remove:YES];
+                if (!_flags.isDetachingPanes) {
+                    // beacause content size and insets set during animation would cause glitches
+                    [self _setProperEdgeInset:NO];
+                    [self _setProperContentSize];
+                }
+                [self didPopPaneAtIndex:index];
+            };
+            
             if (animated) {
                 [UIView animateWithDuration:0.4f 
                                  animations:^ {
                                      pane.alpha = 0.0f;
                                  }
-                                 completion:^(BOOL finished) {
-                                     [self _unloadPane:pane remove:YES];
-                                     [self _setProperEdgeInset:NO];
-                                     // send delegate message
-                                     [self didPopPaneAtIndex:index];
-                                 }];
+                                 completion:panePopBlock];
             }
             else {
-                [self _unloadPane:pane remove:YES];
-                [self _setProperEdgeInset:NO];
-                // send delegate message
-                [self didPopPaneAtIndex:index];
+                panePopBlock(YES);
             }
         }
     }
@@ -312,7 +314,6 @@
 
 - (NSInteger)indexOfLastVisibleView:(BOOL)loadIfNeeded
 {
-    // calculate visible panes count, first visible and last visible pane
     NSInteger visiblePanesCount = [self _visiblePanesCount];
     NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
     NSInteger lastVisiblePaneIndex = MIN([_panes count]-1, firstVisiblePaneIndex + visiblePanesCount -1);
@@ -628,7 +629,7 @@
         
         [self sendAppearanceDelegateMethodsIfNeeded];
         
-        if (_flags.isDetachPanes == NO)
+        if (_flags.isDetachingPanes == NO)
         {
             NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
             
@@ -673,7 +674,14 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    if (_flags.isDetachPanes) _flags.isDetachPanes = NO;
+    if (_flags.isDetachingPanes)
+    {
+        _flags.isDetachingPanes = NO;
+        
+        // beacause content size and insets set during animation would cause glitches
+        [self _setProperEdgeInset:NO];
+        [self _setProperContentSize];
+    }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
@@ -751,6 +759,7 @@
 - (void)didStartPullingToDetachPanes
 {
     _flags.willDetachPanes = YES;
+    
     if ([_delegate respondsToSelector:@selector(navigationViewDidStartPullingToDetachPanes:)]) {
         [_delegate navigationViewDidStartPullingToDetachPanes:self];
     }
@@ -759,17 +768,21 @@
 - (void)didPullToDetachPanes
 {
     _flags.willDetachPanes = NO;
-    _flags.isDetachPanes = YES;
+    _flags.isDetachingPanes = YES;
+    
     if ([_delegate respondsToSelector:@selector(navigationViewDidPullToDetachPanes:)]) {
         [_delegate navigationViewDidPullToDetachPanes:self];
     }
     
-    [self performSelector:@selector(_setProperContentSize) withObject:nil afterDelay:0.3];
+    for (int paneIndex = [_panes count]-1; paneIndex > 0; paneIndex--) {
+        [self popPaneAtIndex:paneIndex animated:NO];
+    }
 }
 
 - (void)didCancelPullToDetachPanes
 {
     _flags.willDetachPanes = NO;
+    
     if ([_delegate respondsToSelector:@selector(navigationViewDidCancelPullToDetachPanes:)]) {
         [_delegate navigationViewDidCancelPullToDetachPanes:self];
     }
@@ -804,7 +817,7 @@
 {
     CGFloat realContentOffsetX = _scrollView.contentOffset.x + _scrollView.contentInset.left;
     
-    if (!_flags.isDetachPanes) {
+    if (!_flags.isDetachingPanes) {
         if ((!_flags.willDetachPanes) && (realContentOffsetX < - _scrollView.frame.size.width * PULL_TO_DETACH_FACTOR)) {
             [self didStartPullingToDetachPanes];
         }

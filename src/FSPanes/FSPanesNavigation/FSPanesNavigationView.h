@@ -32,7 +32,7 @@
     
     struct {
         unsigned int willDetachPanes:1;
-        unsigned int isDetachPanes:1;
+        unsigned int isDetachingPanes:1;
     } _flags;
     
     NSInteger _indexOfFirstVisiblePane;

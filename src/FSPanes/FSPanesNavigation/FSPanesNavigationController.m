@@ -185,9 +185,6 @@
     /*
      Override this methods to implement own actions, animations
      */
-    
-    // pop page from back
-    [self popPagesFromLastIndexTo:0];
 }
 
 - (void)navigationViewDidCancelPullToDetachPanes:(FSPanesNavigationView *)navigationView
