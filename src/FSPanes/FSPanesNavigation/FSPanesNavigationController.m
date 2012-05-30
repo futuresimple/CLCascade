@@ -27,11 +27,6 @@
 
 @synthesize leftInset, widerLeftInset;
 
-- (void)dealloc
-{
-    _navigationView = nil;
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview.

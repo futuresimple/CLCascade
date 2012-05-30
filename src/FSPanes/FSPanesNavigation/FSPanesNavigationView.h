@@ -21,9 +21,6 @@
 
 @interface FSPanesNavigationView : UIView <UIScrollViewDelegate> {    
 @private
-    NSObject<FSPanesNavigationViewDelegate> __unsafe_unretained *_delegate;
-    NSObject<FSPanesNavigationViewDataSource> __unsafe_unretained *_dataSource;
-    
     FSPanesNavigationScrollView *_scrollView;
     
     NSMutableArray *_panes;
@@ -42,8 +39,8 @@
     NSInteger _indexOfLastVisiblePane;
 }
 
-@property(nonatomic, unsafe_unretained) NSObject<FSPanesNavigationViewDelegate> *delegate;
-@property(nonatomic, unsafe_unretained) NSObject<FSPanesNavigationViewDataSource> *dataSource;
+@property(nonatomic, weak) NSObject<FSPanesNavigationViewDelegate> *delegate;
+@property(nonatomic, weak) NSObject<FSPanesNavigationViewDataSource> *dataSource;
 
 /*
  * Left inset of normal pane from left screen edge. Default 70.0f

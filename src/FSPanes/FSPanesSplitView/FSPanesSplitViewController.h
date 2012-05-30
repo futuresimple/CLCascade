@@ -16,10 +16,7 @@
 @class FSPanesMenuViewController;
 @class FSPanesNavigationController;
 
-@interface FSPanesSplitViewController : UIViewController {
-    FSPanesMenuViewController *_panesMenuViewController;
-    FSPanesNavigationController *_panesNavigationController;
-}
+@interface FSPanesSplitViewController : UIViewController
 
 @property (nonatomic, strong) IBOutlet FSPanesMenuViewController *panesMenuViewController;
 @property (nonatomic, strong) IBOutlet FSPanesNavigationController *panesNavigationController; //it should be readonly

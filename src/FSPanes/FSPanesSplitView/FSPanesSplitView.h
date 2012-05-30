@@ -17,18 +17,8 @@
 
 
 @interface FSPanesSplitView : UIView {
-    // views
-    UIView* _menuView;
-    UIView* _navigationView;
-    
-    // background
-    UIView*     _backgroundView;
-    
-    // divider
     UIView*     _dividerView;
-    UIImage*    _verticalDividerImage;
-    CGFloat     _dividerWidth;
-    
+    CGFloat     _dividerWidth;    
 }
 
 @property (nonatomic, strong) IBOutlet FSPanesSplitViewController* splitViewController;

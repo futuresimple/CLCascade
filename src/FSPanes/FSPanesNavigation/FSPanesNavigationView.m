@@ -69,9 +69,8 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame];
-    if (self) {
-        _panes = [[NSMutableArray alloc] init];
+    if (self = [super initWithFrame:frame]) {
+        _panes = [[NSMutableArray alloc] initWithCapacity:8];
         
         _flags.willDetachPanes = NO;
         _flags.isDetachPanes = NO;
@@ -85,7 +84,7 @@
         self.leftInset = DEFAULT_LEFT_INSET;
         self.widerLeftInset = DEFAULT_WIDER_LEFT_INSET;
         
-        [self addSubview: _scrollView];
+        [self addSubview:_scrollView];
         
         [self setAutoresizingMask:
          UIViewAutoresizingFlexibleLeftMargin | 
@@ -95,16 +94,7 @@
          UIViewAutoresizingFlexibleWidth | 
          UIViewAutoresizingFlexibleHeight];
     }
-    
     return self;
-}
-
-- (void)dealloc
-{
-    _delegate = nil;
-    _dataSource = nil;    
-    _scrollView = nil;
-    _panes = nil;
 }
 
 #pragma mark -
@@ -542,7 +532,7 @@
                 }
                 
                 // inform delegate
-                [self didLoadPane:contentView];
+                [self didLoadPane:pane];
             }
         }
     }

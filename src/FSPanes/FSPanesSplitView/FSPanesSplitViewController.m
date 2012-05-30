@@ -21,31 +21,13 @@
 @synthesize panesMenuViewController = _panesMenuViewController;
 @synthesize panesNavigationController = _panesNavigationController;
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (id) initWithNavigationController:(FSPanesNavigationController*)navigationController {
-    self = [super init];
-    if (self) {
+- (id) initWithNavigationController:(FSPanesNavigationController*)navigationController
+{
+    if (self = [super init]) {
         _panesNavigationController = navigationController;
     }
     return self;
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)dealloc
-{
-    _panesMenuViewController = nil;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
 
 #pragma mark - View lifecycle
 
