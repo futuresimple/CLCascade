@@ -67,6 +67,28 @@
 @synthesize dataSource = _dataSource;
 @synthesize widerLeftInset = _widerLeftInset;
 
+#pragma mark -
+#pragma mark Custom accessors
+- (void)setLeftInset:(CGFloat)newLeftInset
+{
+    CGFloat landscapeScreenWidth = [UIScreen mainScreen].bounds.size.height;
+    CGFloat portraitScreenWidth = [UIScreen mainScreen].bounds.size.width;
+    
+    _leftInset = newLeftInset;
+    _paneWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
+    _widePaneWidth = portraitScreenWidth - _leftInset;
+    
+    if (_widePaneWidth <= 0.0f) {
+        NSAssert(NO, @"Left inset is too small!");
+    }
+    
+    _scrollView.frame = CGRectMake(_leftInset, 0.0, _paneWidth, self.frame.size.height);
+    
+    [self _setProperEdgeInset:NO];
+}
+
+#pragma mark -
+#pragma mark UIView
 - (id)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
@@ -97,26 +119,6 @@
     return self;
 }
 
-#pragma mark -
-#pragma mark Custom accessors
-- (void)setLeftInset:(CGFloat)newLeftInset
-{
-    CGFloat landscapeScreenWidth = [UIScreen mainScreen].bounds.size.height;
-    CGFloat portraitScreenWidth = [UIScreen mainScreen].bounds.size.width;
-    
-    _leftInset = newLeftInset;
-    _paneWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
-    _widePaneWidth = portraitScreenWidth - _leftInset;
-    
-    if (_widePaneWidth <= 0.0f) {
-        NSAssert(NO, @"Left inset is too small!");
-    }
-    
-    _scrollView.frame = CGRectMake(_leftInset, 0.0, _paneWidth, self.frame.size.height);
-    
-    [self _setProperEdgeInset:NO];
-}
-
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event 
 {
     UIView *view = nil;
@@ -141,6 +143,17 @@
     }
 }
 
+- (void)layoutSubviews
+{
+    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation]; 
+    
+    [self _setProperSizesForLoadedPanes:interfaceOrientation];
+    
+    [[self visiblePanes] makeObjectsPerformSelector:@selector(setNeedsLayout)];
+}
+
+#pragma mark -
+#pragma mark FSPanesNavigationView
 - (void)pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated
 {
     [self pushView:newView fromView:fromView animated:animated viewSize:FSViewSizeNormal];
@@ -270,15 +283,6 @@
     }];
 }
 
-- (void)layoutSubviews
-{
-    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation]; 
-    
-    [self _setProperSizesForLoadedPanes:interfaceOrientation];
-    
-    [[self visiblePanes] makeObjectsPerformSelector:@selector(setNeedsLayout)];
-}
-
 - (void)updateContentLayoutToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     [self _setProperContentSize];
@@ -343,7 +347,7 @@
 }
 
 #pragma mark -
-#pragma mark Private methods
+#pragma mark FSPanesNavigationView (Private)
 - (NSInteger)_visiblePanesCount
 {
     NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
