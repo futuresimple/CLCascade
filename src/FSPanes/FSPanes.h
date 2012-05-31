@@ -10,6 +10,7 @@
 #define FSPanes_FSPanes_h
 
 #import <FSPanes/FSPanesGlobal.h>
+#import <FSPanes/FSPanesProtocols.h>
 #import <FSPanes/UIViewController+FSPanes.h>
 
 #import <FSPanes/FSPanesNavigation/FSPanesNavigationController.h>
