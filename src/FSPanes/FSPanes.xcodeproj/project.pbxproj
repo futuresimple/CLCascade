@@ -56,7 +56,6 @@
 		95353C45156D6915003B78FB /* FSPanesSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSPanesSplitView.m; sourceTree = "<group>"; };
 		95353C46156D6915003B78FB /* FSPanesSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPanesSplitViewController.h; sourceTree = "<group>"; };
 		95353C47156D6915003B78FB /* FSPanesSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSPanesSplitViewController.m; sourceTree = "<group>"; };
-		95353C48156D6915003B78FB /* FSPanesSplitViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FSPanesSplitViewController.xib; sourceTree = "<group>"; };
 		95353C4D156D6923003B78FB /* FSPanesGlobal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPanesGlobal.h; sourceTree = SOURCE_ROOT; };
 		95353C4F156D6928003B78FB /* FSPanes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPanes.h; sourceTree = SOURCE_ROOT; };
 		95353C51156D6934003B78FB /* UIViewController+FSPanes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+FSPanes.h"; sourceTree = SOURCE_ROOT; };
@@ -129,7 +128,6 @@
 				95353C45156D6915003B78FB /* FSPanesSplitView.m */,
 				95353C46156D6915003B78FB /* FSPanesSplitViewController.h */,
 				95353C47156D6915003B78FB /* FSPanesSplitViewController.m */,
-				95353C48156D6915003B78FB /* FSPanesSplitViewController.xib */,
 			);
 			path = FSPanesSplitView;
 			sourceTree = SOURCE_ROOT;

@@ -18,8 +18,8 @@
 
 @interface FSPanesSplitViewController : UIViewController
 
-@property (nonatomic, strong) IBOutlet FSPanesMenuViewController *panesMenuViewController;
-@property (nonatomic, strong) IBOutlet FSPanesNavigationController *panesNavigationController; //it should be readonly
+@property (nonatomic, strong) FSPanesMenuViewController *panesMenuViewController;
+@property (nonatomic, strong) FSPanesNavigationController *panesNavigationController; //it should be readonly
 
 - (id)initWithNavigationController:(FSPanesNavigationController *)navigationController;
 
