@@ -16,47 +16,58 @@
 #import "FSPanesNavigationScrollView.h"
 #import "FSPaneView.h"
 
-@protocol FSPanesNavigationViewDataSource;
-@protocol FSPanesNavigationViewDelegate;
+@class FSPanesNavigationView;
 
-@interface FSPanesNavigationView : UIView <UIScrollViewDelegate> {    
-@private
-    FSPanesNavigationScrollView *_scrollView;
-    
-    NSMutableArray *_panes;
-    
-    CGFloat _paneWidth;
-    CGFloat _widePaneWidth;
-    CGFloat _leftInset;
-    CGFloat _widerLeftInset;
-    
-    struct {
-        unsigned int willDetachPanes:1;
-        unsigned int isDetachingPanes:1;
-    } _flags;
-    
-    NSInteger _indexOfFirstVisiblePane;
-    NSInteger _indexOfLastVisiblePane;
-}
+@protocol FSPanesNavigationViewDataSource <NSObject>
 
-@property(nonatomic, weak) NSObject<FSPanesNavigationViewDelegate> *delegate;
-@property(nonatomic, weak) NSObject<FSPanesNavigationViewDataSource> *dataSource;
+@required
+- (UIView *)navigationView:(FSPanesNavigationView *)navigationView viewAtIndex:(NSInteger)index;
+- (NSInteger)numberOfPanesInCascadeView:(FSPanesNavigationView *)navigationView;
 
-/*
- * Left inset of normal pane from left screen edge. Default 70.0f
- * If you change this property, width of single pane will change.
- */
+@end
+
+@protocol FSPanesNavigationViewDelegate <NSObject>
+
+@optional
+- (void)cascadeView:(FSPanesNavigationView *)navigationView didLoadPane:(UIView *)pane;
+- (void)cascadeView:(FSPanesNavigationView *)navigationView didUnloadPane:(UIView *)pane;
+
+- (void)cascadeView:(FSPanesNavigationView *)navigationView didAddPane:(UIView *)pane animated:(BOOL)animated;
+- (void)cascadeView:(FSPanesNavigationView *)navigationView didPopPaneAtIndex:(NSInteger)index;
+
+/** Called when pane will be unveiled by another pane or will slide in PanesNavigationView bounds */
+- (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidAppearAtIndex:(NSInteger)index;
+
+/** Called when pane will be shadowed by another pane or will slide out PanesNavigationView bounds */
+- (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidDisappearAtIndex:(NSInteger)index;
+
+- (void)navigationViewDidStartPullingToDetachPanes:(FSPanesNavigationView *)navigationView;
+- (void)navigationViewDidPullToDetachPanes:(FSPanesNavigationView *)navigationView;
+- (void)navigationViewDidCancelPullToDetachPanes:(FSPanesNavigationView *)navigationView;
+
+@end
+
+@interface FSPanesNavigationView : UIView <
+UIScrollViewDelegate>
+
+@property (nonatomic, weak) NSObject <FSPanesNavigationViewDelegate> *delegate;
+@property (nonatomic, weak) NSObject <FSPanesNavigationViewDataSource> *dataSource;
+
+/** 
+ Left inset of normal pane from left screen edge. Default 70.0f
+ If you change this property, width of single pane will change.
+*/
 @property(nonatomic) CGFloat leftInset;
 
-/*
- * Left inset of wider pane from left boarder. Default 220.0f
- */
+/** Left inset of wider pane from left boarder. Default 220.0f */
 @property(nonatomic) CGFloat widerLeftInset;
 
 - (void)pushView:(UIView *)newView animated:(BOOL)animated;
 - (void)pushView:(UIView *)newView animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
 
-- (void)replaceViewAtIndex:(NSUInteger)oldViewIndex withView:(UIView *)newView viewSize:(FSViewSize)viewSize;
+- (void)replaceViewAtIndex:(NSUInteger)oldViewIndex 
+                  withView:(UIView *)newView 
+                  viewSize:(FSViewSize)viewSize;
 
 - (void)popPaneAtIndex:(NSInteger)index animated:(BOOL)animated;
 - (void)popAllPanesAnimated:(BOOL)animated;
@@ -67,36 +78,7 @@
 - (NSInteger)indexOfLastVisibleView:(BOOL)loadIfNeeded;
 - (NSArray *)visiblePanes;
 
-- (void)updateContentLayoutToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration;
-
-@end
-
-@protocol FSPanesNavigationViewDataSource <NSObject>
-@required
-- (UIView *)navigationView:(FSPanesNavigationView *)navigationView viewAtIndex:(NSInteger)index;
-- (NSInteger)numberOfPanesInCascadeView:(FSPanesNavigationView *)navigationView;
-@end
-
-@protocol FSPanesNavigationViewDelegate <NSObject>
-@optional
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didLoadPane:(UIView *)pane;
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didUnloadPane:(UIView *)pane;
-
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didAddPane:(UIView *)pane animated:(BOOL)animated;
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didPopPaneAtIndex:(NSInteger)index;
-
-/*
- * Called when pane will be unveiled by another pane or will slide in PanesNavigationView bounds
- */
-- (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidAppearAtIndex:(NSInteger)index;
-/*
- * Called when pane will be shadowed by another pane or will slide out PanesNavigationView bounds
- */
-- (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidDisappearAtIndex:(NSInteger)index;
-/*
- */
-- (void)navigationViewDidStartPullingToDetachPanes:(FSPanesNavigationView *)navigationView;
-- (void)navigationViewDidPullToDetachPanes:(FSPanesNavigationView *)navigationView;
-- (void)navigationViewDidCancelPullToDetachPanes:(FSPanesNavigationView *)navigationView;
+- (void)updateContentLayoutToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+                                         duration:(NSTimeInterval)duration;
 
 @end

@@ -19,6 +19,7 @@
 #define PULL_TO_DETACH_FACTOR 0.32f
 
 @interface FSPanesNavigationView (DelegateMethods)
+
 - (void)didLoadPane:(FSPaneView *)pane;
 - (void)didAddPane:(FSPaneView *)pane animated:(BOOL)animated;
 - (void)didPopPaneAtIndex:(NSInteger)index;
@@ -30,10 +31,30 @@
 - (void)didCancelPullToDetachPanes;
 - (void)sendAppearanceDelegateMethodsIfNeeded;
 - (void)sendDetachDelegateMethodsIfNeeded;
+
 @end
 
-@interface FSPanesNavigationView (Private)
-- (NSArray *)_panesOnStock;
+@interface FSPanesNavigationView ()
+{
+    FSPanesNavigationScrollView *_scrollView;
+    
+    NSMutableArray *_panes;
+    
+    CGFloat _paneWidth;
+    CGFloat _widePaneWidth;
+    CGFloat _leftInset;
+    CGFloat _widerLeftInset;
+    
+    struct {
+        unsigned int willDetachPanes:1;
+        unsigned int isDetachingPanes:1;
+    } _flags;
+    
+    NSInteger _indexOfFirstVisiblePane;
+    NSInteger _indexOfLastVisiblePane;
+}
+
+- (NSArray *)_panesOnStack;
 
 - (FSPaneView *)_paneAtIndex:(NSInteger)index;
 - (BOOL)_paneExistsAtIndex:(NSInteger)index;
@@ -58,37 +79,17 @@
 - (NSInteger)_visiblePanesCount;
 
 - (void)_setProperPositionOfPaneAtIndex:(NSInteger)index;
+
 @end
 
 @implementation FSPanesNavigationView
 
-@synthesize leftInset = _leftInset; 
 @synthesize delegate = _delegate;
 @synthesize dataSource = _dataSource;
+
+@synthesize leftInset = _leftInset; 
 @synthesize widerLeftInset = _widerLeftInset;
 
-#pragma mark -
-#pragma mark Custom accessors
-- (void)setLeftInset:(CGFloat)newLeftInset
-{
-    CGFloat landscapeScreenWidth = [UIScreen mainScreen].bounds.size.height;
-    CGFloat portraitScreenWidth = [UIScreen mainScreen].bounds.size.width;
-    
-    _leftInset = newLeftInset;
-    _paneWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
-    _widePaneWidth = portraitScreenWidth - _leftInset;
-    
-    if (_widePaneWidth <= 0.0f) {
-        NSAssert(NO, @"Left inset is too small!");
-    }
-    
-    _scrollView.frame = CGRectMake(_leftInset, 0.0, _paneWidth, self.frame.size.height);
-    
-    [self _setProperEdgeInset:NO];
-}
-
-#pragma mark -
-#pragma mark UIView
 - (id)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
@@ -117,6 +118,26 @@
          UIViewAutoresizingFlexibleHeight];
     }
     return self;
+}
+
+#pragma mark Custom accessors
+
+- (void)setLeftInset:(CGFloat)newLeftInset
+{
+    CGFloat landscapeScreenWidth = [UIScreen mainScreen].bounds.size.height;
+    CGFloat portraitScreenWidth = [UIScreen mainScreen].bounds.size.width;
+    
+    _leftInset = newLeftInset;
+    _paneWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
+    _widePaneWidth = portraitScreenWidth - _leftInset;
+    
+    if (_widePaneWidth <= 0.0f) {
+        NSAssert(NO, @"Left inset is too small!");
+    }
+    
+    _scrollView.frame = CGRectMake(_leftInset, 0.0, _paneWidth, self.frame.size.height);
+    
+    [self _setProperEdgeInset:NO];
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event 
@@ -354,8 +375,8 @@
     return visiblePanes;
 }
 
-#pragma mark -
-#pragma mark FSPanesNavigationView (Private)
+#pragma mark Private method definitions
+
 - (NSInteger)_visiblePanesCount
 {
     NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
@@ -398,7 +419,7 @@
     }
 }
 
-- (NSArray *)_panesOnStock
+- (NSArray *)_panesOnStack
 {
     NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
     
@@ -480,7 +501,7 @@
 
 - (void)_unloadInvisiblePanesOnStock
 {
-    NSArray *panesOnStock = [self _panesOnStock];
+    NSArray *panesOnStock = [self _panesOnStack];
     
     __block NSUInteger lastIndex = [panesOnStock count] -1;
     
@@ -626,8 +647,8 @@
     return CGPointMake(x, 0.0f);
 }
 
-#pragma mark -
-#pragma mark <UIScrollViewDelegate>
+#pragma mark UIScrollViewDelegate
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     if ([_panes count] > 0)
@@ -711,8 +732,8 @@
     [self _setProperPositionOfPaneAtIndex: secondVisiblePaneIndex];
 }
 
-#pragma mark -
 #pragma mark FSPanesNavigationView (DelegateMethods)
+
 - (void)didLoadPane:(FSPaneView *)pane
 {
     if ([_delegate respondsToSelector:@selector(cascadeView:didLoadPane:)]) {
