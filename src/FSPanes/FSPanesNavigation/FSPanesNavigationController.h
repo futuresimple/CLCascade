@@ -21,12 +21,12 @@
 }
 
 /*
- * Left inset of normal size pages from left boarder
+ * Left inset of normal size panes from left boarder
  */
 @property(nonatomic) CGFloat leftInset;
 
 /*
- * Left inset of wider size page from left boarder. Default 220.0f
+ * Left inset of wider size pane from left boarder. Default 220.0f
  */
 @property(nonatomic) CGFloat widerLeftInset;
 

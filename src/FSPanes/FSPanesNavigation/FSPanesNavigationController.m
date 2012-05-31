@@ -17,8 +17,8 @@
 #import "UIViewController+FSPanes.h"
 
 @interface FSPanesNavigationController (Private)
-- (void)addPagesRoundedCorners;
-- (void)addRoundedCorner:(UIRectCorner)rectCorner toPageAtIndex:(NSInteger)index;
+- (void)_addPanesRoundedCorners;
+- (void)_addRoundedCorner:(UIRectCorner)rectCorner toPaneAtIndex:(NSInteger)index;
 - (void)_popPanesFromLastIndexTo:(NSInteger)index;
 - (void)_replaceViewControllerAtIndex:(NSUInteger)oldViewControllerIndex
                    withViewController:(UIViewController *)newViewController
@@ -76,7 +76,7 @@
     return _navigationView.widerLeftInset;
 }
 
-- (void) setWiderLeftInset:(CGFloat)inset
+- (void)setWiderLeftInset:(CGFloat)inset
 {
     [_navigationView setWiderLeftInset:inset];    
 }
@@ -90,24 +90,6 @@
 {
     [_navigationView setLeftInset:inset];
 }
-
-#pragma mark -
-#pragma marl test
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIViewController*) rootViewController {
-    if ([self.childViewControllers count] > 0) {
-        return [self.childViewControllers objectAtIndex: 0];
-    }
-    return nil;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIViewController*) lastViewController {
-    return [self.childViewControllers lastObject];
-}
-
 
 #pragma mark -
 #pragma marl CLCascadeViewDataSource
@@ -154,7 +136,7 @@
     //        [controller pageDidAppear];
     //    }
     
-    [self addPagesRoundedCorners];
+    [self _addPanesRoundedCorners];
 }
 
 - (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidDisappearAtIndex:(NSInteger)index
@@ -167,7 +149,7 @@
     //        [controller pageDidDisappear];
     //    }
     
-    [self addPagesRoundedCorners];
+    [self _addPanesRoundedCorners];
 }
 
 - (void)navigationViewDidStartPullingToDetachPanes:(FSPanesNavigationView *)navigationView
@@ -236,23 +218,33 @@
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIViewController*) firstVisibleViewController {
-    NSInteger index = [_navigationView indexOfFirstVisibleView: YES];
+- (UIViewController *)rootViewController
+{
+    if ([self.childViewControllers count] > 0) {
+        return [self.childViewControllers objectAtIndex:0];
+    }
+    return nil;
+}
+
+- (UIViewController *)lastViewController
+{
+    return [self.childViewControllers lastObject];
+}
+
+- (UIViewController *)firstVisibleViewController
+{
+    NSInteger index = [_navigationView indexOfFirstVisibleView:YES];
     
     if (index != NSNotFound) {
-        return [self.childViewControllers objectAtIndex: index];
+        return [self.childViewControllers objectAtIndex:index];
     }
     
     return nil;
 }
 
-
 #pragma mark -
-#pragma mark Private
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) addRoundedCorner:(UIRectCorner)rectCorner toPageAtIndex:(NSInteger)index {
+#pragma mark FSPanesNavigationController (Private)
+- (void)_addRoundedCorner:(UIRectCorner)rectCorner toPaneAtIndex:(NSInteger)index {
     
     if (index != NSNotFound) {
         UIViewController* firstVisibleController = [self.childViewControllers objectAtIndex: index];
@@ -263,10 +255,7 @@
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) addPagesRoundedCorners {
-    
+- (void)_addPanesRoundedCorners {
     // unload all rounded corners
     for (id item in [_navigationView visiblePanes]) {
         if (item != [NSNull null]) {
@@ -277,25 +266,21 @@
         }
     }
     
-    // get index of first visible page
-    NSInteger indexOfFirstVisiblePage = [_navigationView indexOfFirstVisibleView: NO];
+    NSInteger indexOfFirstVisiblePane = [_navigationView indexOfFirstVisibleView: NO];
+    NSInteger indexOfLastVisiblePane = [_navigationView indexOfLastVisibleView: NO];
     
-    // get index of last visible page
-    NSInteger indexOfLastVisiblePage = [_navigationView indexOfLastVisibleView: NO];
-    
-    if (indexOfLastVisiblePage == indexOfFirstVisiblePage) {
-        [self addRoundedCorner:UIRectCornerAllCorners toPageAtIndex: indexOfFirstVisiblePage];
+    if (indexOfLastVisiblePane == indexOfFirstVisiblePane) {
+        [self _addRoundedCorner:UIRectCornerAllCorners toPaneAtIndex: indexOfFirstVisiblePane];
         
     } else {
         
-        [self addRoundedCorner:UIRectCornerTopLeft | UIRectCornerBottomLeft toPageAtIndex:indexOfFirstVisiblePage];
+        [self _addRoundedCorner:UIRectCornerTopLeft | UIRectCornerBottomLeft toPaneAtIndex:indexOfFirstVisiblePane];
         
-        if (indexOfLastVisiblePage == [self.childViewControllers count] -1) {
-            [self addRoundedCorner:UIRectCornerTopRight | UIRectCornerBottomRight toPageAtIndex:indexOfLastVisiblePage];
+        if (indexOfLastVisiblePane == [self.childViewControllers count] -1) {
+            [self _addRoundedCorner:UIRectCornerTopRight | UIRectCornerBottomRight toPaneAtIndex:indexOfLastVisiblePane];
         }    
     }
 }
-
 
 - (void)_popPanesFromLastIndexTo:(NSInteger)toIndex
 {
