@@ -53,8 +53,10 @@
  */
 @property(nonatomic) CGFloat widerLeftInset;
 
-- (void)pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated;
-- (void)pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
+- (void)pushView:(UIView *)newView animated:(BOOL)animated;
+- (void)pushView:(UIView *)newView animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
+
+- (void)replaceViewAtIndex:(NSUInteger)oldViewIndex withView:(UIView *)newView viewSize:(FSViewSize)viewSize;
 
 - (void)popPaneAtIndex:(NSInteger)index animated:(BOOL)animated;
 - (void)popAllPanesAnimated:(BOOL)animated;

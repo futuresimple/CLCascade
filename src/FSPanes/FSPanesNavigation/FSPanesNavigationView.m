@@ -154,33 +154,28 @@
 
 #pragma mark -
 #pragma mark FSPanesNavigationView
-- (void)pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated
+- (void)pushView:(UIView *)newView animated:(BOOL)animated
 {
-    [self pushView:newView fromView:fromView animated:animated viewSize:FSViewSizeNormal];
+    [self pushView:newView animated:animated viewSize:FSViewSizeNormal];
 }
 
-- (void)pushView:(UIView*)newView fromView:(UIView*)fromView animated:(BOOL)animated viewSize:(FSViewSize)viewSize
+- (void)pushView:(UIView *)newView animated:(BOOL)animated viewSize:(FSViewSize)viewSize
 {
     FSPaneView *newPane = [self _createPaneWithView:newView size:viewSize];
     
-    NSInteger paneIndex = [_panes count];
+    NSUInteger newPaneIndex = [_panes count];
     
     CGSize paneSize = [self _calculatePaneSize:newPane];
-    CGPoint paneOrigin = [self _calculateOriginOfPaneAtIndex:paneIndex];
+    CGPoint paneOrigin = [self _calculateOriginOfPaneAtIndex:newPaneIndex];
     CGRect paneFrame = {.origin = paneOrigin, .size = paneSize};
     
-    if (fromView == nil) {
-        [self popAllPanesAnimated: animated];
-        paneFrame.origin.x = 0.0f;
-    }
-    
     // animation of inserting a new root pane (from left to right)
-    if (animated && fromView == nil && [_scrollView contentOffset].x >= 0) {
+    if (animated && newPaneIndex == 0 && _scrollView.contentOffset.x >= 0) {
         CGRect initialAnimationFrame = CGRectMake(paneOrigin.x - paneSize.width, paneOrigin.y, paneSize.width, paneSize.height);
         newPane.frame = initialAnimationFrame;
         
         [UIView animateWithDuration:0.15 
-                         animations: ^{
+                         animations:^ {
                              newPane.frame = paneFrame;
                          }];
     }
@@ -220,9 +215,22 @@
                          animated:animated];
 }
 
+- (void)replaceViewAtIndex:(NSUInteger)oldViewIndex withView:(UIView *)newView viewSize:(FSViewSize)viewSize
+{
+    if ([self _paneExistsAtIndex:oldViewIndex] && [newView isKindOfClass:[UIView class]]) {
+        // remove old
+        FSPaneView *oldPane = [_panes objectAtIndex:oldViewIndex];
+        [self _unloadPane:oldPane remove:YES];
+        [self didPopPaneAtIndex:oldViewIndex];
+        
+        // add new
+        [self pushView:newView animated:NO viewSize:viewSize];
+    }
+}
+
 - (void)popPaneAtIndex:(NSInteger)index animated:(BOOL)animated
 {
-    if (index >= 0 && index < [_panes count]) {
+    if ([self _paneExistsAtIndex:index]) {
         __unsafe_unretained FSPaneView *pane = [_panes objectAtIndex:index];
         
         if (pane.isLoaded) {
@@ -252,8 +260,7 @@
 
 - (void)popAllPanesAnimated:(BOOL)animated
 {
-    // index of last pane
-    NSUInteger index = [_panes count] - 1;
+    NSUInteger index = [_panes count] - 1; // index of last pane
     
     NSEnumerator *enumerator = [_panes reverseObjectEnumerator];
     

@@ -20,7 +20,6 @@
     FSPanesNavigationView *_navigationView;
 }
 
-
 /*
  * Left inset of normal size pages from left boarder
  */
@@ -34,18 +33,18 @@
 /*
  * Set and push root view controller
  */
-- (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated;
-- (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
+- (void)setRootViewController:(UIViewController *)viewController animated:(BOOL)animated;
+- (void)setRootViewController:(UIViewController *)viewController animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
 
 /*
  * Push new view controller from sender.
  * If sender is not last, then controller pop next controller and push new view from sender
  */
-- (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated;
-- (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated viewSize:(FSViewSize)size;
+- (void)addViewController:(UIViewController *)viewController sender:(UIViewController *)sender animated:(BOOL)animated;
+- (void)addViewController:(UIViewController *)viewController sender:(UIViewController *)sender animated:(BOOL)animated viewSize:(FSViewSize)size;
 
-- (UIViewController *) rootViewController;
-- (UIViewController *) lastViewController;
-- (UIViewController *) firstVisibleViewController;
+- (UIViewController *)rootViewController;
+- (UIViewController *)lastViewController;
+- (UIViewController *)firstVisibleViewController;
 
 @end

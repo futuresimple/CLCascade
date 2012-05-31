@@ -17,28 +17,30 @@
 #import "UIViewController+FSPanes.h"
 
 @interface FSPanesNavigationController (Private)
-- (void) addPagesRoundedCorners;
-- (void) addRoundedCorner:(UIRectCorner)rectCorner toPageAtIndex:(NSInteger)index;
-- (void) popPagesFromLastIndexTo:(NSInteger)index;
-- (void) removeAllPageViewControllers;
+- (void)addPagesRoundedCorners;
+- (void)addRoundedCorner:(UIRectCorner)rectCorner toPageAtIndex:(NSInteger)index;
+- (void)_popPanesFromLastIndexTo:(NSInteger)index;
+- (void)_replaceViewControllerAtIndex:(NSUInteger)oldViewControllerIndex
+                   withViewController:(UIViewController *)newViewController
+                             animated:(BOOL)animated
+                             viewSize:(FSViewSize)size;
 @end
 
 @implementation FSPanesNavigationController
 
 @synthesize leftInset, widerLeftInset;
 
+#pragma mark -
+#pragma mark UIViewController
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview.
     [_navigationView unloadInvisiblePanes];
 }
 
-#pragma mark - View lifecycle
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // set background color
     [self.view setBackgroundColor: [UIColor clearColor]];
     
     _navigationView = [[FSPanesNavigationView alloc] initWithFrame:self.view.bounds];
@@ -50,18 +52,15 @@
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+    
     [_navigationView removeFromSuperview];
     _navigationView = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    // Return YES for supported orientations
 	return YES;
 }
-
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
                                          duration:(NSTimeInterval)duration
@@ -70,30 +69,27 @@
                                                       duration:duration];
 }
 
-
 #pragma mark -
 #pragma mark Setters & getters
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (CGFloat) widerLeftInset {
+- (CGFloat)widerLeftInset
+{
     return _navigationView.widerLeftInset;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setWiderLeftInset:(CGFloat)inset {
-    [_navigationView setWiderLeftInset: inset];    
+- (void) setWiderLeftInset:(CGFloat)inset
+{
+    [_navigationView setWiderLeftInset:inset];    
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (CGFloat) leftInset {
+- (CGFloat)leftInset
+{
     return _navigationView.leftInset;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setLeftInset:(CGFloat)inset {
-    [_navigationView setLeftInset: inset];
+- (void)setLeftInset:(CGFloat)inset
+{
+    [_navigationView setLeftInset:inset];
 }
-
 
 #pragma mark -
 #pragma marl test
@@ -144,7 +140,8 @@
 
 - (void)cascadeView:(FSPanesNavigationView *)navigationView didPopPaneAtIndex:(NSInteger)index
 {
-    
+    UIViewController *vc = [self.childViewControllers objectAtIndex:index];
+    [vc removeFromParentViewController];
 }
 
 - (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidAppearAtIndex:(NSInteger)index
@@ -195,52 +192,48 @@
 }
 
 #pragma mark -
-#pragma mark Calss methods
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated {
+#pragma mark FSPanesNavigationController
+- (void)setRootViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
     [self setRootViewController:viewController animated:animated viewSize:FSViewSizeNormal];
 }
 
-- (void) setRootViewController:(UIViewController*)viewController animated:(BOOL)animated viewSize:(FSViewSize)viewSize
+- (void)setRootViewController:(UIViewController *)viewController animated:(BOOL)animated viewSize:(FSViewSize)viewSize
 {
-    // pop all pages
-    [_navigationView popAllPanesAnimated: NO];
-    // remove all controllers
-    [self removeAllPageViewControllers];
-    // add root view controller
-    [self addViewController:viewController sender:nil animated:animated viewSize:viewSize];
+    if ([self.childViewControllers count] > 0) {
+        [self _replaceViewControllerAtIndex:0
+                         withViewController:viewController
+                                   animated:animated
+                                   viewSize:viewSize];
+    }
+    else {
+        [self addViewController:viewController sender:nil animated:animated viewSize:viewSize];
+    }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated {
+- (void)addViewController:(UIViewController *)viewController sender:(UIViewController *)sender animated:(BOOL)animated
+{
     [self addViewController:viewController sender:sender animated:animated viewSize:FSViewSizeNormal];
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) addViewController:(UIViewController*)viewController sender:(UIViewController*)sender animated:(BOOL)animated viewSize:(FSViewSize)size {
-    // if in not sent from categoirs view
-    if (sender) {
-        
-        // get index of sender
-        NSInteger indexOfSender = [self.childViewControllers indexOfObject:sender];
-        
-        // if sender is not last view controller
-        if (indexOfSender != [self.childViewControllers count] - 1) {
-            
-            // pop views and remove from _viewControllers
-            [self popPagesFromLastIndexTo:indexOfSender];
-        }
+- (void)addViewController:(UIViewController *)viewController sender:(UIViewController *)sender animated:(BOOL)animated viewSize:(FSViewSize)size
+{
+    NSUInteger indexOfSender = [self.childViewControllers indexOfObject:sender];
+    NSUInteger indexOfLastViewController = [self.childViewControllers count] - 1;
+    
+    if (indexOfSender != NSNotFound && indexOfSender != indexOfLastViewController) {
+        [self _replaceViewControllerAtIndex:indexOfSender+1
+                         withViewController:viewController
+                                   animated:animated
+                                   viewSize:size];
     }
-    
-    [self addChildViewController:viewController];
-    
-    // push view
-    [_navigationView pushView:[viewController view] 
-                  fromView:[sender view] 
-                  animated:animated
-                  viewSize:size];
-    
-    [viewController didMoveToParentViewController:self];
+    else {
+        [self addChildViewController:viewController];
+        [_navigationView pushView:[viewController view]
+                         animated:animated
+                         viewSize:size];
+        [viewController didMoveToParentViewController:self];
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -304,46 +297,32 @@
 }
 
 
-- (void)popPagesFromLastIndexTo:(NSInteger)toIndex
+- (void)_popPanesFromLastIndexTo:(NSInteger)toIndex
 {
     NSUInteger childControllersCount = [self.childViewControllers count];
     
-    if (childControllersCount > 0) {
-        if (toIndex < 0) {
-            toIndex = 0;
-        }
-        
-        // index of last page
-        NSUInteger index = childControllersCount - 1;
-        
-        NSEnumerator *enumerator = [self.childViewControllers reverseObjectEnumerator];
-        
-        while ([enumerator nextObject] && self.childViewControllers.count > toIndex+1) {
+    if (toIndex >= 0 && toIndex < childControllersCount) {
+        for (NSUInteger index=childControllersCount-1; index >= toIndex; index--) {
             UIViewController *viewController = [self.childViewControllers objectAtIndex:index];
             [viewController willMoveToParentViewController:nil];
             
             [_navigationView popPaneAtIndex:index animated:NO];
-            
-            [viewController removeFromParentViewController];
-            
-            index--;
         }
     }    
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) removeAllPageViewControllers {
+- (void)_replaceViewControllerAtIndex:(NSUInteger)oldViewControllerIndex
+                   withViewController:(UIViewController *)newViewController
+                             animated:(BOOL)animated
+                             viewSize:(FSViewSize)size
+{
+    [self _popPanesFromLastIndexTo:oldViewControllerIndex+1];
     
-    // pop page from back
-    NSEnumerator* enumerator = [self.childViewControllers reverseObjectEnumerator];
-    // enumarate pages
-    while ([enumerator nextObject]) {
-        
-        UIViewController* viewController = [self.childViewControllers lastObject];
-        [viewController willMoveToParentViewController:nil];
-        
-        [viewController removeFromParentViewController];
-    }
+    [self addChildViewController:newViewController];
+    [_navigationView replaceViewAtIndex:oldViewControllerIndex
+                               withView:[newViewController view]
+                               viewSize:size];
+    [newViewController didMoveToParentViewController:self];
 }
 
 @end
