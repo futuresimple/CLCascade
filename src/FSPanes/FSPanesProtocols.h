@@ -13,7 +13,7 @@
 @class FSPanesMenuViewController;
 
 /** Root VCs (pushed on PanesSplitVC) should conform to this protocol. */
-@protocol FSPanesMenuItems <NSObject>
+@protocol FSPanesMenuItemsSource <NSObject>
 
 @optional
 - (NSString *)iconNameForPanesMenu:(FSPanesMenuViewController *)panesMenuViewController;
@@ -24,7 +24,7 @@
 @class FSPanesNavigationItem, FSPanesNavigationController;
 
 /** Conform to this protocol if you want a navigation bar for your pane. */
-@protocol FSPanesNavigationItem <NSObject>
+@protocol FSPanesNavigationItemSource <NSObject>
 
 @optional
 - (FSPanesNavigationItem *)navigationItemForPanesNavigation:(FSPanesNavigationController *)panesNavigationController;
