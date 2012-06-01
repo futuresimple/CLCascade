@@ -18,6 +18,9 @@
 #define DEFAULT_WIDER_LEFT_INSET 220.0f
 #define PULL_TO_DETACH_FACTOR 0.32f
 
+#define UISCROLL_OFFSET_RANGE_BUG_FIX 0.001f
+#define PAGING_VELOCITY_LIMIT 0.1f
+
 @interface FSPanesNavigationView (DelegateMethods)
 
 - (void)didLoadPane:(FSPaneView *)pane;
@@ -344,7 +347,7 @@
 {
     NSInteger visiblePanesCount = [self _visiblePanesCount];
     NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
-    NSInteger lastVisiblePaneIndex = MIN([_panes count]-1, firstVisiblePaneIndex + visiblePanesCount -1);
+    NSInteger lastVisiblePaneIndex = MIN([_panes count]-1, firstVisiblePaneIndex + visiblePanesCount - 1);
     return lastVisiblePaneIndex;
 }
 
@@ -637,13 +640,17 @@
 - (CGPoint)_calculateOriginOfPaneAtIndex:(NSInteger)index
 {
     CGFloat x;
-    if (index >= [self _indexOfFirstVisiblePane]) {
-        x = MAX(0, _paneWidth * index);
+    NSUInteger indexOfFirstVisiblePane = [self _indexOfFirstVisiblePane];
+    
+    if (index > indexOfFirstVisiblePane || 
+        (index == 0 && index == indexOfFirstVisiblePane && _scrollView.contentOffset.x <= 0)) {
+        // if pane/index is on stock then keep it on fixed position
+        x = _paneWidth * index;
     }
     else {
-        // if pane/index is on stock then keep it on fixed position
         x = _scrollView.contentOffset.x;
     }
+    
     return CGPointMake(x, 0.0f);
 }
 
@@ -660,38 +667,22 @@
         if (_flags.isDetachingPanes == NO)
         {
             NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
-            
-            // bug fix with bad position of first pane
-            if (firstVisiblePaneIndex == 0 && -_scrollView.contentOffset.x >= _scrollView.contentInset.left) {
-                FSPaneView *pane = [_panes objectAtIndex:firstVisiblePaneIndex];
-                
-                if (pane.isLoaded) {
-                    CGRect rect = [pane frame];
-                    rect.origin.x = 0;
-                    [pane setFrame:rect];
-                }
-            }
+            NSInteger indexOfLastVisibleView = [self indexOfLastVisibleView:NO];
             
             [self _loadBoundaryPanesIfNeeded];
             
             // keep panes that are on stock in place
             if ([_panes count] > 1) {
-                CGFloat contentOffset = _scrollView.contentOffset.x;
-                
-                for (NSInteger i=0; i<=firstVisiblePaneIndex; i++) {
-                    if ([self _paneExistsAtIndex:i]) {
-                        FSPaneView *pane = [_panes objectAtIndex:i];
+                for (NSInteger i=0; i<=indexOfLastVisibleView; i++) {
+                    FSPaneView *pane = [_panes objectAtIndex:i];
+                    
+                    if (pane.isLoaded) {
+                        CGRect newFrame = pane.frame;
+                        newFrame.origin = [self _calculateOriginOfPaneAtIndex:i];
+                        pane.frame = newFrame;
                         
-                        if (pane.isLoaded) {
-                            if (i != 0 || contentOffset > 0) {
-                                CGRect newFrame = pane.frame;
-                                newFrame.origin.x = contentOffset;
-                                pane.frame = newFrame;
-                            }
-                                                        
-                            if (i < firstVisiblePaneIndex) {
-                                [self _unloadPane:pane remove:NO];
-                            }
+                        if (i < firstVisiblePaneIndex) {
+                            [self _unloadPane:pane remove:NO];
                         }
                     }
                 }
@@ -702,8 +693,7 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    if (_flags.isDetachingPanes)
-    {
+    if (_flags.isDetachingPanes) {
         _flags.isDetachingPanes = NO;
         
         // beacause content size and insets set during animation would cause glitches
@@ -730,6 +720,50 @@
 {    
     NSInteger secondVisiblePaneIndex = [self _indexOfFirstVisiblePane] + 1;
     [self _setProperPositionOfPaneAtIndex: secondVisiblePaneIndex];
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
+                     withVelocity:(CGPoint)velocity
+              targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    CGFloat targetOffset = (*targetContentOffset).x;
+    CGFloat contentWidth = scrollView.contentSize.width;
+    CGFloat leftNeighbor = NAN, rightNeighbor = NAN, newTargetOffset = NAN;
+    
+    // calculate neighbors to the targetOffset
+    if (targetOffset > contentWidth) { // on right inset (or last pane)
+        leftNeighbor = contentWidth;
+        rightNeighbor = contentWidth + scrollView.contentInset.right - UISCROLL_OFFSET_RANGE_BUG_FIX;
+    }
+    else if (targetOffset > 0) { // on one of panes
+        CGFloat paneIndex = floorf(targetOffset / _paneWidth);
+        leftNeighbor = _paneWidth * paneIndex;
+        rightNeighbor = _paneWidth * (paneIndex + 1);
+    }
+    else { // on left inset
+        leftNeighbor = -scrollView.contentInset.left + UISCROLL_OFFSET_RANGE_BUG_FIX;
+        rightNeighbor = 0.0 - UISCROLL_OFFSET_RANGE_BUG_FIX;
+    }
+    
+    CGFloat maxOffset = contentWidth + scrollView.contentInset.right - scrollView.bounds.size.width - UISCROLL_OFFSET_RANGE_BUG_FIX;
+    rightNeighbor = MIN(rightNeighbor, maxOffset);
+    
+    // based on targetOffset and veliocty decide which neighbor should be the new target
+    if (velocity.x > PAGING_VELOCITY_LIMIT) {
+        newTargetOffset = rightNeighbor;
+    } else if (velocity.x < -PAGING_VELOCITY_LIMIT) {
+        newTargetOffset = leftNeighbor;
+    }
+    else {
+        if (rightNeighbor - targetOffset > targetOffset - leftNeighbor) {
+            newTargetOffset = leftNeighbor;
+        }
+        else {
+            newTargetOffset = rightNeighbor;
+        }
+    }
+    
+    (*targetContentOffset).x = newTargetOffset;
 }
 
 #pragma mark FSPanesNavigationView (DelegateMethods)

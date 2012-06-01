@@ -29,7 +29,7 @@
         [self setMultipleTouchEnabled:NO];
         [self setShowsVerticalScrollIndicator: NO];
         [self setShowsHorizontalScrollIndicator: NO];
-        [self setPagingEnabled:YES];
+        [self setPagingEnabled:NO];
         
         [self setAutoresizingMask:
          UIViewAutoresizingFlexibleBottomMargin | 
