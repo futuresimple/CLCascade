@@ -18,10 +18,19 @@
 
 @interface FSPanesSplitViewController : UIViewController
 
-@property (nonatomic, strong) FSPanesMenuViewController *panesMenuViewController;
-@property (nonatomic, strong) FSPanesNavigationController *panesNavigationController; //it should be readonly
+@property (readonly, strong, nonatomic) FSPanesMenuViewController *panesMenuViewController;
+@property (readonly, strong, nonatomic) FSPanesNavigationController *panesNavigationController;
 
-- (id)initWithNavigationController:(FSPanesNavigationController *)navigationController;
+/**
+ Use this initializer if you want to use a subclass of FSPanesMenuViewController.
+*/
+- (id)initWithMenuViewController:(FSPanesMenuViewController *)menuViewController 
+          andRootPaneControllers:(NSArray *)rootPaneControllers;
+
+/**
+ Convenience initializer. Will init default FSPanesMenuViewController.
+*/
+- (id)initWithRootPaneControllers:(NSArray *)rootPaneControllers;
 
 - (void)setBackgroundView:(UIView *)backgroundView;
 - (void)setDividerImage:(UIImage *)image;

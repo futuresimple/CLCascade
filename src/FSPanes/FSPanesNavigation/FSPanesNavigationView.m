@@ -73,7 +73,7 @@
 - (void)_setProperEdgeInset:(BOOL)animated forInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 - (void)_setProperSizesForLoadedPanes:(UIInterfaceOrientation)interfaceOrientation;
 
-- (FSPaneView *)_createPaneWithView:(UIView*)view size:(FSViewSize)viewSize;
+- (FSPaneView *)_createPaneWithView:(UIView*)view size:(FSPaneSize)viewSize;
 - (FSPaneView *)_loadPaneAtIndex:(NSInteger)index;
 - (void)_unloadPane:(FSPaneView*)pane remove:(BOOL)remove;
 - (void)_loadBoundaryPanesIfNeeded;
@@ -180,10 +180,10 @@
 #pragma mark FSPanesNavigationView
 - (void)pushView:(UIView *)newView animated:(BOOL)animated
 {
-    [self pushView:newView animated:animated viewSize:FSViewSizeNormal];
+    [self pushView:newView animated:animated viewSize:FSPaneSizeRegular];
 }
 
-- (void)pushView:(UIView *)newView animated:(BOOL)animated viewSize:(FSViewSize)viewSize
+- (void)pushView:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize
 {
     FSPaneView *newPane = [self _createPaneWithView:newView size:viewSize];
     
@@ -239,7 +239,7 @@
                          animated:animated];
 }
 
-- (void)replaceViewAtIndex:(NSUInteger)oldViewIndex withView:(UIView *)newView viewSize:(FSViewSize)viewSize
+- (void)replaceViewAtIndex:(NSUInteger)oldViewIndex withView:(UIView *)newView viewSize:(FSPaneSize)viewSize
 {
     if ([self _paneExistsAtIndex:oldViewIndex] && [newView isKindOfClass:[UIView class]]) {
         // remove old
@@ -364,7 +364,7 @@
             
             if (pane.isLoaded) {
                 if (i < firstVisiblePaneIndex) {
-                    if (pane.viewSize == FSViewSizeWider) {
+                    if (pane.viewSize == FSPaneSizeWide) {
                         [visiblePanes addObject:pane];
                     }
                 }
@@ -516,7 +516,7 @@
     }];
 }
 
-- (FSPaneView *)_createPaneWithView:(UIView*)view size:(FSViewSize)viewSize
+- (FSPaneView *)_createPaneWithView:(UIView*)view size:(FSPaneSize)viewSize
 {
     FSPaneView *pane = [[FSPaneView alloc] initWithSize:viewSize];
     pane.showRoundedCorners = YES;
@@ -581,7 +581,7 @@
     if ([_panes containsObject:pane]) {
         // don't unload views wider then normal because they might be visible
         // (unless we want to remove them permanently)
-        if (pane.viewSize == FSViewSizeNormal || remove == YES) {
+        if (pane.viewSize == FSPaneSizeRegular || remove == YES) {
             [pane removeFromSuperview];
             pane.contentView = nil;
             // inform delegate
@@ -600,10 +600,10 @@
     CGFloat width = NAN;
     
     switch (pane.viewSize) {
-        case FSViewSizeNormal:
+        case FSPaneSizeRegular:
             width = _paneWidth;
             break;
-        case FSViewSizeWider:
+        case FSPaneSizeWide:
             width = _widePaneWidth;
             break;
     }

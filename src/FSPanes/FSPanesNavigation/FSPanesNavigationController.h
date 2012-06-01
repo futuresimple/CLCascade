@@ -14,34 +14,36 @@
 #import <UIKit/UIKit.h>
 #import "FSPanesGlobal.h"
 #import "FSPanesNavigationView.h"
+#import "FSPanesProtocols.h"
 
-@interface FSPanesNavigationController : UIViewController <FSPanesNavigationViewDataSource, FSPanesNavigationViewDelegate> {
-    // view containing all views on stack
-    FSPanesNavigationView *_navigationView;
-}
+@interface FSPanesNavigationController : UIViewController <
+FSPanesNavigationViewDataSource, 
+FSPanesNavigationViewDelegate>
 
-/*
- * Left inset of normal size panes from left boarder
- */
-@property(nonatomic) CGFloat leftInset;
+/**
+ Left inset of normal size panes from left border. Default is 70.0f.
+*/
+@property (nonatomic) CGFloat leftInset;
 
-/*
- * Left inset of wider size pane from left boarder. Default 220.0f
- */
-@property(nonatomic) CGFloat widerLeftInset;
+/**
+ Left inset of wider size pane from left border. Default is 220.0f.
+*/
+@property (nonatomic) CGFloat widerLeftInset;
 
-/*
- * Set and push root view controller
- */
-- (void)setRootViewController:(UIViewController *)viewController animated:(BOOL)animated;
-- (void)setRootViewController:(UIViewController *)viewController animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
+/**
+ viewController should conform to <FSPaneControllerDelegate> if you want to leverage FSPanes fully.
+*/
+- (void)setRootViewController:(UIViewController *)viewController
+                     animated:(BOOL)animated;
 
-/*
- * Push new view controller from sender.
- * If sender is not last, then controller pop next controller and push new view from sender
- */
-- (void)addViewController:(UIViewController *)viewController sender:(UIViewController *)sender animated:(BOOL)animated;
-- (void)addViewController:(UIViewController *)viewController sender:(UIViewController *)sender animated:(BOOL)animated viewSize:(FSViewSize)size;
+/** 
+ Push new view controller from sender.
+ If sender is not last, then controller pop next controller and push new view from sender
+ viewController should conform to <FSPaneControllerDelegate> if you want to leverage FSPanes fully.
+*/
+- (void)addViewController:(UIViewController *)viewController 
+                   sender:(UIViewController *)sender 
+                 animated:(BOOL)animated;
 
 - (UIViewController *)rootViewController;
 - (UIViewController *)lastViewController;

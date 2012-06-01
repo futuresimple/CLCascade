@@ -41,7 +41,7 @@
 
 @synthesize viewSize = _viewSize;
 
-- (id)initWithSize:(FSViewSize)size
+- (id)initWithSize:(FSPaneSize)size
 {
     if (self = [super init]) {
         self.clipsToBounds = NO;
@@ -66,7 +66,7 @@
 
 - (id)init 
 {    
-    return [self initWithSize:FSViewSizeNormal];
+    return [self initWithSize:FSPaneSizeRegular];
 }
 
 #pragma mark Custom accessors

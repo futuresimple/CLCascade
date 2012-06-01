@@ -12,11 +12,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FSPanesMenuView.h"
 #import "FSPanesNavigationController.h"
 
-@interface FSPanesMenuViewController : UITableViewController {
-    
-}
+@interface FSPanesMenuViewController : UITableViewController
+
+@property (copy, nonatomic) NSArray *rootPaneControllers;
 
 @end

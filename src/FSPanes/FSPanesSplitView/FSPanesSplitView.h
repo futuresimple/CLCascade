@@ -15,20 +15,19 @@
 
 @class FSPanesSplitViewController;
 
-
 @interface FSPanesSplitView : UIView {
-    UIView*     _dividerView;
-    CGFloat     _dividerWidth;    
+    UIView *_dividerView;
+    CGFloat _dividerWidth;    
 }
 
-@property (nonatomic, strong) IBOutlet FSPanesSplitViewController* splitViewController;
+@property (strong, nonatomic) FSPanesSplitViewController *splitViewController;
 
-@property (nonatomic, strong) UIImage* verticalDividerImage;
+@property (strong, nonatomic) UIImage *verticalDividerImage;
 
-@property (nonatomic, strong) UIView* backgroundView;
+@property (strong, nonatomic) UIView *backgroundView;
 
-@property (nonatomic, strong) UIView* menuView;
+@property (strong, nonatomic) UIView *menuView;
 
-@property (nonatomic, strong) UIView* navigationView;
+@property (strong, nonatomic) UIView *navigationView;
 
 @end

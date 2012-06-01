@@ -9,24 +9,25 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "FSPanesGlobal.h"
 
-@class FSPanesMenuViewController;
+@class FSPanesMenuViewController, FSPanesMenuItem;
+@class FSPanesNavigationController, FSPanesNavigationItem;
 
-/** Root VCs (pushed on PanesSplitVC) should conform to this protocol. */
-@protocol FSPanesMenuItemsSource <NSObject>
-
-@optional
-- (NSString *)iconNameForPanesMenu:(FSPanesMenuViewController *)panesMenuViewController;
-- (NSString *)selectedIconNameForPanesMenu:(FSPanesMenuViewController *)panesMenuViewController;
-
-@end
-
-@class FSPanesNavigationItem, FSPanesNavigationController;
-
-/** Conform to this protocol if you want a navigation bar for your pane. */
-@protocol FSPanesNavigationItemSource <NSObject>
+@protocol FSPaneControllerDelegate <NSObject>
 
 @optional
-- (FSPanesNavigationItem *)navigationItemForPanesNavigation:(FSPanesNavigationController *)panesNavigationController;
+
+/** 
+ Implement this getter if you want a pane navigation bar. 
+ Return the view you want to see in the navigation bar.
+*/
+@property (readonly, nonatomic) UIView *paneNavigationBarView;
+
+/** 
+ All panes are by default FSPaneSizeRegular. 
+ Implement this getter and return FSPaneSizeWide if you want otherwise.
+*/
+@property (readonly, nonatomic) FSPaneSize paneSize;
 
 @end

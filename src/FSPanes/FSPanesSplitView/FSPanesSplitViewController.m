@@ -16,94 +16,46 @@
 #import "FSPanesMenuViewController.h"
 #import "FSPanesNavigationController.h"
 
+@interface FSPanesSplitViewController ()
+
+@property (readwrite, strong, nonatomic) FSPanesMenuViewController *panesMenuViewController;
+@property (readwrite, strong, nonatomic) FSPanesNavigationController *panesNavigationController;
+
+@end
+
 @implementation FSPanesSplitViewController
 
 @synthesize panesMenuViewController = _panesMenuViewController;
 @synthesize panesNavigationController = _panesNavigationController;
 
-- (id) initWithNavigationController:(FSPanesNavigationController*)navigationController
+- (id)initWithMenuViewController:(FSPanesMenuViewController *)menuViewController 
+          andRootPaneControllers:(NSArray *)rootPaneControllers
 {
     if (self = [super init]) {
-        _panesNavigationController = navigationController;
+        menuViewController.rootPaneControllers = rootPaneControllers;
+        self.panesMenuViewController = menuViewController;
+        
+        self.panesNavigationController = [FSPanesNavigationController new];
     }
     return self;
 }
 
-#pragma mark - View lifecycle
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) loadView {
-    NSString *nib = self.nibName;
-    if (nib) {
-        NSBundle *bundle = self.nibBundle;
-        if(!bundle) bundle = [NSBundle mainBundle];
-        
-        NSString *path = [bundle pathForResource:nib ofType:@"nib"];
-        
-        if(path) {
-            self.view = [[bundle loadNibNamed:nib owner:self options:nil] objectAtIndex: 0];
-            FSPanesSplitView* view_ = (FSPanesSplitView*)self.view;
-            [view_ setMenuView: self.panesMenuViewController.view];
-            [view_ setNavigationView: self.panesNavigationController.view];
-            
-            return;
-        }
-    }
-    
-    FSPanesSplitView* view_ = [[FSPanesSplitView alloc] init];
-    self.view = view_;
-    
-    [view_ setMenuView: self.panesMenuViewController.view];
-    [view_ setNavigationView: self.panesNavigationController.view];
-    [view_ setSplitViewController:self];
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)viewDidUnload
+- (id)initWithRootPaneControllers:(NSArray *)rootPaneControllers
 {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    self.panesNavigationController = nil;
-    self.panesMenuViewController = nil;
+    return [self initWithMenuViewController:[FSPanesMenuViewController new] 
+                     andRootPaneControllers:rootPaneControllers];
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (void)dealloc
 {
-    // Return YES for supported orientations
-    return YES;
+    [_panesMenuViewController removeFromParentViewController];
+    [_panesNavigationController removeFromParentViewController];
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
-    if ([_panesNavigationController respondsToSelector:@selector(willAnimateRotationToInterfaceOrientation:duration:)]) {
-        [_panesNavigationController willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
-    }
-}
+#pragma mark Custom accessors
 
-#pragma mark -
-#pragma mark Class methods
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setBackgroundView:(UIView*)backgroundView {
-    [(FSPanesSplitView*)self.view setBackgroundView: backgroundView];
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setDividerImage:(UIImage*)image {
-    [(FSPanesSplitView*)self.view setVerticalDividerImage: image];
-    
-}
-
-
-#pragma mark -
-#pragma mark Setters 
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)setPanesMenuViewController:(FSPanesMenuViewController *)viewController {
+- (void)setPanesMenuViewController:(FSPanesMenuViewController *)viewController 
+{
     if (viewController != _panesMenuViewController) {
         _panesMenuViewController = viewController;
         [(FSPanesSplitView*)self.view setMenuView: viewController.view];
@@ -113,9 +65,8 @@
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setPanesNavigationController:(FSPanesNavigationController *)viewController {
+- (void)setPanesNavigationController:(FSPanesNavigationController *)viewController 
+{
     if (viewController != _panesNavigationController) {
         _panesNavigationController = viewController;
         [(FSPanesSplitView*)self.view setNavigationView: viewController.view];
@@ -125,5 +76,39 @@
     }
 }
 
+#pragma mark View lifecycle
+
+- (void)loadView 
+{    
+    FSPanesSplitView *splitView = [FSPanesSplitView new];
+    [splitView setMenuView:self.panesMenuViewController.view];
+    [splitView setNavigationView:self.panesNavigationController.view];
+    [splitView setSplitViewController:self];
+    
+    self.view = splitView;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return YES;
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+                                         duration:(NSTimeInterval)duration 
+{
+    if ([_panesNavigationController respondsToSelector:@selector(willAnimateRotationToInterfaceOrientation:duration:)]) {
+        [_panesNavigationController willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
+    }
+}
+
+- (void)setBackgroundView:(UIView *)backgroundView 
+{
+    [(FSPanesSplitView *)self.view setBackgroundView:backgroundView];
+}
+
+- (void)setDividerImage:(UIImage*)image 
+{
+    [(FSPanesSplitView *)self.view setVerticalDividerImage:image];
+}
 
 @end

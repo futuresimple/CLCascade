@@ -63,11 +63,11 @@ UIScrollViewDelegate>
 @property(nonatomic) CGFloat widerLeftInset;
 
 - (void)pushView:(UIView *)newView animated:(BOOL)animated;
-- (void)pushView:(UIView *)newView animated:(BOOL)animated viewSize:(FSViewSize)viewSize;
+- (void)pushView:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize;
 
 - (void)replaceViewAtIndex:(NSUInteger)oldViewIndex 
                   withView:(UIView *)newView 
-                  viewSize:(FSViewSize)viewSize;
+                  viewSize:(FSPaneSize)viewSize;
 
 - (void)popPaneAtIndex:(NSInteger)index animated:(BOOL)animated;
 - (void)popAllPanesAnimated:(BOOL)animated;

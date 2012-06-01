@@ -35,8 +35,8 @@
 /** @return YES if loaded within container hierarchy, othwerise NO. */
 @property (readonly) BOOL isLoaded;
 
-@property (nonatomic) FSViewSize viewSize;
+@property (nonatomic) FSPaneSize viewSize;
 
-- (id)initWithSize:(FSViewSize)size;
+- (id)initWithSize:(FSPaneSize)size;
 
 @end

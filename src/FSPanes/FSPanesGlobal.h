@@ -11,12 +11,9 @@
 //  Licensed under the Apache License, Version 2.0.
 //
 
-
-// here you can change categories view with
 #define CATEGORIES_VIEW_WIDTH 289.0f
 
-// enums
 typedef enum {
-    FSViewSizeNormal   = 0,
-    FSViewSizeWider    = 1
-} FSViewSize;
+    FSPaneSizeRegular = 0,
+    FSPaneSizeWide    = 1
+} FSPaneSize;

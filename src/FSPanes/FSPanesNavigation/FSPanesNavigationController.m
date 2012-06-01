@@ -16,14 +16,28 @@
 #import "UIViewController+FSPaneView.h"
 #import "UIViewController+FSPanes.h"
 
-@interface FSPanesNavigationController (Private)
+@interface FSPanesNavigationController ()
+{
+    FSPanesNavigationView *_navigationView;
+}
+
+- (void)setRootViewController:(UIViewController *)viewController 
+                     animated:(BOOL)animated 
+                     viewSize:(FSPaneSize)viewSize;
+
+- (void)addViewController:(UIViewController *)viewController
+                   sender:(UIViewController *)sender
+                 animated:(BOOL)animated
+                 viewSize:(FSPaneSize)size;
+
 - (void)_addPanesRoundedCorners;
 - (void)_addRoundedCorner:(UIRectCorner)rectCorner toPaneAtIndex:(NSInteger)index;
 - (void)_popPanesFromLastIndexTo:(NSInteger)index;
 - (void)_replaceViewControllerAtIndex:(NSUInteger)oldViewControllerIndex
                    withViewController:(UIViewController *)newViewController
                              animated:(BOOL)animated
-                             viewSize:(FSViewSize)size;
+                             viewSize:(FSPaneSize)size;
+
 @end
 
 @implementation FSPanesNavigationController
@@ -32,16 +46,11 @@
 
 #pragma mark -
 #pragma mark UIViewController
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview.
-    [_navigationView unloadInvisiblePanes];
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.view setBackgroundColor: [UIColor clearColor]];
+    [self.view setBackgroundColor:[UIColor clearColor]];
     
     _navigationView = [[FSPanesNavigationView alloc] initWithFrame:self.view.bounds];
     _navigationView.delegate = self;
@@ -69,8 +78,14 @@
                                                       duration:duration];
 }
 
-#pragma mark -
-#pragma mark Setters & getters
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview.
+    [_navigationView unloadInvisiblePanes];
+}
+
+#pragma mark Custom accessors
+
 - (CGFloat)widerLeftInset
 {
     return _navigationView.widerLeftInset;
@@ -91,8 +106,8 @@
     [_navigationView setLeftInset:inset];
 }
 
-#pragma mark -
-#pragma marl CLCascadeViewDataSource
+#pragma mark CLCascadeViewDataSource
+
 - (UIView *)navigationView:(FSPanesNavigationView *)navigationView viewAtIndex:(NSInteger)index
 {
     return [[self.childViewControllers objectAtIndex:index] view];    
@@ -103,8 +118,8 @@
     return [self.childViewControllers count];
 }
 
-#pragma mark -
-#pragma marl CLCascadeViewDelegate
+#pragma mark CLCascadeViewDelegate
+
 - (void)cascadeView:(FSPanesNavigationView *)navigationView didLoadPane:(UIView *)pane
 {
     
@@ -175,12 +190,18 @@
 
 #pragma mark -
 #pragma mark FSPanesNavigationController
-- (void)setRootViewController:(UIViewController *)viewController animated:(BOOL)animated
+
+- (void)setRootViewController:(UIViewController <FSPaneControllerDelegate> *)viewController animated:(BOOL)animated
 {
-    [self setRootViewController:viewController animated:animated viewSize:FSViewSizeNormal];
+    FSPaneSize paneSize = FSPaneSizeRegular;
+    if ([viewController respondsToSelector:@selector(paneSize)]) {
+        paneSize = viewController.paneSize;
+    }
+    
+    [self setRootViewController:viewController animated:animated viewSize:paneSize];
 }
 
-- (void)setRootViewController:(UIViewController *)viewController animated:(BOOL)animated viewSize:(FSViewSize)viewSize
+- (void)setRootViewController:(UIViewController *)viewController animated:(BOOL)animated viewSize:(FSPaneSize)viewSize
 {
     if ([self.childViewControllers count] > 0) {
         [self _replaceViewControllerAtIndex:0
@@ -193,12 +214,17 @@
     }
 }
 
-- (void)addViewController:(UIViewController *)viewController sender:(UIViewController *)sender animated:(BOOL)animated
+- (void)addViewController:(UIViewController <FSPaneControllerDelegate> *)viewController sender:(UIViewController *)sender animated:(BOOL)animated
 {
-    [self addViewController:viewController sender:sender animated:animated viewSize:FSViewSizeNormal];
+    FSPaneSize paneSize = FSPaneSizeRegular;
+    if ([viewController respondsToSelector:@selector(paneSize)]) {
+        paneSize = viewController.paneSize;
+    }
+    
+    [self addViewController:viewController sender:sender animated:animated viewSize:paneSize];
 }
 
-- (void)addViewController:(UIViewController *)viewController sender:(UIViewController *)sender animated:(BOOL)animated viewSize:(FSViewSize)size
+- (void)addViewController:(UIViewController *)viewController sender:(UIViewController *)sender animated:(BOOL)animated viewSize:(FSPaneSize)size
 {
     NSUInteger indexOfSender = [self.childViewControllers indexOfObject:sender];
     NSUInteger indexOfLastViewController = [self.childViewControllers count] - 1;
@@ -299,7 +325,7 @@
 - (void)_replaceViewControllerAtIndex:(NSUInteger)oldViewControllerIndex
                    withViewController:(UIViewController *)newViewController
                              animated:(BOOL)animated
-                             viewSize:(FSViewSize)size
+                             viewSize:(FSPaneSize)size
 {
     [self _popPanesFromLastIndexTo:oldViewControllerIndex+1];
     
