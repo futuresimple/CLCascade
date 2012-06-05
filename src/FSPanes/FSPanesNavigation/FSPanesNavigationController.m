@@ -13,7 +13,6 @@
 
 #import "FSPanesNavigationController.h"
 #import "FSPaneView.h"
-#import "UIViewController+FSPaneView.h"
 #import "UIViewController+FSPanes.h"
 
 @interface FSPanesNavigationController ()
@@ -279,14 +278,12 @@
     }
 }
 
-- (void)_addRoundedCorner:(UIRectCorner)rectCorner toPaneAtIndex:(NSInteger)index {
-    
+- (void)_addRoundedCorner:(UIRectCorner)rectCorner toPaneAtIndex:(NSInteger)index
+{
     if (index != NSNotFound) {
-        UIViewController* firstVisibleController = [self.childViewControllers objectAtIndex: index];
-        
-        FSPaneView* view = firstVisibleController.segmentedView;
-        [view setShowRoundedCorners: YES];
-        [view setRectCorner: rectCorner];
+        FSPaneView *pane = [_navigationView paneAtIndex:index];
+        [pane setShowRoundedCorners: YES];
+        [pane setRectCorner: rectCorner];
     }
 }
 

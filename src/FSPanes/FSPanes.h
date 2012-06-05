@@ -24,6 +24,5 @@
 
 #import <FSPanes/FSPane/FSPaneView.h>
 #import <FSPanes/FSPane/FSPaneBorderShadowView.h>
-#import <FSPanes/FSPane/UIViewController+FSPaneView.h>
 
 #endif

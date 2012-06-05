@@ -59,7 +59,7 @@
 
 - (NSArray *)_panesOnStack;
 
-- (FSPaneView *)_paneAtIndex:(NSInteger)index;
+- (FSPaneView *)paneAtIndex:(NSInteger)index;
 - (BOOL)_paneExistsAtIndex:(NSInteger)index;
 - (void)_unloadInvisiblePanesOnStock;
 
@@ -347,6 +347,15 @@
     return lastVisiblePaneIndex;
 }
 
+- (FSPaneView *)paneAtIndex:(NSInteger)index
+{
+    FSPaneView *pane = nil;
+    if ([self _paneExistsAtIndex:index]) {
+        pane = [_panes objectAtIndex:index];
+    }
+    return pane;
+}
+
 - (NSArray *)visiblePanes
 {
     NSMutableArray *visiblePanes = [NSMutableArray arrayWithCapacity:[_panes count]];
@@ -432,15 +441,6 @@
     }
     
     return panesOnStock;
-}
-
-- (FSPaneView *)_paneAtIndex:(NSInteger)index
-{
-    FSPaneView *pane = nil;
-    if ([self _paneExistsAtIndex:index]) {
-        pane = [_panes objectAtIndex:index];
-    }
-    return pane;
 }
 
 - (BOOL)_paneExistsAtIndex:(NSInteger)index
@@ -546,8 +546,8 @@
             pane.frame = paneFrame;
             
             // add the reloaded pane at appropriate position
-            FSPaneView *paneBelow = [self _paneAtIndex:index-1];
-            FSPaneView *paneAbove = [self _paneAtIndex:index+1];
+            FSPaneView *paneBelow = [self paneAtIndex:index-1];
+            FSPaneView *paneAbove = [self paneAtIndex:index+1];
             if (paneBelow.isLoaded && paneAbove.isLoaded) {
                 NSUInteger indexOfPaneAbove = [_scrollView.subviews indexOfObject:paneAbove];
                 [_scrollView insertSubview:pane atIndex:indexOfPaneAbove];

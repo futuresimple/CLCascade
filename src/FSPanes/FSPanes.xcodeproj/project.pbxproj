@@ -11,8 +11,6 @@
 		95353C28156D68FD003B78FB /* FSPaneBorderShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C1E156D68FD003B78FB /* FSPaneBorderShadowView.m */; };
 		95353C2D156D68FD003B78FB /* FSPaneView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C23156D68FD003B78FB /* FSPaneView.h */; };
 		95353C2E156D68FD003B78FB /* FSPaneView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C24156D68FD003B78FB /* FSPaneView.m */; };
-		95353C2F156D68FD003B78FB /* UIViewController+FSPaneView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C25156D68FD003B78FB /* UIViewController+FSPaneView.h */; };
-		95353C30156D68FD003B78FB /* UIViewController+FSPaneView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C26156D68FD003B78FB /* UIViewController+FSPaneView.m */; };
 		95353C38156D6907003B78FB /* FSPanesMenuViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C34156D6907003B78FB /* FSPanesMenuViewController.h */; };
 		95353C39156D6907003B78FB /* FSPanesMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C35156D6907003B78FB /* FSPanesMenuViewController.m */; };
 		95353C3F156D690F003B78FB /* FSPanesNavigationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C3B156D690F003B78FB /* FSPanesNavigationController.h */; };
@@ -38,8 +36,6 @@
 		95353C1E156D68FD003B78FB /* FSPaneBorderShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSPaneBorderShadowView.m; sourceTree = "<group>"; };
 		95353C23156D68FD003B78FB /* FSPaneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPaneView.h; sourceTree = "<group>"; };
 		95353C24156D68FD003B78FB /* FSPaneView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSPaneView.m; sourceTree = "<group>"; };
-		95353C25156D68FD003B78FB /* UIViewController+FSPaneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+FSPaneView.h"; sourceTree = "<group>"; };
-		95353C26156D68FD003B78FB /* UIViewController+FSPaneView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+FSPaneView.m"; sourceTree = "<group>"; };
 		95353C34156D6907003B78FB /* FSPanesMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPanesMenuViewController.h; sourceTree = "<group>"; };
 		95353C35156D6907003B78FB /* FSPanesMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSPanesMenuViewController.m; sourceTree = "<group>"; };
 		95353C3B156D690F003B78FB /* FSPanesNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FSPanesNavigationController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -81,8 +77,6 @@
 				95353C1E156D68FD003B78FB /* FSPaneBorderShadowView.m */,
 				95353C23156D68FD003B78FB /* FSPaneView.h */,
 				95353C24156D68FD003B78FB /* FSPaneView.m */,
-				95353C25156D68FD003B78FB /* UIViewController+FSPaneView.h */,
-				95353C26156D68FD003B78FB /* UIViewController+FSPaneView.m */,
 			);
 			path = FSPane;
 			sourceTree = SOURCE_ROOT;
@@ -180,7 +174,6 @@
 			files = (
 				95353C27156D68FD003B78FB /* FSPaneBorderShadowView.h in Headers */,
 				95353C2D156D68FD003B78FB /* FSPaneView.h in Headers */,
-				95353C2F156D68FD003B78FB /* UIViewController+FSPaneView.h in Headers */,
 				95353C38156D6907003B78FB /* FSPanesMenuViewController.h in Headers */,
 				95353C3F156D690F003B78FB /* FSPanesNavigationController.h in Headers */,
 				95353C41156D690F003B78FB /* FSPanesNavigationView.h in Headers */,
@@ -246,7 +239,6 @@
 			files = (
 				95353C28156D68FD003B78FB /* FSPaneBorderShadowView.m in Sources */,
 				95353C2E156D68FD003B78FB /* FSPaneView.m in Sources */,
-				95353C30156D68FD003B78FB /* UIViewController+FSPaneView.m in Sources */,
 				95353C39156D6907003B78FB /* FSPanesMenuViewController.m in Sources */,
 				95353C40156D690F003B78FB /* FSPanesNavigationController.m in Sources */,
 				95353C42156D690F003B78FB /* FSPanesNavigationView.m in Sources */,

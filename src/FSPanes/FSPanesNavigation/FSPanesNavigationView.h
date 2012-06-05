@@ -76,6 +76,7 @@ UIScrollViewDelegate>
 
 - (NSInteger)indexOfFirstVisibleView:(BOOL)loadIfNeeded;
 - (NSInteger)indexOfLastVisibleView:(BOOL)loadIfNeeded;
+- (FSPaneView *)paneAtIndex:(NSInteger)index;
 - (NSArray *)visiblePanes;
 
 - (void)updateContentLayoutToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
