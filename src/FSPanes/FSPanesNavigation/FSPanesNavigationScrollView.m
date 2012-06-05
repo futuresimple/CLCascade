@@ -40,10 +40,4 @@
     return self;
 }
 
-- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated
-{
-    // bug fix with auto scrolling when become first responder
-    // do not overide it
-}
-
 @end
