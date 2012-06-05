@@ -21,15 +21,13 @@
     FSPanesNavigationView *_navigationView;
 }
 
-- (void)setRootViewController:(UIViewController *)viewController 
-                     animated:(BOOL)animated 
-                     viewSize:(FSPaneSize)viewSize;
-
-- (void)addViewController:(UIViewController *)viewController
-                   sender:(UIViewController *)sender
-                 animated:(BOOL)animated
-                 viewSize:(FSPaneSize)size;
-
+- (void)_setRootViewController:(UIViewController *)viewController
+                      animated:(BOOL)animated
+                      viewSize:(FSPaneSize)viewSize;
+- (void)_addViewController:(UIViewController *)viewController
+                    sender:(UIViewController *)sender
+                  animated:(BOOL)animated
+                  viewSize:(FSPaneSize)size;
 - (void)_addPanesRoundedCorners;
 - (void)_addRoundedCorner:(UIRectCorner)rectCorner toPaneAtIndex:(NSInteger)index;
 - (void)_popPanesFromLastIndexTo:(NSInteger)index;
@@ -108,9 +106,19 @@
 
 #pragma mark <FSPanesNavigationViewDataSource>
 
-- (UIView *)navigationView:(FSPanesNavigationView *)navigationView viewAtIndex:(NSInteger)index
+- (UIView *)navigationView:(FSPanesNavigationView *)navigationView contentViewAtIndex:(NSInteger)index
 {
-    return [[self.childViewControllers objectAtIndex:index] view];    
+    return [[self.childViewControllers objectAtIndex:index] view];
+}
+
+- (UIView *)navigationView:(FSPanesNavigationView *)navigationView headerViewAtIndex:(NSInteger)index
+{
+    UIView *header = nil;
+    UIViewController <FSPaneControllerDelegate> *controller = [self.childViewControllers objectAtIndex:index];
+    if ([controller respondsToSelector:@selector(paneNavigationBarView)]) {
+        header = controller.paneNavigationBarView;
+    }
+    return header;
 }
 
 - (NSInteger)numberOfPanesInNavigationView:(FSPanesNavigationView *)navigationView
@@ -198,20 +206,7 @@
         paneSize = viewController.paneSize;
     }
     
-    [self setRootViewController:viewController animated:animated viewSize:paneSize];
-}
-
-- (void)setRootViewController:(UIViewController *)viewController animated:(BOOL)animated viewSize:(FSPaneSize)viewSize
-{
-    if ([self.childViewControllers count] > 0) {
-        [self _replaceViewControllerAtIndex:0
-                         withViewController:viewController
-                                   animated:animated
-                                   viewSize:viewSize];
-    }
-    else {
-        [self addViewController:viewController sender:nil animated:animated viewSize:viewSize];
-    }
+    [self _setRootViewController:viewController animated:animated viewSize:paneSize];
 }
 
 - (void)addViewController:(UIViewController <FSPaneControllerDelegate> *)viewController sender:(UIViewController *)sender animated:(BOOL)animated
@@ -221,27 +216,7 @@
         paneSize = viewController.paneSize;
     }
     
-    [self addViewController:viewController sender:sender animated:animated viewSize:paneSize];
-}
-
-- (void)addViewController:(UIViewController *)viewController sender:(UIViewController *)sender animated:(BOOL)animated viewSize:(FSPaneSize)size
-{
-    NSUInteger indexOfSender = [self.childViewControllers indexOfObject:sender];
-    NSUInteger indexOfLastViewController = [self.childViewControllers count] - 1;
-    
-    if (indexOfSender != NSNotFound && indexOfSender != indexOfLastViewController) {
-        [self _replaceViewControllerAtIndex:indexOfSender+1
-                         withViewController:viewController
-                                   animated:animated
-                                   viewSize:size];
-    }
-    else {
-        [self addChildViewController:viewController];
-        [_navigationView pushView:[viewController view]
-                         animated:animated
-                         viewSize:size];
-        [viewController didMoveToParentViewController:self];
-    }
+    [self _addViewController:viewController sender:sender animated:animated viewSize:paneSize];
 }
 
 - (UIViewController *)rootViewController
@@ -269,7 +244,41 @@
 }
 
 #pragma mark -
-#pragma mark FSPanesNavigationController (Private)
+#pragma mark FSPanesNavigationController () // Private
+
+- (void)_setRootViewController:(UIViewController *)viewController animated:(BOOL)animated viewSize:(FSPaneSize)viewSize
+{
+    if ([self.childViewControllers count] > 0) {
+        [self _replaceViewControllerAtIndex:0
+                         withViewController:viewController
+                                   animated:animated
+                                   viewSize:viewSize];
+    }
+    else {
+        [self _addViewController:viewController sender:nil animated:animated viewSize:viewSize];
+    }
+}
+
+- (void)_addViewController:(UIViewController *)viewController sender:(UIViewController *)sender animated:(BOOL)animated viewSize:(FSPaneSize)size
+{
+    NSUInteger indexOfSender = [self.childViewControllers indexOfObject:sender];
+    NSUInteger indexOfLastViewController = [self.childViewControllers count] - 1;
+    
+    if (indexOfSender != NSNotFound && indexOfSender != indexOfLastViewController) {
+        [self _replaceViewControllerAtIndex:indexOfSender+1
+                         withViewController:viewController
+                                   animated:animated
+                                   viewSize:size];
+    }
+    else {
+        [self addChildViewController:viewController];
+        [_navigationView pushView:[viewController view]
+                         animated:animated
+                         viewSize:size];
+        [viewController didMoveToParentViewController:self];
+    }
+}
+
 - (void)_addRoundedCorner:(UIRectCorner)rectCorner toPaneAtIndex:(NSInteger)index {
     
     if (index != NSNotFound) {

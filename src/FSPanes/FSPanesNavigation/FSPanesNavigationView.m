@@ -178,16 +178,12 @@
 
 #pragma mark -
 #pragma mark FSPanesNavigationView
-- (void)pushView:(UIView *)newView animated:(BOOL)animated
-{
-    [self pushView:newView animated:animated viewSize:FSPaneSizeRegular];
-}
-
 - (void)pushView:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize
 {
-    FSPaneView *newPane = [self _createPaneWithView:newView size:viewSize];
-    
     NSUInteger newPaneIndex = [_panes count];
+    
+    FSPaneView *newPane = [self _createPaneWithView:newView size:viewSize];
+    newPane.headerView = [self.dataSource navigationView:self headerViewAtIndex:newPaneIndex];
     
     CGSize paneSize = [self _calculatePaneSize:newPane];
     CGPoint paneOrigin = [self _calculateOriginOfPaneAtIndex:newPaneIndex];
@@ -540,36 +536,34 @@
         pane = [_panes objectAtIndex:index];
         
         // rebuild pane if necessery
-        if (pane.contentView == nil) {
-            UIView *contentView = [_dataSource navigationView:self viewAtIndex:index];
+        if (!pane.isLoaded) {
+            pane.contentView = [_dataSource navigationView:self contentViewAtIndex:index];
+            pane.headerView = [_dataSource navigationView:self headerViewAtIndex:index];
             
-            if (contentView != nil) {
-                // preventive, set frame
-                CGSize paneSize = [self _calculatePaneSize:pane];
-                CGRect paneFrame = CGRectMake(index * _paneWidth, 0.0f, paneSize.width, paneSize.height);
-                pane.frame = paneFrame;
-                
-                pane.contentView = contentView;
-                
-                FSPaneView *paneBelow = [self _paneAtIndex:index-1];
-                FSPaneView *paneAbove = [self _paneAtIndex:index+1];
-                if (paneBelow.isLoaded && paneAbove.isLoaded) {
-                    NSUInteger indexOfPaneAbove = [_scrollView.subviews indexOfObject:paneAbove];
-                    [_scrollView insertSubview:pane atIndex:indexOfPaneAbove];
-                }
-                else if (paneBelow.isLoaded) {
-                    [_scrollView insertSubview:pane aboveSubview:paneBelow];
-                }
-                else if (paneAbove.isLoaded) {
-                    [_scrollView insertSubview:pane belowSubview:paneAbove];
-                }
-                else {
-                    [_scrollView addSubview:pane];
-                }
-                
-                // inform delegate
-                [self didLoadPane:pane];
+            // preventive, set frame
+            CGSize paneSize = [self _calculatePaneSize:pane];
+            CGRect paneFrame = CGRectMake(index * _paneWidth, 0.0f, paneSize.width, paneSize.height);
+            pane.frame = paneFrame;
+            
+            // add the reloaded pane at appropriate position
+            FSPaneView *paneBelow = [self _paneAtIndex:index-1];
+            FSPaneView *paneAbove = [self _paneAtIndex:index+1];
+            if (paneBelow.isLoaded && paneAbove.isLoaded) {
+                NSUInteger indexOfPaneAbove = [_scrollView.subviews indexOfObject:paneAbove];
+                [_scrollView insertSubview:pane atIndex:indexOfPaneAbove];
             }
+            else if (paneBelow.isLoaded) {
+                [_scrollView insertSubview:pane aboveSubview:paneBelow];
+            }
+            else if (paneAbove.isLoaded) {
+                [_scrollView insertSubview:pane belowSubview:paneAbove];
+            }
+            else {
+                [_scrollView addSubview:pane];
+            }
+            
+            // inform delegate
+            [self didLoadPane:pane];
         }
     }
     
@@ -584,6 +578,8 @@
         if (pane.viewSize == FSPaneSizeRegular || remove == YES) {
             [pane removeFromSuperview];
             pane.contentView = nil;
+            pane.headerView = nil;
+            
             // inform delegate
             [self didUnloadPane:pane];
         }

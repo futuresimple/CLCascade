@@ -21,7 +21,8 @@
 @protocol FSPanesNavigationViewDataSource <NSObject>
 
 @required
-- (UIView *)navigationView:(FSPanesNavigationView *)navigationView viewAtIndex:(NSInteger)index;
+- (UIView *)navigationView:(FSPanesNavigationView *)navigationView contentViewAtIndex:(NSInteger)index;
+- (UIView *)navigationView:(FSPanesNavigationView *)navigationView headerViewAtIndex:(NSInteger)index;
 - (NSInteger)numberOfPanesInNavigationView:(FSPanesNavigationView *)navigationView;
 
 @end
@@ -62,7 +63,6 @@ UIScrollViewDelegate>
 /** Left inset of wider pane from left boarder. Default 220.0f */
 @property(nonatomic) CGFloat widerLeftInset;
 
-- (void)pushView:(UIView *)newView animated:(BOOL)animated;
 - (void)pushView:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize;
 
 - (void)replaceViewAtIndex:(NSUInteger)oldViewIndex 
