@@ -17,9 +17,8 @@
 
 @interface FSPaneView : UIView
 
-@property (strong, nonatomic) IBOutlet UIView *headerView;
-@property (strong, nonatomic) IBOutlet UIView *contentView;
-@property (strong, nonatomic) IBOutlet UIView *footerView;
+@property (strong, nonatomic) UIView *headerView;
+@property (strong, nonatomic) UIView *contentView;
 
 @property (nonatomic) CGFloat shadowWidth;
 

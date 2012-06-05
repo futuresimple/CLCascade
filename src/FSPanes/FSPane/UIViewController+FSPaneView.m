@@ -18,42 +18,32 @@
 
 @dynamic segmentedView;
 @dynamic headerView;
-@dynamic footerView;
 @dynamic contentView;
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (FSPaneView*) segmentedView {
+- (FSPaneView *)segmentedView
+{
     UIView *contentView = [self.view superview];
-    return (FSPaneView*)[contentView superview];
+    return (FSPaneView *)[contentView superview];
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIView*) headerView {
+- (UIView *)headerView
+{
+    if (![self.segmentedView isKindOfClass:[FSPaneView class]]) {
+        return nil;
+    }
     
-    if (![self.segmentedView isKindOfClass:[FSPaneView class]]) return nil;
-    
-    FSPaneView* view_ = (FSPaneView*)self.segmentedView;
+    FSPaneView *view_ = (FSPaneView *)self.segmentedView;
     return view_.headerView;
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIView*) footerView {
+- (UIView *)contentView
+{
+    if (![self.segmentedView isKindOfClass:[FSPaneView class]]) {
+        return self.view;
+    }
     
-    if (![self.segmentedView isKindOfClass:[FSPaneView class]]) return nil;
-    
-    FSPaneView* view_ = (FSPaneView*)self.segmentedView;
-    return view_.footerView;
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIView*) contentView {
-    if (![self.segmentedView isKindOfClass:[FSPaneView class]]) return self.view;
-    
-    FSPaneView* view_ = (FSPaneView*)self.segmentedView;
+    FSPaneView *view_ = (FSPaneView *)self.segmentedView;
     return view_.contentView;
 }
 

@@ -29,7 +29,6 @@
 
 @implementation FSPaneView
 
-@synthesize footerView = _footerView;
 @synthesize contentView = _contentView;
 @synthesize headerView = _headerView;
 
@@ -108,25 +107,6 @@
             [_headerView setUserInteractionEnabled:YES];
             
             [_roundedCornersView addSubview: _headerView];
-            [self setNeedsLayout];
-        }
-    }
-}
-
-- (void)setFooterView:(UIView *)footerView
-{    
-    if (_footerView != footerView) {
-        [_footerView removeFromSuperview];
-        
-        _footerView = footerView;
-        if (_footerView) {
-            [_footerView setAutoresizingMask:
-             UIViewAutoresizingFlexibleLeftMargin | 
-             UIViewAutoresizingFlexibleRightMargin | 
-             UIViewAutoresizingFlexibleBottomMargin];
-            [_footerView setUserInteractionEnabled:YES];
-            
-            [_roundedCornersView addSubview: _footerView];
             [self setNeedsLayout];
         }
     }
@@ -216,7 +196,6 @@
     CGFloat viewWidth = rect.size.width;
     CGFloat viewHeight = rect.size.height;
     CGFloat headerHeight = 0.0f;
-    CGFloat footerHeight = 0.0f;
     
     _roundedCornersView.frame = rect;
     
@@ -227,15 +206,7 @@
         _headerView.frame = newHeaderViewFrame;
     }
     
-    if (_footerView) {
-        footerHeight = _footerView.frame.size.height;
-        CGFloat footerY = viewHeight - footerHeight;
-        
-        CGRect newFooterViewFrame = CGRectMake(0.0f, footerY, viewWidth, footerHeight);
-        _footerView.frame = newFooterViewFrame;
-    }
-    
-    _contentView.frame = CGRectMake(0.0f, headerHeight, viewWidth, viewHeight - headerHeight - footerHeight);
+    _contentView.frame = CGRectMake(0.0f, headerHeight, viewWidth, viewHeight - headerHeight);
     
     if (_leftShadowView) {
         CGRect shadowFrame = CGRectMake(0.0f - _shadowWidth + _shadowOffset, 0.0f, _shadowWidth, rect.size.height);

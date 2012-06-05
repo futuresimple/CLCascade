@@ -16,10 +16,9 @@
 
 @interface UIViewController (UIViewController_FSPaneView)
 
-@property (nonatomic, retain, readonly) UIView* headerView;
-@property (nonatomic, retain, readonly) UIView* footerView;
-@property (nonatomic, retain, readonly) UIView* contentView;
+@property (nonatomic, retain, readonly) UIView *headerView;
+@property (nonatomic, retain, readonly) UIView *contentView;
 
-@property (nonatomic, retain) FSPaneView* segmentedView;
+@property (nonatomic, retain) FSPaneView *segmentedView;
 
 @end
