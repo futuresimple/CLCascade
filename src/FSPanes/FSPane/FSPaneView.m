@@ -185,7 +185,7 @@
 
 - (BOOL)isLoaded
 {
-    return self.superview != nil;
+    return self.superview != nil && self.contentView != nil;
 }
 
 #pragma mark Private methods
