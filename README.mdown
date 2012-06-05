@@ -20,8 +20,7 @@ Drop FSPanes into your project. Create an array of root view controllers*. Initi
 Authors
 =======
 
-Blazej Biesiada
-Karol S. Mazur
+Blazej Biesiada and Karol S. Mazur
 
 CLCascade authors:
 Emil Wojtaszek and the AppUnite.com team
