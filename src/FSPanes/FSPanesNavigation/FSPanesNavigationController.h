@@ -31,7 +31,7 @@ FSPanesNavigationViewDelegate>
 @property (nonatomic) CGFloat widerLeftInset;
 
 /**
- viewController should conform to <FSPaneControllerDelegate> if you want to leverage FSPanes fully.
+ viewController can conform to <FSPaneControllerDelegate> if you want to leverage FSPanes fully.
 */
 - (void)setRootViewController:(UIViewController *)viewController
                      animated:(BOOL)animated;
@@ -39,7 +39,7 @@ FSPanesNavigationViewDelegate>
 /** 
  Push new view controller from sender.
  If sender is not last, then controller pop next controller and push new view from sender
- viewController should conform to <FSPaneControllerDelegate> if you want to leverage FSPanes fully.
+ viewController can conform to <FSPaneControllerDelegate> if you want to leverage FSPanes fully.
 */
 - (void)addViewController:(UIViewController *)viewController 
                    sender:(UIViewController *)sender 
