@@ -200,12 +200,14 @@
 
 - (void)setRootViewController:(UIViewController <FSPaneControllerDelegate> *)viewController animated:(BOOL)animated
 {
-    FSPaneSize paneSize = FSPaneSizeRegular;
-    if ([viewController respondsToSelector:@selector(paneSize)]) {
-        paneSize = viewController.paneSize;
+    if (viewController != [self rootViewController]) {
+        FSPaneSize paneSize = FSPaneSizeRegular;
+        if ([viewController respondsToSelector:@selector(paneSize)]) {
+            paneSize = viewController.paneSize;
+        }
+        
+        [self _setRootViewController:viewController animated:animated viewSize:paneSize];
     }
-    
-    [self _setRootViewController:viewController animated:animated viewSize:paneSize];
 }
 
 - (void)addViewController:(UIViewController <FSPaneControllerDelegate> *)viewController sender:(UIViewController *)sender animated:(BOOL)animated
@@ -335,11 +337,16 @@
 {
     [self _popPanesFromLastIndexTo:oldViewControllerIndex+1];
     
-    [self addChildViewController:newViewController];
-    [_navigationView replaceViewAtIndex:oldViewControllerIndex
-                               withView:[newViewController view]
-                               viewSize:size];
-    [newViewController didMoveToParentViewController:self];
+    UIViewController *oldViewController = [self.childViewControllers objectAtIndex:oldViewControllerIndex];
+    
+    if (newViewController != oldViewController) {
+        [self addChildViewController:newViewController];
+        [oldViewController willMoveToParentViewController:nil];
+        [_navigationView replaceViewAtIndex:oldViewControllerIndex
+                                   withView:[newViewController view]
+                                   viewSize:size];
+        [newViewController didMoveToParentViewController:self];
+    }
 }
 
 @end
