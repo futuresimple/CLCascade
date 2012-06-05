@@ -770,29 +770,29 @@
 
 - (void)didLoadPane:(FSPaneView *)pane
 {
-    if ([_delegate respondsToSelector:@selector(cascadeView:didLoadPane:)]) {
-        [_delegate cascadeView:self didLoadPane:pane];
+    if ([_delegate respondsToSelector:@selector(navigationView:didLoadPane:)]) {
+        [_delegate navigationView:self didLoadPane:pane];
     }
 }
 
 - (void)didAddPane:(FSPaneView *)pane animated:(BOOL)animated
 {
-    if ([_delegate respondsToSelector:@selector(cascadeView:didAddPane:animated:)]) {
-        [_delegate cascadeView:self didAddPane:pane animated:YES];
+    if ([_delegate respondsToSelector:@selector(navigationView:didAddPane:animated:)]) {
+        [_delegate navigationView:self didAddPane:pane animated:YES];
     }
 }
 
 - (void)didPopPaneAtIndex:(NSInteger)index
 {
-    if ([_delegate respondsToSelector:@selector(cascadeView:didPopPaneAtIndex:)]) {
-        [_delegate cascadeView:self didPopPaneAtIndex:index];
+    if ([_delegate respondsToSelector:@selector(navigationView:didPopPaneAtIndex:)]) {
+        [_delegate navigationView:self didPopPaneAtIndex:index];
     }
 }
 
 - (void)didUnloadPane:(FSPaneView *)pane
 {
-    if ([_delegate respondsToSelector:@selector(cascadeView:didUnloadPane:)]) {
-        [_delegate cascadeView:self didUnloadPane:pane];
+    if ([_delegate respondsToSelector:@selector(navigationView:didUnloadPane:)]) {
+        [_delegate navigationView:self didUnloadPane:pane];
     }
 }
 
@@ -803,8 +803,8 @@
         //    NSInteger secondVisiblePageIndex = [self indexOfFirstVisiblePage] +1;
         //    [self setProperPositionOfPageAtIndex: secondVisiblePageIndex];
         
-        if ([_delegate respondsToSelector:@selector(cascadeView:paneDidAppearAtIndex:)]) {
-            [_delegate cascadeView:self paneDidAppearAtIndex:index];
+        if ([_delegate respondsToSelector:@selector(navigationView:paneDidAppearAtIndex:)]) {
+            [_delegate navigationView:self paneDidAppearAtIndex:index];
         }
     }
 }
@@ -812,8 +812,8 @@
 - (void)paneDidDisappearAtIndex:(NSInteger)index
 {
     if ([self _paneExistsAtIndex: index]) {
-        if ([_delegate respondsToSelector:@selector(cascadeView:paneDidDisappearAtIndex:)]) {
-            [_delegate cascadeView:self paneDidDisappearAtIndex:index];
+        if ([_delegate respondsToSelector:@selector(navigationView:paneDidDisappearAtIndex:)]) {
+            [_delegate navigationView:self paneDidDisappearAtIndex:index];
         }
     }
 }

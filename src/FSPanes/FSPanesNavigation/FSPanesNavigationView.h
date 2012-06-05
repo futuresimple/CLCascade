@@ -22,24 +22,24 @@
 
 @required
 - (UIView *)navigationView:(FSPanesNavigationView *)navigationView viewAtIndex:(NSInteger)index;
-- (NSInteger)numberOfPanesInCascadeView:(FSPanesNavigationView *)navigationView;
+- (NSInteger)numberOfPanesInNavigationView:(FSPanesNavigationView *)navigationView;
 
 @end
 
 @protocol FSPanesNavigationViewDelegate <NSObject>
 
 @optional
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didLoadPane:(UIView *)pane;
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didUnloadPane:(UIView *)pane;
+- (void)navigationView:(FSPanesNavigationView *)navigationView didLoadPane:(UIView *)pane;
+- (void)navigationView:(FSPanesNavigationView *)navigationView didUnloadPane:(UIView *)pane;
 
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didAddPane:(UIView *)pane animated:(BOOL)animated;
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didPopPaneAtIndex:(NSInteger)index;
+- (void)navigationView:(FSPanesNavigationView *)navigationView didAddPane:(UIView *)pane animated:(BOOL)animated;
+- (void)navigationView:(FSPanesNavigationView *)navigationView didPopPaneAtIndex:(NSInteger)index;
 
 /** Called when pane will be unveiled by another pane or will slide in PanesNavigationView bounds */
-- (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidAppearAtIndex:(NSInteger)index;
+- (void)navigationView:(FSPanesNavigationView *)navigationView paneDidAppearAtIndex:(NSInteger)index;
 
 /** Called when pane will be shadowed by another pane or will slide out PanesNavigationView bounds */
-- (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidDisappearAtIndex:(NSInteger)index;
+- (void)navigationView:(FSPanesNavigationView *)navigationView paneDidDisappearAtIndex:(NSInteger)index;
 
 - (void)navigationViewDidStartPullingToDetachPanes:(FSPanesNavigationView *)navigationView;
 - (void)navigationViewDidPullToDetachPanes:(FSPanesNavigationView *)navigationView;

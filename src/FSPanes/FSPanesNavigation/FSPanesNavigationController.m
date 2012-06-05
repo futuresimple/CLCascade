@@ -106,42 +106,42 @@
     [_navigationView setLeftInset:inset];
 }
 
-#pragma mark CLCascadeViewDataSource
+#pragma mark <FSPanesNavigationViewDataSource>
 
 - (UIView *)navigationView:(FSPanesNavigationView *)navigationView viewAtIndex:(NSInteger)index
 {
     return [[self.childViewControllers objectAtIndex:index] view];    
 }
 
-- (NSInteger)numberOfPanesInCascadeView:(FSPanesNavigationView *)navigationView
+- (NSInteger)numberOfPanesInNavigationView:(FSPanesNavigationView *)navigationView
 {
     return [self.childViewControllers count];
 }
 
-#pragma mark CLCascadeViewDelegate
+#pragma mark <FSPanesNavigationViewDelegate>
 
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didLoadPane:(UIView *)pane
+- (void)navigationView:(FSPanesNavigationView *)navigationView didLoadPane:(UIView *)pane
 {
     
 }
 
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didUnloadPane:(UIView *)pane
+- (void)navigationView:(FSPanesNavigationView *)navigationView didUnloadPane:(UIView *)pane
 {
     
 }
 
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didAddPane:(UIView *)pane animated:(BOOL)animated
+- (void)navigationView:(FSPanesNavigationView *)navigationView didAddPane:(UIView *)pane animated:(BOOL)animated
 {
     
 }
 
-- (void)cascadeView:(FSPanesNavigationView *)navigationView didPopPaneAtIndex:(NSInteger)index
+- (void)navigationView:(FSPanesNavigationView *)navigationView didPopPaneAtIndex:(NSInteger)index
 {
     UIViewController *vc = [self.childViewControllers objectAtIndex:index];
     [vc removeFromParentViewController];
 }
 
-- (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidAppearAtIndex:(NSInteger)index
+- (void)navigationView:(FSPanesNavigationView *)navigationView paneDidAppearAtIndex:(NSInteger)index
 {
     if (index > [self.childViewControllers count] - 1) return;
     
@@ -154,7 +154,7 @@
     [self _addPanesRoundedCorners];
 }
 
-- (void)cascadeView:(FSPanesNavigationView *)navigationView paneDidDisappearAtIndex:(NSInteger)index
+- (void)navigationView:(FSPanesNavigationView *)navigationView paneDidDisappearAtIndex:(NSInteger)index
 {
     if (index > [self.childViewControllers count] - 1) return;
     
