@@ -1,42 +1,27 @@
-CLCascade
+FSPanes
 =========
 
-CLCascade is a library to create twitter-like UI in iPad apps created by AppUnite.com TEAM.
-If you need any help please contact us at [office@appunite.com][]
+FSPanes is an implementation of Twitter's iPad stacking panes. Based on CLCascade, but rewritten for our own needs. 
 
-
-Libraries
+Design
 =========
-CLCascade is a set of projects:
 
- * Cascade - on top of that you can build a twitter like swipe tabs
- * ExtraDetailTableView - additional view attached to the cell (click and drag with two fingers down)
+The basic premise behind FSPanes is that you should be able to push your own view controllers on to the pane stack without the need for subclassing (e.g. if you have an iPhone app with existing controllers that you want to somewhat painlessly port to the iPad). Pane navigation bars or pane size can be set by conforming your view controller to the FSPaneControllerProtocol.
 
-Simple projects
-===============
+You should subclass FSPanesMenuViewController. We've decided to make it a vanilla UITableViewController (will work, but will have the system default look), because we think every implementor will probably have his own custom menu solution and we don't want to impose our design on him. 
 
-Simple project screencast: [Screencast][]
+Setup
+======
 
-Screenshots:
-![Screenshot1](http://farm7.static.flickr.com/6088/6080286077_ec02a4d727_b.jpg)
-![Screenshot2](http://farm7.static.flickr.com/6185/6080285057_5f4c96a41c_b.jpg)
+Drop FSPanes into your project. Create an array of root view controllers*. Initialize FSPanesSplitViewController with that array. Enjoy. 
 
-Roadmap
-===============
-
-Because of the great interest in the project CLCascade we want to inform you that we are planning further 
-development of the project, this is what we want to do in near future:
-
- * build a framework on top of CLCascade
- * some bugfixes that we found during testing the CLCascade
- * write documentation
+*From now on you will be calling them "root pane controllers".
 
 Authors
 =======
 
-AppUnite.com
+Blazej Biesiada
+Karol S. Mazur
 
-- Emil Wojtaszek
-
-[Screencast]: http://www.youtube.com/watch?v=XFtc1ksqOmU
-[office@appunite.com]: office@appunite.com
+CLCascade authors:
+Emil Wojtaszek and the AppUnite.com team
