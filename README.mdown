@@ -6,7 +6,7 @@ FSPanes is an implementation of Twitter's iPad stacking panes. Based on CLCascad
 Design
 =========
 
-The basic premise behind FSPanes is that you should be able to push your custom view controllers on to the pane stack (e.g. if you have an iPhone app with existing controllers that you want to somewhat painlessly port to the iPad). Pane navigation bars or pane size can be set by conforming your view controller to the FSPaneControllerProtocol.
+The basic premise behind FSPanes is that you should be able to push your custom view controllers on to the pane stack (e.g. if you have an iPhone app with existing controllers that you want to somewhat painlessly port to the iPad). Pane navigation bars or pane size can be set by conforming your view controller to the FSPaneControllerDelegate protocol.
 
 You should subclass FSPanesMenuViewController. We've decided to make it a vanilla UITableViewController (will work, but will have the system default look), because we think every implementor will probably have his own custom menu solution and we don't want to impose our design on him. 
 
