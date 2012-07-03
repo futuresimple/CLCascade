@@ -16,9 +16,9 @@
 #import "FSPanesNavigationController.h"
 #import "FSPanesSplitViewController.h"
 
-@interface FSPanesSplitView (Private)
-- (void) setupView;
-- (void) addDivierView;
+@interface FSPanesSplitView ()
+- (void)_setupView;
+- (void)_addDivierView;
 @end
 
 @implementation FSPanesSplitView
@@ -30,100 +30,84 @@
 @synthesize backgroundView = _backgroundView;
 @synthesize verticalDividerImage = _verticalDividerImage;
 
+#pragma mark - FSPanesSplitView ()
 
-#pragma mark -
-#pragma mark Private
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setupView {
-    [self setBackgroundColor: [UIColor blackColor]];
+- (void)_setupView
+{
+    [self setBackgroundColor:[UIColor blackColor]];
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) addDivierView {
-    
-    if ((!_backgroundView) || (!_verticalDividerImage)) return;
-    
-    if (_dividerView) {
-        [_dividerView removeFromSuperview];
-        _dividerView = nil;
+- (void)_addDivierView
+{    
+    if (_backgroundView && _verticalDividerImage)
+    {
+        if (_dividerView) {
+            [_dividerView removeFromSuperview];
+            _dividerView = nil;
+        }
+        
+        _dividerView = [[UIView alloc] init];
+        _dividerWidth = _verticalDividerImage.size.width;
+        [_dividerView setBackgroundColor:[UIColor colorWithPatternImage:_verticalDividerImage]];
+        
+        [_backgroundView addSubview:_dividerView];
+        [self setNeedsLayout];
     }
-    
-    _dividerView = [[UIView alloc] init];
-    _dividerWidth = _verticalDividerImage.size.width;
-    [_dividerView setBackgroundColor:[UIColor colorWithPatternImage: _verticalDividerImage]];
-    
-    [_backgroundView addSubview: _dividerView];
-    [self setNeedsLayout];   
-    
 }
 
+#pragma mark - UIView
 
-#pragma mark -
-#pragma mark Init & dealloc
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (id)init {
-    self = [super init];
-    if (self) {
-        // Initialization code
-        [self setupView];
+- (id)init
+{
+    if (self = [super init]) {
+        [self _setupView];
     }
     return self;
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-        [self setupView];
+    if (self = [super initWithFrame:frame]) {
+        [self _setupView];
     }
     return self;
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (id)initWithCoder:(NSCoder *)coder {
-    self = [super initWithCoder:coder];
-    if (self) {
-        [self setupView];
+- (id)initWithCoder:(NSCoder *)coder
+{
+    if (self = [super initWithCoder:coder]) {
+        [self _setupView];
     }
     return self;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    
-    FSPanesNavigationController* panesNavigationController = _splitViewController.panesNavigationController;
-    UIView* navigationView = [panesNavigationController view];
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{    
+    FSPanesNavigationController *panesNavigationController = _splitViewController.panesNavigationController;
+    UIView *navigationView = [panesNavigationController view];
     
     if (CGRectContainsPoint(_menuView.frame, point)) {
-        
-        UIView* rootView = [[panesNavigationController firstVisibleViewController] view];
+        UIView *rootView = [[panesNavigationController firstVisibleViewController] view];
         CGRect rootViewRect = [rootView convertRect:rootView.bounds toView:self];
         
         if ((rootView) && (CGRectContainsPoint(rootViewRect, point))) {
             CGPoint newPoint = [self convertPoint:point toView:navigationView];
             return [navigationView hitTest:newPoint withEvent:event];
-        } else {
+        }
+        else {
             return [_menuView hitTest:point withEvent:event];
         }
         
-    } else {
+    }
+    else {
         CGPoint newPoint = [self convertPoint:point toView:navigationView];
         return [navigationView hitTest:newPoint withEvent:event];
     }
-    
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) layoutSubviews {
-    
+- (void)layoutSubviews
+{
     CGRect bounds = self.bounds;
     
     CGRect menuFrame = CGRectMake(0.0, 0.0, CATEGORIES_VIEW_WIDTH, bounds.size.height);
@@ -132,66 +116,56 @@
     CGRect navigationFrame = bounds;
     _navigationView.frame = navigationFrame;
     
-    CGRect backgroundViewFrame = CGRectMake(CATEGORIES_VIEW_WIDTH, 0.0, bounds.size.width - CATEGORIES_VIEW_WIDTH, bounds.size.height);
+    CGRect backgroundViewFrame = bounds;
     _backgroundView.frame = backgroundViewFrame;
     
-    CGRect dividerViewFrame = CGRectMake(0.0, 0.0, _dividerWidth, bounds.size.height);
+    CGRect dividerViewFrame = CGRectMake(CATEGORIES_VIEW_WIDTH, 0.0, _dividerWidth, bounds.size.height);
     _dividerView.frame = dividerViewFrame;
-    
 }
 
+#pragma mark - Setters
 
-#pragma mark -
-#pragma mark Setter
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setMenuView:(UIView*) aView {
+- (void)setMenuView:(UIView *)aView
+{
     if (_menuView != aView) {
         _menuView = aView;
         
-        [self addSubview: _menuView];
-        [self bringSubviewToFront: _navigationView];
+        [self addSubview:_menuView];
+        [self bringSubviewToFront:_navigationView];
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setNavigationView:(UIView*) aView {
+- (void)setNavigationView:(UIView *)aView
+{
     if (_navigationView != aView) {
         _navigationView = aView;
         
-        [self addSubview: _navigationView];
-        [self bringSubviewToFront: _navigationView];
+        [self addSubview:_navigationView];
+        [self bringSubviewToFront:_navigationView];
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setBackgroundView:(UIView*) aView {
+- (void)setBackgroundView:(UIView *)aView
+{
     if (_backgroundView != aView) {
         _backgroundView = aView;
         
         [_dividerView removeFromSuperview];
         _dividerView = nil;
         
-        if (_navigationView == nil) {
-            [self addSubview: _backgroundView];
-        } else {
-            NSUInteger index = [self.subviews indexOfObject: _navigationView];
-            [self insertSubview:_backgroundView atIndex:index];
-        }
+        [self addSubview:_backgroundView];
+        [self sendSubviewToBack:_backgroundView];
         
-        [self addDivierView];
+        [self _addDivierView];
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) setVerticalDividerImage:(UIImage*) image {
+- (void)setVerticalDividerImage:(UIImage *)image
+{
     if (_verticalDividerImage != image) {
         _verticalDividerImage = image;
         
-        [self addDivierView];
+        [self _addDivierView];
     }
 }
 
