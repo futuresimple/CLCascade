@@ -34,23 +34,22 @@
 
 - (void)_setupView
 {
-    [self setBackgroundColor:[UIColor blackColor]];
+    // Perhaps we'll put something here one day...
 }
 
 - (void)_addDivierView
 {    
-    if (_backgroundView && _verticalDividerImage)
+    if (_verticalDividerImage)
     {
         if (_dividerView) {
             [_dividerView removeFromSuperview];
-            _dividerView = nil;
         }
         
         _dividerView = [[UIView alloc] init];
         _dividerWidth = _verticalDividerImage.size.width;
         [_dividerView setBackgroundColor:[UIColor colorWithPatternImage:_verticalDividerImage]];
         
-        [_backgroundView addSubview:_dividerView];
+        [self addSubview:_dividerView];
         [self setNeedsLayout];
     }
 }
@@ -149,9 +148,6 @@
 {
     if (_backgroundView != aView) {
         _backgroundView = aView;
-        
-        [_dividerView removeFromSuperview];
-        _dividerView = nil;
         
         [self addSubview:_backgroundView];
         [self sendSubviewToBack:_backgroundView];
