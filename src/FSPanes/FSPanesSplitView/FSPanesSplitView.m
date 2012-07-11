@@ -92,23 +92,28 @@
     FSPanesNavigationController *panesNavigationController = _splitViewController.panesNavigationController;
     UIView *navigationView = [panesNavigationController view];
     
+    UIView *touchedView;
+    
     if (CGRectContainsPoint(_menuView.frame, point)) {
-        UIView *rootView = [[panesNavigationController firstVisibleViewController] view];
-        CGRect rootViewRect = [rootView convertRect:rootView.bounds toView:self];
+        NSInteger index = [panesNavigationController.navigationView indexOfFirstVisibleView:YES];
+        UIView *firstVisiblePane = [panesNavigationController.navigationView paneAtIndex:index];
         
-        if ((rootView) && (CGRectContainsPoint(rootViewRect, point))) {
-            CGPoint newPoint = [self convertPoint:point toView:navigationView];
-            return [navigationView hitTest:newPoint withEvent:event];
+        CGRect rootViewRect = [firstVisiblePane convertRect:firstVisiblePane.frame toView:self];
+        
+        if (firstVisiblePane && CGRectContainsPoint(rootViewRect, point)) {
+            touchedView = navigationView;
         }
         else {
-            return [_menuView hitTest:point withEvent:event];
+            touchedView = _menuView;
         }
         
     }
     else {
-        CGPoint newPoint = [self convertPoint:point toView:navigationView];
-        return [navigationView hitTest:newPoint withEvent:event];
+        touchedView = navigationView;
     }
+    
+    CGPoint newPoint = [self convertPoint:point toView:touchedView];
+    return [touchedView hitTest:newPoint withEvent:event];
 }
 
 - (void)layoutSubviews

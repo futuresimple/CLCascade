@@ -17,7 +17,7 @@
 
 @interface FSPanesNavigationController ()
 {
-    FSPanesNavigationView *_navigationView;
+    
 }
 
 - (void)_setRootViewController:(UIViewController *)viewController
@@ -40,6 +40,7 @@
 @implementation FSPanesNavigationController
 
 @synthesize leftInset, widerLeftInset;
+@synthesize navigationView;
 
 #pragma mark -
 #pragma mark UIViewController
@@ -49,18 +50,18 @@
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor clearColor]];
     
-    _navigationView = [[FSPanesNavigationView alloc] initWithFrame:self.view.bounds];
-    _navigationView.delegate = self;
-    _navigationView.dataSource = self;
-    [self.view addSubview:_navigationView];
+    self.navigationView = [[FSPanesNavigationView alloc] initWithFrame:self.view.bounds];
+    self.navigationView.delegate = self;
+    self.navigationView.dataSource = self;
+    [self.view addSubview:self.navigationView];
 }
 
 - (void)viewDidUnload
 {
     [super viewDidUnload];
     
-    [_navigationView removeFromSuperview];
-    _navigationView = nil;
+    [self.navigationView removeFromSuperview];
+    self.navigationView = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -71,36 +72,36 @@
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
                                          duration:(NSTimeInterval)duration
 {
-    [_navigationView updateContentLayoutToInterfaceOrientation:interfaceOrientation
+    [self.navigationView updateContentLayoutToInterfaceOrientation:interfaceOrientation
                                                       duration:duration];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview.
-    [_navigationView unloadInvisiblePanes];
+    [self.navigationView unloadInvisiblePanes];
 }
 
 #pragma mark Custom accessors
 
 - (CGFloat)widerLeftInset
 {
-    return _navigationView.widerLeftInset;
+    return self.navigationView.widerLeftInset;
 }
 
 - (void)setWiderLeftInset:(CGFloat)inset
 {
-    [_navigationView setWiderLeftInset:inset];    
+    [self.navigationView setWiderLeftInset:inset];    
 }
 
 - (CGFloat)leftInset
 {
-    return _navigationView.leftInset;
+    return self.navigationView.leftInset;
 }
 
 - (void)setLeftInset:(CGFloat)inset
 {
-    [_navigationView setLeftInset:inset];
+    [self.navigationView setLeftInset:inset];
 }
 
 #pragma mark <FSPanesNavigationViewDataSource>
@@ -235,7 +236,7 @@
 
 - (UIViewController *)firstVisibleViewController
 {
-    NSInteger index = [_navigationView indexOfFirstVisibleView:YES];
+    NSInteger index = [self.navigationView indexOfFirstVisibleView:YES];
     
     if (index != NSNotFound) {
         return [self.childViewControllers objectAtIndex:index];
@@ -273,7 +274,7 @@
     }
     else {
         [self addChildViewController:viewController];
-        [_navigationView pushView:[viewController view]
+        [self.navigationView pushView:[viewController view]
                          animated:animated
                          viewSize:size];
         [viewController didMoveToParentViewController:self];
@@ -283,7 +284,7 @@
 - (void)_addRoundedCorner:(UIRectCorner)rectCorner toPaneAtIndex:(NSInteger)index
 {
     if (index != NSNotFound) {
-        FSPaneView *pane = [_navigationView paneAtIndex:index];
+        FSPaneView *pane = [self.navigationView paneAtIndex:index];
         [pane setShowRoundedCorners: YES];
         [pane setRectCorner: rectCorner];
     }
@@ -291,7 +292,7 @@
 
 - (void)_addPanesRoundedCorners {
     // unload all rounded corners
-    for (id item in [_navigationView visiblePanes]) {
+    for (id item in [self.navigationView visiblePanes]) {
         if (item != [NSNull null]) {
             if ([item isKindOfClass:[FSPaneView class]]) {
                 FSPaneView* view = (FSPaneView*)item;
@@ -300,8 +301,8 @@
         }
     }
     
-    NSInteger indexOfFirstVisiblePane = [_navigationView indexOfFirstVisibleView: NO];
-    NSInteger indexOfLastVisiblePane = [_navigationView indexOfLastVisibleView: NO];
+    NSInteger indexOfFirstVisiblePane = [self.navigationView indexOfFirstVisibleView: NO];
+    NSInteger indexOfLastVisiblePane = [self.navigationView indexOfLastVisibleView: NO];
     
     if (indexOfLastVisiblePane == indexOfFirstVisiblePane) {
         [self _addRoundedCorner:UIRectCornerAllCorners toPaneAtIndex: indexOfFirstVisiblePane];
@@ -325,7 +326,7 @@
             UIViewController *viewController = [self.childViewControllers objectAtIndex:index];
             [viewController willMoveToParentViewController:nil];
             
-            [_navigationView popPaneAtIndex:index animated:NO];
+            [self.navigationView popPaneAtIndex:index animated:NO];
         }
     }    
 }
@@ -342,7 +343,7 @@
     if (newViewController != oldViewController) {
         [self addChildViewController:newViewController];
         [oldViewController willMoveToParentViewController:nil];
-        [_navigationView replaceViewAtIndex:oldViewControllerIndex
+        [self.navigationView replaceViewAtIndex:oldViewControllerIndex
                                    withView:[newViewController view]
                                    viewSize:size];
         [newViewController didMoveToParentViewController:self];

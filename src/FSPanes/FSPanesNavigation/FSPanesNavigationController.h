@@ -20,6 +20,9 @@
 FSPanesNavigationViewDataSource, 
 FSPanesNavigationViewDelegate>
 
+
+@property (nonatomic, readwrite, strong) FSPanesNavigationView *navigationView;
+
 /**
  Left inset of normal size panes from left border. Default is 70.0f.
 */
