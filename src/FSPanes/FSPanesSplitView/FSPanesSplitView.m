@@ -49,7 +49,13 @@
         _dividerWidth = _verticalDividerImage.size.width;
         [_dividerView setBackgroundColor:[UIColor colorWithPatternImage:_verticalDividerImage]];
         
-        [self addSubview:_dividerView];
+        if (self.backgroundView) {
+            [self insertSubview:_dividerView aboveSubview:self.backgroundView];
+        }
+        else {
+            [self insertSubview:_dividerView atIndex:0];
+        }
+        
         [self setNeedsLayout];
     }
 }
