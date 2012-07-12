@@ -96,17 +96,16 @@
     
     if (CGRectContainsPoint(_menuView.frame, point)) {
         NSInteger index = [panesNavigationController.navigationView indexOfFirstVisibleView:YES];
-        UIView *firstVisiblePane = [panesNavigationController.navigationView paneAtIndex:index];
-        
-        CGRect rootViewRect = [firstVisiblePane convertRect:firstVisiblePane.frame toView:self];
-        
-        if (firstVisiblePane && CGRectContainsPoint(rootViewRect, point)) {
+        FSPaneView *firstVisiblePane = [panesNavigationController.navigationView paneAtIndex:index];
+
+        CGRect firstVisiblePaneRect = [firstVisiblePane.superview convertRect:firstVisiblePane.frame toView:self];
+                    
+        if (firstVisiblePane && CGRectContainsPoint(firstVisiblePaneRect, point)) {
             touchedView = navigationView;
         }
         else {
             touchedView = _menuView;
         }
-        
     }
     else {
         touchedView = navigationView;
