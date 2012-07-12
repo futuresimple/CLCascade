@@ -28,22 +28,32 @@
 @synthesize panesMenuViewController = _panesMenuViewController;
 @synthesize panesNavigationController = _panesNavigationController;
 
-- (id)initWithMenuViewController:(FSPanesMenuViewController *)menuViewController 
-          andRootPaneControllers:(NSArray *)rootPaneControllers
+- (id)initWithCustomNavigationController:(FSPanesNavigationController*)navigationController 
+                      menuViewController:(FSPanesMenuViewController *)menuViewController 
+                     rootPaneControllers:(NSArray *)rootPaneControllers
 {
     if (self = [super init]) {
         menuViewController.rootPaneControllers = rootPaneControllers;
+        
+        if(menuViewController == nil) {
+            menuViewController = [FSPanesMenuViewController new];
+        }
         self.panesMenuViewController = menuViewController;
         
-        self.panesNavigationController = [FSPanesNavigationController new];
+        if(navigationController == nil) {
+            navigationController = [FSPanesNavigationController new];
+        }
+        self.panesNavigationController = navigationController;
+
     }
     return self;
 }
 
 - (id)initWithRootPaneControllers:(NSArray *)rootPaneControllers
 {
-    return [self initWithMenuViewController:[FSPanesMenuViewController new] 
-                     andRootPaneControllers:rootPaneControllers];
+    return [self initWithCustomNavigationController:nil 
+                    menuViewController:nil
+                    rootPaneControllers:rootPaneControllers];
 }
 
 - (void)dealloc

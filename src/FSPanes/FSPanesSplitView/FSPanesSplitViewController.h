@@ -23,9 +23,12 @@
 
 /**
  Use this initializer if you want to use a subclass of FSPanesMenuViewController.
+ If navigationController is nil, default FSPanesNavigationController is initialized.
+ If menuViewController is nil, default FSPanesMenuViewController is initialized.
 */
-- (id)initWithMenuViewController:(FSPanesMenuViewController *)menuViewController 
-          andRootPaneControllers:(NSArray *)rootPaneControllers;
+- (id)initWithCustomNavigationController:(FSPanesNavigationController*)navigationController 
+                      menuViewController:(FSPanesMenuViewController *)menuViewController 
+                     rootPaneControllers:(NSArray *)rootPaneControllers;
 
 /**
  Convenience initializer. Will init default FSPanesMenuViewController.
