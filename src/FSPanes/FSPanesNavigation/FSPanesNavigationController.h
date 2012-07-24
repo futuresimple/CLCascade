@@ -48,6 +48,8 @@ FSPanesNavigationViewDelegate>
                    sender:(UIViewController *)sender 
                  animated:(BOOL)animated;
 
+- (void)popViewControler:(UIViewController *)viewController animated:(BOOL)animated;
+
 - (UIViewController *)rootViewController;
 - (UIViewController *)lastViewController;
 - (UIViewController *)firstVisibleViewController;

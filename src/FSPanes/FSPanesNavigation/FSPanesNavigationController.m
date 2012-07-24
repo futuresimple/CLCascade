@@ -221,6 +221,14 @@
     [self _addViewController:viewController sender:sender animated:animated viewSize:paneSize];
 }
 
+- (void)popViewControler:(UIViewController *)viewController animated:(BOOL)animated
+{
+    NSUInteger indexOfViewControllerBeingPoped = [self.childViewControllers indexOfObject:viewController];
+    if (indexOfViewControllerBeingPoped != NSNotFound) {        
+        [self _popPanesFromLastIndexTo:indexOfViewControllerBeingPoped];
+    }
+}
+
 - (UIViewController *)rootViewController
 {
     if ([self.childViewControllers count] > 0) {
