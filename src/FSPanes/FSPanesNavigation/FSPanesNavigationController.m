@@ -142,7 +142,6 @@
 - (void)navigationView:(FSPanesNavigationView *)navigationView didPopPaneAtIndex:(NSInteger)index
 {
     UIViewController *vc = [self.childViewControllers objectAtIndex:index];
-    NSLog(@"poping controller at %d: %@", index, vc);
     [vc removeFromParentViewController];
 }
 
