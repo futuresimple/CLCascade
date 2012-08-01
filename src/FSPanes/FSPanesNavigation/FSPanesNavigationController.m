@@ -16,9 +16,6 @@
 #import "UIViewController+FSPanes.h"
 
 @interface FSPanesNavigationController ()
-{
-    
-}
 
 - (void)_setRootViewController:(UIViewController *)viewController
                       animated:(BOOL)animated
@@ -42,8 +39,7 @@
 @synthesize leftInset, widerLeftInset;
 @synthesize navigationView;
 
-#pragma mark -
-#pragma mark UIViewController
+#pragma mark - UIViewController
 
 - (void)viewDidLoad
 {
@@ -82,7 +78,7 @@
     [self.navigationView unloadInvisiblePanes];
 }
 
-#pragma mark Custom accessors
+#pragma mark - Custom accessors
 
 - (CGFloat)widerLeftInset
 {
@@ -104,7 +100,7 @@
     [self.navigationView setLeftInset:inset];
 }
 
-#pragma mark <FSPanesNavigationViewDataSource>
+#pragma mark - <FSPanesNavigationViewDataSource>
 
 - (UIView *)navigationView:(FSPanesNavigationView *)navigationView contentViewAtIndex:(NSInteger)index
 {
@@ -146,6 +142,7 @@
 - (void)navigationView:(FSPanesNavigationView *)navigationView didPopPaneAtIndex:(NSInteger)index
 {
     UIViewController *vc = [self.childViewControllers objectAtIndex:index];
+    NSLog(@"poping controller at %d: %@", index, vc);
     [vc removeFromParentViewController];
 }
 
@@ -196,8 +193,7 @@
      */
 }
 
-#pragma mark -
-#pragma mark FSPanesNavigationController
+#pragma mark - FSPanesNavigationController
 
 - (void)setRootViewController:(UIViewController <FSPaneControllerDelegate> *)viewController animated:(BOOL)animated
 {
@@ -253,8 +249,7 @@
     return nil;
 }
 
-#pragma mark -
-#pragma mark FSPanesNavigationController () // Private
+#pragma mark - FSPanesNavigationController ()
 
 - (void)_setRootViewController:(UIViewController *)viewController animated:(BOOL)animated viewSize:(FSPaneSize)viewSize
 {
@@ -283,8 +278,8 @@
     else {
         [self addChildViewController:viewController];
         [self.navigationView pushView:[viewController view]
-                         animated:animated
-                         viewSize:size];
+                             animated:animated
+                             viewSize:size];
         [viewController didMoveToParentViewController:self];
     }
 }
@@ -352,8 +347,8 @@
         [self addChildViewController:newViewController];
         [oldViewController willMoveToParentViewController:nil];
         [self.navigationView replaceViewAtIndex:oldViewControllerIndex
-                                   withView:[newViewController view]
-                                   viewSize:size];
+                                       withView:[newViewController view]
+                                       viewSize:size];
         [newViewController didMoveToParentViewController:self];
     }
 }
