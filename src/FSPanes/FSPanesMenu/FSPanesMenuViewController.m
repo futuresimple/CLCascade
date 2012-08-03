@@ -23,34 +23,25 @@
     return [super initWithStyle:UITableViewStylePlain];
 }
 
-#pragma mark View lifecycle
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return YES;
 }
 
-- (void)didReceiveMemoryWarning
+#pragma mark - FSPanesMenuViewController
+
+- (void)selectPaneAtIndex:(NSUInteger)index
 {
-    [super didReceiveMemoryWarning];
+    if (index < [self tableView:self.tableView numberOfRowsInSection:0]) {
+        NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        [self.tableView selectRowAtIndexPath:newSelectedIndexPath
+                                    animated:YES
+                              scrollPosition:UITableViewScrollPositionNone];
+        [self tableView:self.tableView didSelectRowAtIndexPath:newSelectedIndexPath];
+    }
 }
 
-#pragma mark UITableViewDataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
+#pragma mark - <UITableViewDataSource>
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {

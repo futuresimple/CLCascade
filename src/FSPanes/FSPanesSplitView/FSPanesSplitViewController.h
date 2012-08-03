@@ -38,4 +38,9 @@
 - (void)setBackgroundView:(UIView *)backgroundView;
 - (void)setDividerImage:(UIImage *)image;
 
+/**
+ The index of the view controller associated with the currently selected menu item.
+ */
+@property(nonatomic) NSUInteger selectedIndex;
+
 @end

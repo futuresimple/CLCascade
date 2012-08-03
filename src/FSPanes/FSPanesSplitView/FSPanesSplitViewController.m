@@ -25,8 +25,48 @@
 
 @implementation FSPanesSplitViewController
 
+#pragma mark - @ properties
+
+@dynamic selectedIndex;
 @synthesize panesMenuViewController = _panesMenuViewController;
 @synthesize panesNavigationController = _panesNavigationController;
+
+- (NSUInteger)selectedIndex
+{
+    return [self.panesMenuViewController.rootPaneControllers indexOfObject:self.panesNavigationController.rootViewController];
+}
+
+- (void)setSelectedIndex:(NSUInteger)selectedIndex
+{
+    if (selectedIndex < [self.panesMenuViewController.rootPaneControllers count] &&
+        self.selectedIndex != selectedIndex) {
+        [self.panesMenuViewController selectPaneAtIndex:selectedIndex];
+    }
+}
+
+- (void)setPanesMenuViewController:(FSPanesMenuViewController *)viewController 
+{
+    if (viewController != _panesMenuViewController) {
+        _panesMenuViewController = viewController;
+        [(FSPanesSplitView*)self.view setMenuView: viewController.view];
+        
+        [self addChildViewController:viewController];
+        [viewController didMoveToParentViewController:self];
+    }
+}
+
+- (void)setPanesNavigationController:(FSPanesNavigationController *)viewController 
+{
+    if (viewController != _panesNavigationController) {
+        _panesNavigationController = viewController;
+        [(FSPanesSplitView*)self.view setNavigationView: viewController.view];
+        
+        [self addChildViewController:viewController];
+        [viewController didMoveToParentViewController:self];
+    }
+}
+
+#pragma mark - FSPanesSplitViewController
 
 - (id)initWithCustomNavigationController:(FSPanesNavigationController*)navigationController 
                       menuViewController:(FSPanesMenuViewController *)menuViewController 
@@ -60,30 +100,6 @@
 {
     [_panesMenuViewController removeFromParentViewController];
     [_panesNavigationController removeFromParentViewController];
-}
-
-#pragma mark Custom accessors
-
-- (void)setPanesMenuViewController:(FSPanesMenuViewController *)viewController 
-{
-    if (viewController != _panesMenuViewController) {
-        _panesMenuViewController = viewController;
-        [(FSPanesSplitView*)self.view setMenuView: viewController.view];
-        
-        [self addChildViewController:viewController];
-        [viewController didMoveToParentViewController:self];
-    }
-}
-
-- (void)setPanesNavigationController:(FSPanesNavigationController *)viewController 
-{
-    if (viewController != _panesNavigationController) {
-        _panesNavigationController = viewController;
-        [(FSPanesSplitView*)self.view setNavigationView: viewController.view];
-        
-        [self addChildViewController:viewController];
-        [viewController didMoveToParentViewController:self];
-    }
 }
 
 #pragma mark View lifecycle

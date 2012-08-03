@@ -18,4 +18,6 @@
 
 @property (copy, nonatomic) NSArray *rootPaneControllers;
 
+- (void)selectPaneAtIndex:(NSUInteger)index;
+
 @end
