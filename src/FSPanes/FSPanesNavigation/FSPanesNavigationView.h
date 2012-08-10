@@ -30,8 +30,8 @@
 @protocol FSPanesNavigationViewDelegate <NSObject>
 
 @optional
-- (void)navigationView:(FSPanesNavigationView *)navigationView didLoadPane:(UIView *)pane;
-- (void)navigationView:(FSPanesNavigationView *)navigationView didUnloadPane:(UIView *)pane;
+- (void)navigationView:(FSPanesNavigationView *)navigationView didLoadPaneAtIndex:(NSInteger)index;
+- (void)navigationView:(FSPanesNavigationView *)navigationView didUnloadPaneAtIndex:(NSInteger)index;
 
 - (void)navigationView:(FSPanesNavigationView *)navigationView didAddPane:(UIView *)pane animated:(BOOL)animated;
 - (void)navigationView:(FSPanesNavigationView *)navigationView didPopPaneAtIndex:(NSInteger)index;

@@ -762,12 +762,12 @@
     (*targetContentOffset).x = newTargetOffset;
 }
 
-#pragma mark FSPanesNavigationView (DelegateMethods)
+#pragma mark - FSPanesNavigationView (DelegateMethods)
 
 - (void)didLoadPane:(FSPaneView *)pane
 {
-    if ([_delegate respondsToSelector:@selector(navigationView:didLoadPane:)]) {
-        [_delegate navigationView:self didLoadPane:pane];
+    if ([_delegate respondsToSelector:@selector(navigationView:didLoadPaneAtIndex:)]) {
+        [_delegate navigationView:self didLoadPaneAtIndex:[_panes indexOfObject:pane]];
     }
 }
 
@@ -787,8 +787,8 @@
 
 - (void)didUnloadPane:(FSPaneView *)pane
 {
-    if ([_delegate respondsToSelector:@selector(navigationView:didUnloadPane:)]) {
-        [_delegate navigationView:self didUnloadPane:pane];
+    if ([_delegate respondsToSelector:@selector(navigationView:didUnloadPaneAtIndex:)]) {
+        [_delegate navigationView:self didUnloadPaneAtIndex:[_panes indexOfObject:pane]];
     }
 }
 

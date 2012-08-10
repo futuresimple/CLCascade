@@ -124,12 +124,12 @@
 
 #pragma mark <FSPanesNavigationViewDelegate>
 
-- (void)navigationView:(FSPanesNavigationView *)navigationView didLoadPane:(UIView *)pane
+- (void)navigationView:(FSPanesNavigationView *)navigationView didLoadPaneAtIndex:(NSInteger)index
 {
     
 }
 
-- (void)navigationView:(FSPanesNavigationView *)navigationView didUnloadPane:(UIView *)pane
+- (void)navigationView:(FSPanesNavigationView *)navigationView didUnloadPaneAtIndex:(NSInteger)index
 {
     
 }
