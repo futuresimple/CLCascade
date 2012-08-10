@@ -63,14 +63,14 @@ UIScrollViewDelegate>
 /** Left inset of wider pane from left boarder. Default 220.0f */
 @property(nonatomic) CGFloat widerLeftInset;
 
-- (void)pushView:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize;
+- (void)pushPane:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize;
 
-- (void)replaceViewAtIndex:(NSUInteger)oldViewIndex 
-                  withView:(UIView *)newView 
-                  viewSize:(FSPaneSize)viewSize;
+- (void)replacePaneAtIndex:(NSUInteger)oldViewIndex
+                  withView:(UIView *)newView
+                  viewSize:(FSPaneSize)viewSize
+          popAnyPanesAbove:(BOOL)popPanesAbove;
 
 - (void)popPaneAtIndex:(NSInteger)index animated:(BOOL)animated;
-- (void)popAllPanesAnimated:(BOOL)animated;
 
 - (void)unloadInvisiblePanes;
 

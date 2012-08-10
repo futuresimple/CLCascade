@@ -57,11 +57,7 @@
     NSInteger _indexOfLastVisiblePane;
 }
 
-- (NSArray *)_panesOnStack;
-
-- (FSPaneView *)paneAtIndex:(NSInteger)index;
 - (BOOL)_paneExistsAtIndex:(NSInteger)index;
-- (void)_unloadInvisiblePanesOnStock;
 
 - (CGSize)_calculatePaneSize:(FSPaneView *)pane;
 - (CGFloat)_calculateContentWidth;
@@ -178,7 +174,7 @@
 
 #pragma mark -
 #pragma mark FSPanesNavigationView
-- (void)pushView:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize
+- (void)pushPane:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize
 {
     NSUInteger newPaneIndex = [_panes count];
     
@@ -235,8 +231,20 @@
                          animated:animated];
 }
 
-- (void)replaceViewAtIndex:(NSUInteger)oldViewIndex withView:(UIView *)newView viewSize:(FSPaneSize)viewSize
+- (void)replacePaneAtIndex:(NSUInteger)oldViewIndex
+                  withView:(UIView *)newView
+                  viewSize:(FSPaneSize)viewSize
+          popAnyPanesAbove:(BOOL)popPanesAbove
 {
+    if (popPanesAbove) {
+        NSInteger lastPaneIndex = [_panes count] - 1;
+        
+        for (NSInteger idx = lastPaneIndex; idx > (NSInteger)oldViewIndex; idx--) {
+            [self _unloadPane:[_panes objectAtIndex:idx] remove:YES];
+            [self didPopPaneAtIndex:idx];
+        }
+    }
+    
     if ([self _paneExistsAtIndex:oldViewIndex] && [newView isKindOfClass:[UIView class]]) {
         // remove old
         FSPaneView *oldPane = [_panes objectAtIndex:oldViewIndex];
@@ -244,7 +252,7 @@
         [self didPopPaneAtIndex:oldViewIndex];
         
         // add new
-        [self pushView:newView animated:NO viewSize:viewSize];
+        [self pushPane:newView animated:NO viewSize:viewSize];
     }
 }
 
@@ -276,20 +284,6 @@
             }
         }
     }
-}
-
-- (void)popAllPanesAnimated:(BOOL)animated
-{
-    NSUInteger index = [_panes count] - 1; // index of last pane
-    
-    NSEnumerator *enumerator = [_panes reverseObjectEnumerator];
-    
-    while ([enumerator nextObject]) {
-        [self popPaneAtIndex:index animated:NO];
-        index--;
-    }    
-    
-    [_panes removeAllObjects];
 }
 
 - (void)unloadInvisiblePanes
@@ -427,22 +421,6 @@
     }
 }
 
-- (NSArray *)_panesOnStack
-{
-    NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
-    
-    NSMutableArray *panesOnStock = [NSMutableArray arrayWithCapacity:[_panes count]];
-    
-    for (NSInteger i=0; i<=firstVisiblePaneIndex; i++) {
-        if ([self _paneExistsAtIndex:i]) {
-            FSPaneView *pane = [_panes objectAtIndex:i];
-            [panesOnStock addObject: pane];
-        }
-    }
-    
-    return panesOnStock;
-}
-
 - (BOOL)_paneExistsAtIndex:(NSInteger)index
 {
     return index >= 0 && index < [_panes count];
@@ -450,7 +428,6 @@
 
 - (void)_setProperContentSize
 {
-//  CGSizeMake(width, UIInterfaceOrientationIsPortrait(interfaceOrientation) ? self.bounds.size.height : self.bounds.size.height);
     CGFloat width = [self _calculateContentWidth];
     _scrollView.contentSize = CGSizeMake(width, 0.0f);
 }
@@ -496,20 +473,6 @@
     }
     
     return UIEdgeInsetsMake(0.0f, leftInset, 0.0f, rightInset);
-}
-
-- (void)_unloadInvisiblePanesOnStock
-{
-    NSArray *panesOnStock = [self _panesOnStack];
-    
-    __block NSUInteger lastIndex = [panesOnStock count] -1;
-    
-    [panesOnStock enumerateObjectsUsingBlock:^(FSPaneView *pane, NSUInteger idx, BOOL *stop) {
-        // if item is loaded and is not last pane (first visible pane on stock)
-        if (pane.isLoaded && idx != lastIndex) {
-            [self _unloadPane:pane remove:NO];
-        }
-    }];
 }
 
 - (FSPaneView *)_createPaneWithView:(UIView*)view size:(FSPaneSize)viewSize

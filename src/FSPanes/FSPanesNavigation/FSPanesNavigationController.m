@@ -149,24 +149,12 @@
 {
     if (index > [self.childViewControllers count] - 1) return;
     
-    //TODO: Decide whether we want to send -viewDidAppear: here or not
-    //    UIViewController<CLViewControllerDelegate>* controller = [_viewControllers objectAtIndex: index];
-    //    if ([controller respondsToSelector:@selector(pageDidAppear)]) {
-    //        [controller pageDidAppear];
-    //    }
-    
     [self _addPanesRoundedCorners];
 }
 
 - (void)navigationView:(FSPanesNavigationView *)navigationView paneDidDisappearAtIndex:(NSInteger)index
 {
     if (index > [self.childViewControllers count] - 1) return;
-    
-    //TODO: Decide whether we want to send -viewDidDisappear: here or not
-    //    UIViewController<CLViewControllerDelegate>* controller = [_viewControllers objectAtIndex: index];
-    //    if ([controller respondsToSelector:@selector(pageDidDisappear)]) {
-    //        [controller pageDidDisappear];
-    //    }
     
     [self _addPanesRoundedCorners];
 }
@@ -276,7 +264,7 @@
     }
     else {
         [self addChildViewController:viewController];
-        [self.navigationView pushView:[viewController view]
+        [self.navigationView pushPane:[viewController view]
                              animated:animated
                              viewSize:size];
         [viewController didMoveToParentViewController:self];
@@ -338,16 +326,25 @@
                              animated:(BOOL)animated
                              viewSize:(FSPaneSize)size
 {
-    [self _popPanesFromLastIndexTo:oldViewControllerIndex+1];
-    
     UIViewController *oldViewController = [self.childViewControllers objectAtIndex:oldViewControllerIndex];
     
     if (newViewController != oldViewController) {
+        NSUInteger childControllersCount = [self.childViewControllers count];
+        NSUInteger lastControllerIndex = childControllersCount-1;
+        
+        if (oldViewControllerIndex < lastControllerIndex) {
+            for (NSUInteger index = lastControllerIndex; index > oldViewControllerIndex; index--) {
+                UIViewController *viewController = [self.childViewControllers objectAtIndex:index];
+                [viewController willMoveToParentViewController:nil];
+            }
+        }
+        
         [self addChildViewController:newViewController];
         [oldViewController willMoveToParentViewController:nil];
-        [self.navigationView replaceViewAtIndex:oldViewControllerIndex
+        [self.navigationView replacePaneAtIndex:oldViewControllerIndex
                                        withView:[newViewController view]
-                                       viewSize:size];
+                                       viewSize:size
+                               popAnyPanesAbove:YES];
         [newViewController didMoveToParentViewController:self];
     }
 }
