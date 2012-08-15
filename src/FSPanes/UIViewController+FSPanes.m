@@ -14,8 +14,8 @@
 
 @implementation UIViewController (FSPanes)
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (FSPanesSplitViewController *)panesSplitViewController {
+- (FSPanesSplitViewController *)panesSplitViewController
+{
     UIViewController *parent = self.parentViewController;
     
     if ([parent isKindOfClass:[FSPanesSplitViewController class]]) {
@@ -26,9 +26,8 @@
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (FSPanesNavigationController *)panesNavigationController {
+- (FSPanesNavigationController *)panesNavigationController
+{
     UIViewController *parent = self.parentViewController;
     
     if ([parent isKindOfClass:[FSPanesNavigationController class]]) {

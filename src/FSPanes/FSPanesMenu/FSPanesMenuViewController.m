@@ -28,6 +28,20 @@
 	return YES;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    // reselect cell for currently displayed root pane controller
+    NSUInteger selectedIndex = [self.rootPaneControllers indexOfObject:self.panesNavigationController.rootViewController];
+    if (selectedIndex != NSNotFound) {
+        NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForRow:selectedIndex inSection:0];
+        [self.tableView selectRowAtIndexPath:newSelectedIndexPath
+                                    animated:NO
+                              scrollPosition:UITableViewScrollPositionNone];
+    }
+}
+
 #pragma mark - FSPanesMenuViewController
 
 - (void)selectPaneAtIndex:(NSUInteger)index

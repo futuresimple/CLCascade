@@ -46,9 +46,8 @@
 
 - (void)setPanesMenuViewController:(FSPanesMenuViewController *)viewController 
 {
-    if (viewController != _panesMenuViewController) {
+    if (_panesMenuViewController == nil) { // single use setter
         _panesMenuViewController = viewController;
-        [(FSPanesSplitView*)self.view setMenuView: viewController.view];
         
         [self addChildViewController:viewController];
         [viewController didMoveToParentViewController:self];
@@ -57,9 +56,8 @@
 
 - (void)setPanesNavigationController:(FSPanesNavigationController *)viewController 
 {
-    if (viewController != _panesNavigationController) {
+    if (_panesNavigationController == nil) { // single use setter
         _panesNavigationController = viewController;
-        [(FSPanesSplitView*)self.view setNavigationView: viewController.view];
         
         [self addChildViewController:viewController];
         [viewController didMoveToParentViewController:self];
@@ -68,7 +66,7 @@
 
 #pragma mark - FSPanesSplitViewController
 
-- (id)initWithCustomNavigationController:(FSPanesNavigationController*)navigationController 
+- (id)initWithCustomNavigationController:(FSPanesNavigationController *)navigationController 
                       menuViewController:(FSPanesMenuViewController *)menuViewController 
                      rootPaneControllers:(NSArray *)rootPaneControllers
 {
@@ -91,9 +89,9 @@
 
 - (id)initWithRootPaneControllers:(NSArray *)rootPaneControllers
 {
-    return [self initWithCustomNavigationController:nil 
-                    menuViewController:nil
-                    rootPaneControllers:rootPaneControllers];
+    return [self initWithCustomNavigationController:nil
+                                 menuViewController:nil
+                                rootPaneControllers:rootPaneControllers];
 }
 
 - (void)dealloc
@@ -132,7 +130,7 @@
     [(FSPanesSplitView *)self.view setBackgroundView:backgroundView];
 }
 
-- (void)setDividerImage:(UIImage*)image 
+- (void)setDividerImage:(UIImage *)image 
 {
     [(FSPanesSplitView *)self.view setVerticalDividerImage:image];
 }

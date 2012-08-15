@@ -26,12 +26,12 @@
  If navigationController is nil, default FSPanesNavigationController is initialized.
  If menuViewController is nil, default FSPanesMenuViewController is initialized.
 */
-- (id)initWithCustomNavigationController:(FSPanesNavigationController*)navigationController 
+- (id)initWithCustomNavigationController:(FSPanesNavigationController *)navigationController 
                       menuViewController:(FSPanesMenuViewController *)menuViewController 
                      rootPaneControllers:(NSArray *)rootPaneControllers;
 
 /**
- Convenience initializer. Will init default FSPanesMenuViewController.
+ Convenience initializer. Will init default FSPanesMenuViewController and FSPanesNavigationController.
 */
 - (id)initWithRootPaneControllers:(NSArray *)rootPaneControllers;
 
@@ -41,6 +41,6 @@
 /**
  The index of the view controller associated with the currently selected menu item.
  */
-@property(nonatomic) NSUInteger selectedIndex;
+@property (nonatomic) NSUInteger selectedIndex;
 
 @end
