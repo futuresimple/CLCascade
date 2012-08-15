@@ -15,7 +15,6 @@
 #import "FSPaneView.h"
 
 #define DEFAULT_LEFT_INSET 70.0f
-#define DEFAULT_WIDER_LEFT_INSET 220.0f
 #define PULL_TO_DETACH_FACTOR 0.32f
 
 #define UISCROLL_OFFSET_RANGE_BUG_FIX 0.001f
@@ -86,8 +85,31 @@
 @synthesize delegate = _delegate;
 @synthesize dataSource = _dataSource;
 
-@synthesize leftInset = _leftInset; 
-@synthesize widerLeftInset = _widerLeftInset;
+@synthesize leftInset = _leftInset;
+
+- (void)setLeftInset:(CGFloat)newLeftInset
+{
+    CGFloat landscapeScreenWidth = [UIScreen mainScreen].bounds.size.height;
+    CGFloat portraitScreenWidth = [UIScreen mainScreen].bounds.size.width;
+    
+    _leftInset = newLeftInset;
+    _paneWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
+    _widePaneWidth = portraitScreenWidth - _leftInset;
+    _widerLeftInset = portraitScreenWidth - _paneWidth;
+    
+    if (_widePaneWidth <= 0.0f) {
+        NSAssert(NO, @"Left inset is too small!");
+    }
+    
+    [self _setProperEdgeInset:NO];
+}
+
+- (CGFloat)widerLeftInset
+{
+    return _widerLeftInset;
+}
+
+#pragma mark - UIView
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -104,39 +126,10 @@
         [_scrollView setDelegate:self];
         
         self.leftInset = DEFAULT_LEFT_INSET;
-        self.widerLeftInset = DEFAULT_WIDER_LEFT_INSET;
         
         [self addSubview:_scrollView];
-        
-        [self setAutoresizingMask:
-         UIViewAutoresizingFlexibleLeftMargin | 
-         UIViewAutoresizingFlexibleRightMargin | 
-         UIViewAutoresizingFlexibleBottomMargin | 
-         UIViewAutoresizingFlexibleTopMargin | 
-         UIViewAutoresizingFlexibleWidth | 
-         UIViewAutoresizingFlexibleHeight];
     }
     return self;
-}
-
-#pragma mark Custom accessors
-
-- (void)setLeftInset:(CGFloat)newLeftInset
-{
-    CGFloat landscapeScreenWidth = [UIScreen mainScreen].bounds.size.height;
-    CGFloat portraitScreenWidth = [UIScreen mainScreen].bounds.size.width;
-    
-    _leftInset = newLeftInset;
-    _paneWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
-    _widePaneWidth = portraitScreenWidth - _leftInset;
-    
-    if (_widePaneWidth <= 0.0f) {
-        NSAssert(NO, @"Left inset is too small!");
-    }
-    
-    _scrollView.frame = CGRectMake(_leftInset, 0.0, _paneWidth, self.frame.size.height);
-    
-    [self _setProperEdgeInset:NO];
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event 
@@ -165,6 +158,12 @@
 
 - (void)layoutSubviews
 {
+    CGRect scrollViewFrame = CGRectMake(self.leftInset, 0.0, _paneWidth, self.frame.size.height);
+    // this check must be here because otherwise animation glitches might appear during scrolling
+    if (CGRectEqualToRect(scrollViewFrame, _scrollView.frame) == NO) {
+        _scrollView.frame = scrollViewFrame;
+    }
+    
     UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation]; 
     
     [self _setProperSizesForLoadedPanes:interfaceOrientation];
@@ -172,8 +171,8 @@
     [[self visiblePanes] makeObjectsPerformSelector:@selector(setNeedsLayout)];
 }
 
-#pragma mark -
-#pragma mark FSPanesNavigationView
+#pragma mark - FSPanesNavigationView
+
 - (void)pushPane:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize
 {
     NSUInteger newPaneIndex = [_panes count];
@@ -218,7 +217,7 @@
             horizontalOffset = 0.0;
         }
         else {
-            horizontalOffset = - (CATEGORIES_VIEW_WIDTH - _leftInset);
+            horizontalOffset = - (self.widerLeftInset - _leftInset);
         }
     }
     else {
@@ -459,7 +458,7 @@
 
 - (UIEdgeInsets)_calculateEdgeInset:(UIInterfaceOrientation)interfaceOrientation
 {
-    CGFloat leftInset = CATEGORIES_VIEW_WIDTH - _leftInset;
+    CGFloat leftInset = self.widerLeftInset - _leftInset;
     CGFloat rightInset = 0.0f;
     
     // right inset depends on interface orientation and panes count
@@ -613,18 +612,16 @@
     return CGPointMake(x, 0.0f);
 }
 
-#pragma mark UIScrollViewDelegate
+#pragma mark - <UIScrollViewDelegate>
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if ([_panes count] > 0)
-    {
+    if ([_panes count] > 0) {
         [self sendDetachDelegateMethodsIfNeeded];
         
         [self sendAppearanceDelegateMethodsIfNeeded];
         
-        if (_flags.isDetachingPanes == NO)
-        {
+        if (_flags.isDetachingPanes == NO) {
             NSInteger firstVisiblePaneIndex = [self _indexOfFirstVisiblePane];
             NSInteger indexOfLastVisibleView = [self indexOfLastVisibleView:NO];
             

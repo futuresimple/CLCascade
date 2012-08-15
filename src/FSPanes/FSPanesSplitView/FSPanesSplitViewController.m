@@ -18,6 +18,7 @@
 
 @interface FSPanesSplitViewController ()
 
+@property (strong, nonatomic, readwrite) FSPanesSplitView *view;
 @property (readwrite, strong, nonatomic) FSPanesMenuViewController *panesMenuViewController;
 @property (readwrite, strong, nonatomic) FSPanesNavigationController *panesNavigationController;
 
@@ -27,7 +28,9 @@
 
 #pragma mark - @ properties
 
+@dynamic view; // supplied by super
 @dynamic selectedIndex;
+@dynamic leftInset;
 @synthesize panesMenuViewController = _panesMenuViewController;
 @synthesize panesNavigationController = _panesNavigationController;
 
@@ -62,6 +65,17 @@
         [self addChildViewController:viewController];
         [viewController didMoveToParentViewController:self];
     }
+}
+
+- (CGFloat)leftInset
+{
+    return self.panesNavigationController.navigationView.leftInset;
+}
+
+- (void)setLeftInset:(CGFloat)inset
+{
+    [self.panesNavigationController.navigationView setLeftInset:inset];
+    self.view.menuViewWidth = self.panesNavigationController.navigationView.widerLeftInset;
 }
 
 #pragma mark - FSPanesSplitViewController

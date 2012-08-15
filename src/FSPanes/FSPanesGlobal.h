@@ -11,8 +11,6 @@
 //  Licensed under the Apache License, Version 2.0.
 //
 
-#define CATEGORIES_VIEW_WIDTH 289.0f
-
 typedef enum {
     FSPaneSizeRegular = 0,
     FSPaneSizeWide    = 1

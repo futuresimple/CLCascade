@@ -18,10 +18,12 @@
 @interface FSPanesSplitView : UIView
 {
     UIView *_dividerView;
-    CGFloat _dividerWidth;    
+    CGFloat _dividerWidth;
 }
 
 @property (weak, nonatomic) FSPanesSplitViewController *splitViewController;
+
+@property (assign, nonatomic) CGFloat menuViewWidth;
 
 @property (strong, nonatomic) UIImage *verticalDividerImage;
 @property (strong, nonatomic) UIView *backgroundView;

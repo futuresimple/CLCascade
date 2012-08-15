@@ -24,7 +24,7 @@
 @implementation FSPanesSplitView
 
 @synthesize splitViewController = _splitViewController;
-
+@synthesize menuViewWidth = _menuViewWidth;
 @synthesize menuView = _menuView;
 @synthesize navigationView = _navigationView;
 @synthesize backgroundView = _backgroundView;
@@ -119,7 +119,7 @@
 {
     CGRect bounds = self.bounds;
     
-    CGRect menuFrame = CGRectMake(0.0, 0.0, CATEGORIES_VIEW_WIDTH, bounds.size.height);
+    CGRect menuFrame = CGRectMake(0.0, 0.0, self.menuViewWidth, bounds.size.height);
     _menuView.frame = menuFrame;
     
     CGRect navigationFrame = bounds;
@@ -128,7 +128,7 @@
     CGRect backgroundViewFrame = bounds;
     _backgroundView.frame = backgroundViewFrame;
     
-    CGRect dividerViewFrame = CGRectMake(CATEGORIES_VIEW_WIDTH, 0.0, _dividerWidth, bounds.size.height);
+    CGRect dividerViewFrame = CGRectMake(self.menuViewWidth, 0.0, _dividerWidth, bounds.size.height);
     _dividerView.frame = dividerViewFrame;
 }
 

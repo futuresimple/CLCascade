@@ -48,8 +48,7 @@
 
 @end
 
-@interface FSPanesNavigationView : UIView <
-UIScrollViewDelegate>
+@interface FSPanesNavigationView : UIView <UIScrollViewDelegate>
 
 @property (nonatomic, weak) NSObject <FSPanesNavigationViewDelegate> *delegate;
 @property (nonatomic, weak) NSObject <FSPanesNavigationViewDataSource> *dataSource;
@@ -58,10 +57,13 @@ UIScrollViewDelegate>
  Left inset of normal pane from left screen edge. Default 70.0f
  If you change this property, width of single pane will change.
 */
-@property(nonatomic) CGFloat leftInset;
+@property (nonatomic, readwrite) CGFloat leftInset;
 
-/** Left inset of wider pane from left boarder. Default 220.0f */
-@property(nonatomic) CGFloat widerLeftInset;
+/** 
+ Left inset of wider pane from left boarder.
+ Calculated automatically from -leftInset.
+ */
+@property (nonatomic, readonly) CGFloat widerLeftInset;
 
 - (void)pushPane:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize;
 

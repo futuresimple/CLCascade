@@ -31,6 +31,11 @@
                      rootPaneControllers:(NSArray *)rootPaneControllers;
 
 /**
+ Left inset of normal size panes from left border. Default is 70.0f.
+ */
+@property (nonatomic, readwrite) CGFloat leftInset;
+
+/**
  Convenience initializer. Will init default FSPanesMenuViewController and FSPanesNavigationController.
 */
 - (id)initWithRootPaneControllers:(NSArray *)rootPaneControllers;

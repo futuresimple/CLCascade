@@ -17,6 +17,8 @@
 
 @interface FSPanesNavigationController ()
 
+@property (strong, nonatomic, readwrite) FSPanesNavigationView *view;
+
 - (void)_setRootViewController:(UIViewController *)viewController
                       animated:(BOOL)animated
                       viewSize:(FSPaneSize)viewSize;
@@ -36,28 +38,21 @@
 
 @implementation FSPanesNavigationController
 
-@synthesize leftInset, widerLeftInset;
-@synthesize navigationView;
+@dynamic view; // supplied by super
+
+- (FSPanesNavigationView *)navigationView
+{
+    return self.view;
+}
 
 #pragma mark - UIViewController
 
-- (void)viewDidLoad
+- (void)loadView
 {
-    [super viewDidLoad];
-    [self.view setBackgroundColor:[UIColor clearColor]];
+    self.view = [[FSPanesNavigationView alloc] init];
     
-    self.navigationView = [[FSPanesNavigationView alloc] initWithFrame:self.view.bounds];
-    self.navigationView.delegate = self;
-    self.navigationView.dataSource = self;
-    [self.view addSubview:self.navigationView];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    
-    [self.navigationView removeFromSuperview];
-    self.navigationView = nil;
+    self.view.delegate = self;
+    self.view.dataSource = self;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -76,28 +71,6 @@
 {
     [super didReceiveMemoryWarning]; // Releases the view if it doesn't have a superview.
     [self.navigationView unloadInvisiblePanes];
-}
-
-#pragma mark - Custom accessors
-
-- (CGFloat)widerLeftInset
-{
-    return self.navigationView.widerLeftInset;
-}
-
-- (void)setWiderLeftInset:(CGFloat)inset
-{
-    [self.navigationView setWiderLeftInset:inset];    
-}
-
-- (CGFloat)leftInset
-{
-    return self.navigationView.leftInset;
-}
-
-- (void)setLeftInset:(CGFloat)inset
-{
-    [self.navigationView setLeftInset:inset];
 }
 
 #pragma mark - <FSPanesNavigationViewDataSource>

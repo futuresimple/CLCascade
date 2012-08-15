@@ -21,17 +21,7 @@ FSPanesNavigationViewDataSource,
 FSPanesNavigationViewDelegate>
 
 
-@property (nonatomic, readwrite, strong) FSPanesNavigationView *navigationView;
-
-/**
- Left inset of normal size panes from left border. Default is 70.0f.
-*/
-@property (nonatomic) CGFloat leftInset;
-
-/**
- Left inset of wider size pane from left border. Default is 220.0f.
-*/
-@property (nonatomic) CGFloat widerLeftInset;
+@property (nonatomic, readonly) FSPanesNavigationView *navigationView;
 
 /**
  viewController can conform to <FSPaneControllerDelegate> if you want to leverage FSPanes fully.

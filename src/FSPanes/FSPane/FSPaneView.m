@@ -68,7 +68,7 @@
     return [self initWithSize:FSPaneSizeRegular];
 }
 
-#pragma mark Custom accessors
+#pragma mark - Custom accessors
 
 - (void)setContentView:(UIView *)contentView
 {
