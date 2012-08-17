@@ -97,6 +97,9 @@
     _widePaneWidth = portraitScreenWidth - _leftInset;
     _widerLeftInset = portraitScreenWidth - _paneWidth;
     
+    // TODO: This line should be only in -layoutSubviews, but it requires tons of fixes to this class... ;(
+    _scrollView.frame = CGRectMake(self.leftInset, 0.0, _paneWidth, self.frame.size.height);
+    
     if (_widePaneWidth <= 0.0f) {
         NSAssert(NO, @"Left inset is too small!");
     }
@@ -158,11 +161,7 @@
 
 - (void)layoutSubviews
 {
-    CGRect scrollViewFrame = CGRectMake(self.leftInset, 0.0, _paneWidth, self.frame.size.height);
-    // this check must be here because otherwise animation glitches might appear during scrolling
-    if (CGRectEqualToRect(scrollViewFrame, _scrollView.frame) == NO) {
-        _scrollView.frame = scrollViewFrame;
-    }
+    _scrollView.frame = CGRectMake(self.leftInset, 0.0, _paneWidth, self.frame.size.height);
     
     UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation]; 
     
@@ -213,11 +212,12 @@
     // scroll to new pane frame
     CGFloat horizontalOffset = contentWidthBeforePush;
     if (horizontalOffset < 0) { // when there is 'too much space'
-        if (UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation)) {
-            horizontalOffset = 0.0;
+        CGFloat rightSideFreeSpace = self.bounds.size.width - _scrollView.frame.origin.x - paneFrame.size.width;
+        if (rightSideFreeSpace > 0) {
+            horizontalOffset = - (self.widerLeftInset - _leftInset);
         }
         else {
-            horizontalOffset = - (self.widerLeftInset - _leftInset);
+            horizontalOffset = 0.0;
         }
     }
     else {

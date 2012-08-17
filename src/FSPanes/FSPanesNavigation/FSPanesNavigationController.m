@@ -64,7 +64,7 @@
                                          duration:(NSTimeInterval)duration
 {
     [self.navigationView updateContentLayoutToInterfaceOrientation:interfaceOrientation
-                                                      duration:duration];
+                                                          duration:duration];
 }
 
 - (void)didReceiveMemoryWarning
