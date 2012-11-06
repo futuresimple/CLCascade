@@ -25,12 +25,6 @@
 /** X-axis shadow offset. Default is 0.0f. */
 @property (nonatomic) CGFloat shadowOffset;
 
-/** Set YES if you want rounded corners. Default is NO. */
-@property (nonatomic) BOOL showRoundedCorners;
-
-/** Type of rect corners. Default UIRectCornerAllCorners. */
-@property (nonatomic) UIRectCorner rectCorner;
-
 /** @return YES if loaded within container hierarchy, othwerise NO. */
 @property (readonly) BOOL isLoaded;
 

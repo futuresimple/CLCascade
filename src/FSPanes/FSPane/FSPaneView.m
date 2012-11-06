@@ -21,7 +21,6 @@
     UIView *_roundedCornersView;
 }
 
-- (void)_updateRoundedCorners;
 - (void)_addLeftBorderShadowView:(UIView *)view withWidth:(CGFloat)width;
 - (void)_addRightBorderShadowView:(UIView *)view withWidth:(CGFloat)width;
 
@@ -35,9 +34,6 @@
 @synthesize shadowWidth = _shadowWidth;
 @synthesize shadowOffset = _shadowOffset;
 
-@synthesize showRoundedCorners = _showRoundedCorners;
-@synthesize rectCorner = _rectCorner;
-
 @synthesize viewSize = _viewSize;
 
 - (id)initWithSize:(FSPaneSize)size
@@ -45,19 +41,19 @@
     if (self = [super init]) {
         self.clipsToBounds = NO;
         
-        _roundedCornersView = [[UIView alloc] init];
-        [_roundedCornersView setBackgroundColor:[UIColor clearColor]];
+        _roundedCornersView = [UIView new];
+        _roundedCornersView.backgroundColor = [UIColor clearColor];
+        _roundedCornersView.layer.cornerRadius = 6.0;
+        _roundedCornersView.layer.masksToBounds = YES;
         [self addSubview:_roundedCornersView];
         
         _viewSize = size;
-        _rectCorner = UIRectCornerAllCorners;
-        _showRoundedCorners = NO;
         
         [self _addLeftBorderShadowView:[[FSPaneBorderShadowView alloc] initForLeftSide]
                             withWidth:20.0f];
         [self _addRightBorderShadowView:[[FSPaneBorderShadowView alloc] initForRightSide]
                             withWidth:20.0f];
-        [self setShadowOffset:10.0f];
+        self.shadowOffset = 10.0f;
     }
     
     return self;
@@ -86,7 +82,7 @@
              UIViewAutoresizingFlexibleWidth | 
              UIViewAutoresizingFlexibleHeight];
             
-            [_roundedCornersView addSubview: _contentView];
+            [_roundedCornersView addSubview:_contentView];
             [self setNeedsLayout];
         }
     }
@@ -106,25 +102,9 @@
              UIViewAutoresizingFlexibleTopMargin];
             [_headerView setUserInteractionEnabled:YES];
             
-            [_roundedCornersView addSubview: _headerView];
+            [_roundedCornersView addSubview:_headerView];
             [self setNeedsLayout];
         }
-    }
-}
-
-- (void)setRectCorner:(UIRectCorner)corners
-{
-    if (corners != _rectCorner) {
-        _rectCorner = corners;
-        [self setNeedsLayout];
-    }
-}
-
-- (void)setShowRoundedCorners:(BOOL)show
-{
-    if (show != _showRoundedCorners) {
-        _showRoundedCorners = show;
-        [self setNeedsLayout];
     }
 }
 
@@ -137,13 +117,13 @@
 
 - (void)layoutSubviews
 {
-    CGRect rect = self.bounds;
+    CGRect bounds = self.bounds;
     
-    CGFloat viewWidth = rect.size.width;
-    CGFloat viewHeight = rect.size.height;
+    CGFloat viewWidth = bounds.size.width;
+    CGFloat viewHeight = bounds.size.height;
     CGFloat headerHeight = 0.0f;
     
-    _roundedCornersView.frame = rect;
+    _roundedCornersView.frame = bounds;
     
     if (_headerView) {
         headerHeight = _headerView.frame.size.height;
@@ -155,37 +135,16 @@
     _contentView.frame = CGRectMake(0.0f, headerHeight, viewWidth, viewHeight - headerHeight);
     
     if (_leftShadowView) {
-        CGRect shadowFrame = CGRectMake(0.0f - _shadowWidth + _shadowOffset, 0.0f, _shadowWidth, rect.size.height);
+        CGRect shadowFrame = CGRectMake(0.0f - _shadowWidth + _shadowOffset, 0.0f, _shadowWidth, bounds.size.height);
         _leftShadowView.frame = shadowFrame;
     }
     if (_rightShadowView) {
-        CGRect shadowFrame = CGRectMake(viewWidth - _shadowOffset, 0.0f, _shadowWidth, rect.size.height);
+        CGRect shadowFrame = CGRectMake(viewWidth - _shadowOffset, 0.0f, _shadowWidth, bounds.size.height);
         _rightShadowView.frame = shadowFrame;
     }
-    
-    [self _updateRoundedCorners];
 }
 
 #pragma mark - FSPaneView ()
-
-- (void)_updateRoundedCorners
-{
-    if (_showRoundedCorners) {
-        CGRect toolbarBounds = self.bounds;
-        CAShapeLayer *maskLayer = [CAShapeLayer layer];
-        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:toolbarBounds
-                                                   byRoundingCorners:_rectCorner
-                                                         cornerRadii:CGSizeMake(6.0f, 6.0f)];
-        [maskLayer setPath:[path CGPath]];
-        
-        _roundedCornersView.layer.masksToBounds = YES;
-        _roundedCornersView.layer.mask = maskLayer;
-    } 
-    else {
-        _roundedCornersView.layer.masksToBounds = NO;
-        _roundedCornersView.layer.mask = nil;
-    }
-}
 
 - (void)_addLeftBorderShadowView:(UIView *)view withWidth:(CGFloat)width
 {

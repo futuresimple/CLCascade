@@ -26,8 +26,6 @@
                     sender:(UIViewController *)sender
                   animated:(BOOL)animated
                   viewSize:(FSPaneSize)size;
-- (void)_addPanesRoundedCorners;
-- (void)_addRoundedCorner:(UIRectCorner)rectCorner toPaneAtIndex:(NSInteger)index;
 - (void)_popPanesFromLastIndexTo:(NSInteger)index;
 - (void)_replaceViewControllerAtIndex:(NSUInteger)oldViewControllerIndex
                    withViewController:(UIViewController *)newViewController
@@ -120,16 +118,12 @@
 
 - (void)navigationView:(FSPanesNavigationView *)navigationView paneDidAppearAtIndex:(NSInteger)index
 {
-    if (index > [self.childViewControllers count] - 1) return;
     
-    [self _addPanesRoundedCorners];
 }
 
 - (void)navigationView:(FSPanesNavigationView *)navigationView paneDidDisappearAtIndex:(NSInteger)index
 {
-    if (index > [self.childViewControllers count] - 1) return;
     
-    [self _addPanesRoundedCorners];
 }
 
 - (void)navigationViewDidStartPullingToDetachPanes:(FSPanesNavigationView *)navigationView
@@ -241,42 +235,6 @@
                              animated:animated
                              viewSize:size];
         [viewController didMoveToParentViewController:self];
-    }
-}
-
-- (void)_addRoundedCorner:(UIRectCorner)rectCorner toPaneAtIndex:(NSInteger)index
-{
-    if (index != NSNotFound) {
-        FSPaneView *pane = [self.navigationView paneAtIndex:index];
-        [pane setShowRoundedCorners: YES];
-        [pane setRectCorner: rectCorner];
-    }
-}
-
-- (void)_addPanesRoundedCorners {
-    // unload all rounded corners
-    for (id item in [self.navigationView visiblePanes]) {
-        if (item != [NSNull null]) {
-            if ([item isKindOfClass:[FSPaneView class]]) {
-                FSPaneView* view = (FSPaneView*)item;
-                [view setShowRoundedCorners: NO];
-            }
-        }
-    }
-    
-    NSInteger indexOfFirstVisiblePane = [self.navigationView indexOfFirstVisibleView: NO];
-    NSInteger indexOfLastVisiblePane = [self.navigationView indexOfLastVisibleView: NO];
-    
-    if (indexOfLastVisiblePane == indexOfFirstVisiblePane) {
-        [self _addRoundedCorner:UIRectCornerAllCorners toPaneAtIndex: indexOfFirstVisiblePane];
-        
-    } else {
-        
-        [self _addRoundedCorner:UIRectCornerTopLeft | UIRectCornerBottomLeft toPaneAtIndex:indexOfFirstVisiblePane];
-        
-        if (indexOfLastVisiblePane == [self.childViewControllers count] -1) {
-            [self _addRoundedCorner:UIRectCornerTopRight | UIRectCornerBottomRight toPaneAtIndex:indexOfLastVisiblePane];
-        }    
     }
 }
 

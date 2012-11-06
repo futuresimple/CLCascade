@@ -477,7 +477,6 @@
 - (FSPaneView *)_createPaneWithView:(UIView*)view size:(FSPaneSize)viewSize
 {
     FSPaneView *pane = [[FSPaneView alloc] initWithSize:viewSize];
-    pane.showRoundedCorners = YES;
     [pane setAutoresizingMask:
      UIViewAutoresizingFlexibleLeftMargin |
      UIViewAutoresizingFlexibleRightMargin |
