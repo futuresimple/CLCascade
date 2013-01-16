@@ -13,10 +13,9 @@
 
 #import "FSPanesMenuViewController.h"
 #import "UIViewController+FSPanes.h"
+#import "FSNavigationMenuDataSource.h"
 
 @implementation FSPanesMenuViewController
-
-@synthesize rootPaneControllers = _rootPaneControllers;
 
 - (id)init
 {
@@ -33,7 +32,7 @@
     [super viewWillAppear:animated];
     
     // reselect cell for currently displayed root pane controller
-    NSUInteger selectedIndex = [self.rootPaneControllers indexOfObject:self.panesNavigationController.rootViewController];
+    NSUInteger selectedIndex = [self.menuDataSource indexOfViewController:self.panesNavigationController.rootViewController];
     if (selectedIndex != NSNotFound) {
         NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForRow:selectedIndex inSection:0];
         [self.tableView selectRowAtIndexPath:newSelectedIndexPath
@@ -59,7 +58,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.rootPaneControllers count];
+    return [self.menuDataSource numberOfMenuItems];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -71,15 +70,14 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    UIViewController *paneController = [self.rootPaneControllers objectAtIndex:indexPath.row];
-    cell.textLabel.text = paneController.title;
+    cell.textLabel.text = [self.menuDataSource titleOfViewControllerAtIndex:indexPath.row];
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIViewController *viewController = [self.rootPaneControllers objectAtIndex:indexPath.row];
+    UIViewController *viewController = [self.menuDataSource viewControllerForMenuItemAtIndex:indexPath.row];
     [self.panesNavigationController setRootViewController:viewController animated:YES];
 }
 

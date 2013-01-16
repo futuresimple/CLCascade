@@ -14,9 +14,11 @@
 #import <UIKit/UIKit.h>
 #import "FSPanesNavigationController.h"
 
+@protocol FSNavigationMenuDataSource;
+
 @interface FSPanesMenuViewController : UITableViewController
 
-@property (copy, nonatomic) NSArray *rootPaneControllers;
+@property (nonatomic, strong) id <FSNavigationMenuDataSource> menuDataSource;
 
 - (void)selectPaneAtIndex:(NSUInteger)index;
 

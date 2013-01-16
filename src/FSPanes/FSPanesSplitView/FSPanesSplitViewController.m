@@ -15,6 +15,7 @@
 #import "FSPanesSplitView.h"
 #import "FSPanesMenuViewController.h"
 #import "FSPanesNavigationController.h"
+#import "FSNavigationMenuDataSource.h"
 
 @interface FSPanesSplitViewController ()
 
@@ -36,12 +37,12 @@
 
 - (NSUInteger)selectedIndex
 {
-    return [self.panesMenuViewController.rootPaneControllers indexOfObject:self.panesNavigationController.rootViewController];
+    return [self.panesMenuViewController.menuDataSource indexOfViewController:self.panesNavigationController.rootViewController];
 }
 
 - (void)setSelectedIndex:(NSUInteger)selectedIndex
 {
-    if (selectedIndex < [self.panesMenuViewController.rootPaneControllers count] &&
+    if (selectedIndex < [self.panesMenuViewController.menuDataSource numberOfMenuItems] &&
         self.selectedIndex != selectedIndex) {
         [self.panesMenuViewController selectPaneAtIndex:selectedIndex];
     }
@@ -80,12 +81,12 @@
 
 #pragma mark - FSPanesSplitViewController
 
-- (id)initWithCustomNavigationController:(FSPanesNavigationController *)navigationController 
-                      menuViewController:(FSPanesMenuViewController *)menuViewController 
-                     rootPaneControllers:(NSArray *)rootPaneControllers
+- (id)initWithCustomNavigationController:(FSPanesNavigationController *)navigationController
+                      menuViewController:(FSPanesMenuViewController *)menuViewController
+           rootPaneControllersDataSource:(id <FSNavigationMenuDataSource>) dataSource;
 {
     if (self = [super init]) {
-        menuViewController.rootPaneControllers = rootPaneControllers;
+        menuViewController.menuDataSource = dataSource;
         
         if(menuViewController == nil) {
             menuViewController = [FSPanesMenuViewController new];
@@ -101,11 +102,11 @@
     return self;
 }
 
-- (id)initWithRootPaneControllers:(NSArray *)rootPaneControllers
+- (id)initWithRootPaneControllersDataSource:(id <FSNavigationMenuDataSource>)dataSource
 {
     return [self initWithCustomNavigationController:nil
                                  menuViewController:nil
-                                rootPaneControllers:rootPaneControllers];
+                                rootPaneControllersDataSource:dataSource];
 }
 
 - (void)dealloc

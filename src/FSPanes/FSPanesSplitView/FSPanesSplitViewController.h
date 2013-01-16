@@ -15,6 +15,7 @@
 
 @class FSPanesMenuViewController;
 @class FSPanesNavigationController;
+@protocol FSNavigationMenuDataSource;
 
 @interface FSPanesSplitViewController : UIViewController
 
@@ -28,7 +29,8 @@
 */
 - (id)initWithCustomNavigationController:(FSPanesNavigationController *)navigationController 
                       menuViewController:(FSPanesMenuViewController *)menuViewController 
-                     rootPaneControllers:(NSArray *)rootPaneControllers;
+           rootPaneControllersDataSource:(id <FSNavigationMenuDataSource>) dataSource;
+
 
 /**
  Left inset of normal size panes from left border. Default is 70.0f.
@@ -38,7 +40,7 @@
 /**
  Convenience initializer. Will init default FSPanesMenuViewController and FSPanesNavigationController.
 */
-- (id)initWithRootPaneControllers:(NSArray *)rootPaneControllers;
+- (id)initWithRootPaneControllersDataSource:(id <FSNavigationMenuDataSource>)dataSource;
 
 - (void)setBackgroundView:(UIView *)backgroundView;
 - (void)setDividerImage:(UIImage *)image;
