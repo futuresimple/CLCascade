@@ -267,6 +267,7 @@
                     // beacause content size and insets set during animation would cause glitches
                     [self _setProperEdgeInset:NO];
                     [self _setProperContentSize];
+                    [self setNeedsLayout];
                 }
                 [self didPopPaneAtIndex:index];
             };
@@ -674,7 +675,7 @@
 - (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
 {    
     NSInteger secondVisiblePaneIndex = [self _indexOfFirstVisiblePane] + 1;
-    [self _setProperPositionOfPaneAtIndex: secondVisiblePaneIndex];
+    [self _setProperPositionOfPaneAtIndex:secondVisiblePaneIndex];
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
