@@ -78,7 +78,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UIViewController *viewController = [self.menuDataSource viewControllerForMenuItemAtIndex:indexPath.row];
-    [self.panesNavigationController setRootViewController:viewController animated:YES];
+    if (viewController) {
+        [self.panesNavigationController setRootViewController:viewController animated:YES];
+    }
 }
 
 @end
