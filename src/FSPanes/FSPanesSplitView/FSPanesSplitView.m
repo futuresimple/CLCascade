@@ -108,15 +108,19 @@
         }
     }
     else {
-        touchedView = navigationView;
+        touchedView = nil;
     }
-    
-    CGPoint newPoint = [self convertPoint:point toView:touchedView];
-    return [touchedView hitTest:newPoint withEvent:event];
+
+    if (touchedView) {
+        CGPoint newPoint = [self convertPoint:point toView:touchedView];
+        return [touchedView hitTest:newPoint withEvent:event];
+    }
+    return [super hitTest:point withEvent:event];
 }
 
 - (void)layoutSubviews
 {
+    [super layoutSubviews];
     CGRect bounds = self.bounds;
     
     CGRect menuFrame = CGRectMake(0.0, 0.0, self.menuViewWidth, bounds.size.height);
