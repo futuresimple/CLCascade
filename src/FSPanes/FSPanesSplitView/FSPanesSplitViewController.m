@@ -117,9 +117,14 @@
 
 #pragma mark View lifecycle
 
+- (Class)viewClass
+{
+    return [FSPanesSplitView class];
+}
+
 - (void)loadView 
 {    
-    FSPanesSplitView *splitView = [FSPanesSplitView new];
+    FSPanesSplitView *splitView = [[self viewClass] new];
     [splitView setMenuView:self.panesMenuViewController.view];
     [splitView setNavigationView:self.panesNavigationController.view];
     [splitView setSplitViewController:self];
