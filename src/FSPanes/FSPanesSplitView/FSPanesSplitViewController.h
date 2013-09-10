@@ -19,6 +19,8 @@
 
 @interface FSPanesSplitViewController : UIViewController
 
++ (BOOL)isRunningIOS6;
+
 /**
  View class used by controller. Defaults to `[FSPanesSplitView class]`.
  Subclasses may override this method to return their custom view classes.

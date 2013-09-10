@@ -35,6 +35,16 @@
 @synthesize panesMenuViewController = _panesMenuViewController;
 @synthesize panesNavigationController = _panesNavigationController;
 
++ (BOOL)isRunningIOS6
+{
+    static NSUInteger _deviceSystemMajorVersion = -1;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _deviceSystemMajorVersion = [[[[[UIDevice currentDevice] systemVersion] componentsSeparatedByString:@"."] objectAtIndex:0] intValue];
+    });
+    return _deviceSystemMajorVersion < 7;
+}
+
 - (NSUInteger)selectedIndex
 {
     return [self.panesMenuViewController.menuDataSource indexOfViewController:self.panesNavigationController.rootViewController];
@@ -158,7 +168,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
 @end

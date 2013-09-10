@@ -19,6 +19,8 @@
 @interface FSPanesSplitView ()
 - (void)_setupView;
 - (void)_addDivierView;
+
+@property (nonatomic, strong) UIView *contentView;
 @end
 
 @implementation FSPanesSplitView
@@ -34,7 +36,22 @@
 
 - (void)_setupView
 {
-    // Perhaps we'll put something here one day...
+    self.contentView = [[UIView alloc] init];
+    self.contentView.backgroundColor = [UIColor blackColor];
+    self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    [self addSubview:self.contentView];
+
+    NSDictionary *views = @{@"content": self.contentView};
+    NSDictionary *metrics = @{@"spacing": [FSPanesSplitViewController isRunningIOS6] ? @0 : @(CGRectGetHeight([[UIApplication sharedApplication] statusBarFrame]))};
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[content]|"
+                                                                 options:0
+                                                                 metrics:metrics
+                                                                   views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(spacing)-[content]|"
+                                                                 options:0
+                                                                 metrics:metrics
+                                                                   views:views]];
 }
 
 - (void)_addDivierView
@@ -121,7 +138,7 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    CGRect bounds = self.bounds;
+    CGRect bounds = self.contentView.bounds;
     
     CGRect menuFrame = CGRectMake(0.0, 0.0, self.menuViewWidth, bounds.size.height);
     _menuView.frame = menuFrame;
@@ -143,8 +160,8 @@
     if (_menuView != aView) {
         _menuView = aView;
         
-        [self addSubview:_menuView];
-        [self bringSubviewToFront:_navigationView];
+        [self.contentView addSubview:_menuView];
+        [self.contentView bringSubviewToFront:_navigationView];
     }
 }
 
@@ -153,8 +170,8 @@
     if (_navigationView != aView) {
         _navigationView = aView;
         
-        [self addSubview:_navigationView];
-        [self bringSubviewToFront:_navigationView];
+        [self.contentView addSubview:_navigationView];
+        [self.contentView bringSubviewToFront:_navigationView];
     }
 }
 
@@ -163,8 +180,8 @@
     if (_backgroundView != aView) {
         _backgroundView = aView;
         
-        [self addSubview:_backgroundView];
-        [self sendSubviewToBack:_backgroundView];
+        [self.contentView addSubview:_backgroundView];
+        [self.contentView sendSubviewToBack:_backgroundView];
         
         [self _addDivierView];
     }
