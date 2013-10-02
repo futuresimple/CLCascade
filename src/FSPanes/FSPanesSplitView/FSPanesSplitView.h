@@ -23,6 +23,8 @@
 
 @property (weak, nonatomic) FSPanesSplitViewController *splitViewController;
 
+@property (nonatomic, strong, readonly) UIView *contentView;
+
 @property (assign, nonatomic) CGFloat menuViewWidth;
 
 @property (strong, nonatomic) UIImage *verticalDividerImage;
