@@ -792,7 +792,7 @@
         [_delegate navigationViewDidPullToDetachPanes:self];
     }
     
-    for (int paneIndex = [_panes count]-1; paneIndex > 0; paneIndex--) {
+    for (unsigned long paneIndex = [_panes count]-1; paneIndex > 0; paneIndex--) {
         [self popPaneAtIndex:paneIndex animated:NO];
     }
 }
