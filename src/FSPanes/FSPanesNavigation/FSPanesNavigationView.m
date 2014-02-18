@@ -38,8 +38,6 @@
 
 @interface FSPanesNavigationView ()
 {
-    FSPanesNavigationScrollView *_scrollView;
-    
     NSMutableArray *_panes;
     
     CGFloat _paneWidth;

@@ -52,6 +52,7 @@
 
 @property (nonatomic, weak) NSObject <FSPanesNavigationViewDelegate> *delegate;
 @property (nonatomic, weak) NSObject <FSPanesNavigationViewDataSource> *dataSource;
+@property (nonatomic, strong) FSPanesNavigationScrollView *scrollView;
 
 /** 
  Left inset of normal pane from left screen edge. Default 70.0f
