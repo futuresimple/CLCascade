@@ -217,7 +217,7 @@
 		B6EA8CA31456D25200817157 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 			};
 			buildConfigurationList = B6EA8CA61456D25200817157 /* Build configuration list for PBXProject "FSPanes" */;
 			compatibilityVersion = "Xcode 3.2";
