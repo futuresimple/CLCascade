@@ -87,8 +87,10 @@
 
 - (void)setLeftInset:(CGFloat)newLeftInset
 {
-    CGFloat landscapeScreenWidth = [UIScreen mainScreen].bounds.size.height;
-    CGFloat portraitScreenWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+    CGFloat landscapeScreenWidth = MAX(screenWidth, screenHeight);
+    CGFloat portraitScreenWidth = MIN(screenWidth, screenHeight);
     
     _leftInset = newLeftInset;
     _paneWidth = (landscapeScreenWidth - _leftInset) / 2.0f;
