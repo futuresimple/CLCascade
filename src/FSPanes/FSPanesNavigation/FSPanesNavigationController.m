@@ -18,6 +18,7 @@
 @interface FSPanesNavigationController ()
 
 @property (strong, nonatomic, readwrite) FSPanesNavigationView *view;
+@property (assign, nonatomic, getter = isRemovingPanes) BOOL removingPanes;
 
 - (void)_setRootViewController:(UIViewController *)viewController
                       animated:(BOOL)animated
@@ -240,16 +241,20 @@
 
 - (void)_popPanesFromLastIndexTo:(NSInteger)toIndex
 {
-    NSUInteger childControllersCount = [self.childViewControllers count];
-    
-    if (toIndex >= 0 && toIndex < childControllersCount) {
-        for (NSUInteger index=childControllersCount-1; index >= toIndex; index--) {
-            UIViewController *viewController = [self.childViewControllers objectAtIndex:index];
-            [viewController willMoveToParentViewController:nil];
-            
-            [self.navigationView popPaneAtIndex:index animated:NO];
+    if (!self.isRemovingPanes) {
+        self.removingPanes = YES;
+        NSUInteger childControllersCount = [self.childViewControllers count];
+        
+        if (toIndex >= 0 && toIndex < childControllersCount) {
+            for (NSUInteger index=childControllersCount-1; index >= toIndex; index--) {
+                UIViewController *viewController = [self.childViewControllers objectAtIndex:index];
+                [viewController willMoveToParentViewController:nil];
+                
+                [self.navigationView popPaneAtIndex:index animated:NO];
+            }
         }
-    }    
+        self.removingPanes = NO;
+    }
 }
 
 - (void)_replaceViewControllerAtIndex:(NSUInteger)oldViewControllerIndex
