@@ -245,7 +245,7 @@
         self.removingPanes = YES;
         NSUInteger childControllersCount = [self.childViewControllers count];
         
-        if (toIndex >= 0 && toIndex < childControllersCount) {
+        if (childControllersCount > 0 && toIndex >= 0 && toIndex < childControllersCount) {
             for (NSUInteger index=childControllersCount-1; index >= toIndex; index--) {
                 UIViewController *viewController = [self.childViewControllers objectAtIndex:index];
                 [viewController willMoveToParentViewController:nil];
