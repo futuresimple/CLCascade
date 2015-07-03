@@ -76,6 +76,8 @@
 
 - (void)_setProperPositionOfPaneAtIndex:(NSInteger)index;
 
+@property (nonatomic, copy) void(^scrollAnimationCompletionHandler)();
+
 @end
 
 @implementation FSPanesNavigationView
@@ -172,7 +174,7 @@
 
 #pragma mark - FSPanesNavigationView
 
-- (void)pushPane:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize
+- (void)pushPane:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize completion:(void(^)())completionHandler
 {
     NSUInteger newPaneIndex = [_panes count];
     
@@ -188,7 +190,7 @@
         CGRect initialAnimationFrame = CGRectMake(paneOrigin.x - paneSize.width, paneOrigin.y, paneSize.width, paneSize.height);
         newPane.frame = initialAnimationFrame;
         
-        [UIView animateWithDuration:0.15 
+        [UIView animateWithDuration:0.15
                          animations:^ {
                              newPane.frame = paneFrame;
                          }];
@@ -225,7 +227,8 @@
         CGFloat widthDiff = rightSideSpace - newPane.frame.size.width;
         horizontalOffset -= widthDiff;
     }
-    
+        
+    self.scrollAnimationCompletionHandler = completionHandler;
     [_scrollView setContentOffset:CGPointMake(horizontalOffset, 0.0f)
                          animated:animated];
 }
@@ -251,7 +254,7 @@
         [self didPopPaneAtIndex:oldViewIndex];
         
         // add new
-        [self pushPane:newView animated:NO viewSize:viewSize];
+        [self pushPane:newView animated:NO viewSize:viewSize completion:nil];
     }
 }
 
@@ -613,6 +616,14 @@
 }
 
 #pragma mark - <UIScrollViewDelegate>
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+    if (self.scrollAnimationCompletionHandler) {
+        self.scrollAnimationCompletionHandler();
+        self.scrollAnimationCompletionHandler = nil;
+    }
+}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {

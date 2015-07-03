@@ -224,18 +224,21 @@
     NSUInteger indexOfSender = [self.childViewControllers indexOfObject:sender];
     NSUInteger indexOfLastViewController = [self.childViewControllers count] - 1;
     
+
     if (indexOfSender != NSNotFound && indexOfSender != indexOfLastViewController) {
         [self _replaceViewControllerAtIndex:indexOfSender+1
                          withViewController:viewController
                                    animated:animated
                                    viewSize:size];
-    }
-    else {
+    } else {
+        [viewController willMoveToParentViewController:self];
         [self addChildViewController:viewController];
         [self.navigationView pushPane:[viewController view]
                              animated:animated
-                             viewSize:size];
-        [viewController didMoveToParentViewController:self];
+                             viewSize:size
+                           completion:^{
+                                 [viewController didMoveToParentViewController:self];
+                             }];
     }
 }
 

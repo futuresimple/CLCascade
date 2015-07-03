@@ -66,7 +66,10 @@
  */
 @property (nonatomic, readonly) CGFloat widerLeftInset;
 
-- (void)pushPane:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize;
+- (void)pushPane:(UIView *)newView
+        animated:(BOOL)animated
+        viewSize:(FSPaneSize)viewSize
+      completion:(void(^)())completionHandler;
 
 - (void)replacePaneAtIndex:(NSUInteger)oldViewIndex
                   withView:(UIView *)newView
