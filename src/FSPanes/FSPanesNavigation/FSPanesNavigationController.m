@@ -17,7 +17,7 @@
 
 @interface FSPanesNavigationController ()
 
-@property (strong, nonatomic, readwrite) FSPanesNavigationView *view;
+@property (strong, nonatomic, readwrite) FSPanesNavigationView *navigationView;
 @property (assign, nonatomic, getter = isRemovingPanes) BOOL removingPanes;
 
 - (void)_setRootViewController:(UIViewController *)viewController
@@ -37,11 +37,9 @@
 
 @implementation FSPanesNavigationController
 
-@dynamic view; // supplied by super
-
 - (FSPanesNavigationView *)navigationView
 {
-    return self.view;
+    return (FSPanesNavigationView *)self.view;
 }
 
 #pragma mark - UIViewController
@@ -50,8 +48,8 @@
 {
     self.view = [[FSPanesNavigationView alloc] init];
     
-    self.view.delegate = self;
-    self.view.dataSource = self;
+    self.navigationView.delegate = self;
+    self.navigationView.dataSource = self;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
