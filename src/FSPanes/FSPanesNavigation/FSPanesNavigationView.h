@@ -83,7 +83,7 @@
 - (NSInteger)indexOfFirstVisibleView:(BOOL)loadIfNeeded;
 - (NSInteger)indexOfLastVisibleView:(BOOL)loadIfNeeded;
 - (FSPaneView *)paneAtIndex:(NSInteger)index;
-- (NSArray *)visiblePanes;
+- (NSArray <FSPaneView *> *)visiblePanes;
 
 - (void)updateContentLayoutToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
                                          duration:(NSTimeInterval)duration;
