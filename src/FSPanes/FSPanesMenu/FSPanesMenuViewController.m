@@ -45,12 +45,14 @@
 
 - (void)selectPaneAtIndex:(NSUInteger)index
 {
-    if (index < [self tableView:self.tableView numberOfRowsInSection:0]) {
-        NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForRow:index inSection:0];
-        [self.tableView selectRowAtIndexPath:newSelectedIndexPath
-                                    animated:YES
-                              scrollPosition:UITableViewScrollPositionNone];
-        [self tableView:self.tableView didSelectRowAtIndexPath:newSelectedIndexPath];
+    NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    [self.tableView selectRowAtIndexPath:newSelectedIndexPath
+                                animated:YES
+                          scrollPosition:UITableViewScrollPositionNone];
+    
+    UIViewController *viewController = [self.menuDataSource viewControllerForMenuItemAtIndex:index];
+    if (viewController) {
+        [self.panesNavigationController setRootViewController:viewController animated:YES];
     }
 }
 
@@ -77,10 +79,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIViewController *viewController = [self.menuDataSource viewControllerForMenuItemAtIndex:indexPath.row];
-    if (viewController) {
-        [self.panesNavigationController setRootViewController:viewController animated:YES];
-    }
+    [self selectPaneAtIndex:indexPath.row];
 }
 
 @end
