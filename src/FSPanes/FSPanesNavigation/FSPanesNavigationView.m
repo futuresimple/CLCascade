@@ -76,7 +76,7 @@
 
 - (void)_setProperPositionOfPaneAtIndex:(NSInteger)index;
 
-@property (nonatomic, copy) void(^scrollAnimationCompletionHandler)();
+@property (nonatomic, copy) void(^scrollAnimationCompletionHandler)(void);
 
 @end
 
@@ -174,7 +174,7 @@
 
 #pragma mark - FSPanesNavigationView
 
-- (void)pushPane:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize completion:(void(^)())completionHandler
+- (void)pushPane:(UIView *)newView animated:(BOOL)animated viewSize:(FSPaneSize)viewSize completion:(void(^)(void))completionHandler
 {
     NSUInteger newPaneIndex = [_panes count];
     

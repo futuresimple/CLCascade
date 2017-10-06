@@ -58,7 +58,8 @@
     
     CGColorSpaceRef baseSpace = CGColorSpaceCreateDeviceRGB();
     CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, colors, NULL, 2);
-    CGColorSpaceRelease(baseSpace), baseSpace = NULL;
+    CGColorSpaceRelease(baseSpace);
+    baseSpace = NULL;
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
@@ -72,7 +73,8 @@
     }
 
     CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-    CGGradientRelease(gradient), gradient = NULL;
+    CGGradientRelease(gradient);
+    gradient = NULL;
 }
 
 @end
