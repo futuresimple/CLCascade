@@ -69,7 +69,7 @@
 - (void)pushPane:(UIView *)newView
         animated:(BOOL)animated
         viewSize:(FSPaneSize)viewSize
-      completion:(void(^)())completionHandler;
+      completion:(void(^)(void))completionHandler;
 
 - (void)replacePaneAtIndex:(NSUInteger)oldViewIndex
                   withView:(UIView *)newView
