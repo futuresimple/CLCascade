@@ -266,7 +266,7 @@
         if (pane.isLoaded) {
             void (^panePopBlock) (BOOL) = ^ (BOOL finished) {
                 [self _unloadPane:pane remove:YES];
-                if (!_flags.isDetachingPanes) {
+                if (!self->_flags.isDetachingPanes) {
                     // beacause content size and insets set during animation would cause glitches
                     [self _setProperEdgeInset:NO];
                     [self _setProperContentSize];
@@ -452,11 +452,11 @@
     if (animated) {
         [UIView animateWithDuration:0.4
                          animations:^{
-            _scrollView.contentInset = [self _calculateEdgeInset:interfaceOrientation];   
+            self->_scrollView.contentInset = [self _calculateEdgeInset:interfaceOrientation];
         }];
     }
     else {
-        _scrollView.contentInset = [self _calculateEdgeInset:interfaceOrientation];   
+        self->_scrollView.contentInset = [self _calculateEdgeInset:interfaceOrientation];   
     }
 }
 
