@@ -54,11 +54,14 @@
     self.view.dataSource = self;
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-                                         duration:(NSTimeInterval)duration
+- (void)viewWillTransitionToSize:(CGSize)size
+       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    [self.navigationView updateContentLayoutToInterfaceOrientation:interfaceOrientation
-                                                          duration:duration];
+    UIInterfaceOrientation orientation = size.height > size.width
+        ? UIInterfaceOrientationPortrait : UIInterfaceOrientationLandscapeLeft;
+
+    [self.navigationView updateContentLayoutToInterfaceOrientation:orientation
+                                                          duration:coordinator.transitionDuration];
 }
 
 - (void)didReceiveMemoryWarning

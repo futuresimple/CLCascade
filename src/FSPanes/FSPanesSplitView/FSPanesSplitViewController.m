@@ -147,11 +147,11 @@
     return UIStatusBarStyleLightContent;
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
-                                         duration:(NSTimeInterval)duration 
+- (void)viewWillTransitionToSize:(CGSize)size
+       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    if ([_panesNavigationController respondsToSelector:@selector(willAnimateRotationToInterfaceOrientation:duration:)]) {
-        [_panesNavigationController willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
+    if ([_panesNavigationController respondsToSelector:@selector(viewWillTransitionToSize:withTransitionCoordinator:)]) {
+        [_panesNavigationController viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     }
 }
 
