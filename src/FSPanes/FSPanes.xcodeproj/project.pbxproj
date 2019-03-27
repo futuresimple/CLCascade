@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1E97F2E5224BBA8D00BDD78F /* FSNavigationMenuDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E97F2E4224BBA8D00BDD78F /* FSNavigationMenuDataSource.h */; };
+		1E97F2E5224BBA8D00BDD78F /* FSNavigationMenuDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E97F2E4224BBA8D00BDD78F /* FSNavigationMenuDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		95353C27156D68FD003B78FB /* FSPaneBorderShadowView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C1D156D68FD003B78FB /* FSPaneBorderShadowView.h */; };
 		95353C28156D68FD003B78FB /* FSPaneBorderShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C1E156D68FD003B78FB /* FSPaneBorderShadowView.m */; };
 		95353C2D156D68FD003B78FB /* FSPaneView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C23156D68FD003B78FB /* FSPaneView.h */; };
@@ -174,13 +174,13 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E97F2E5224BBA8D00BDD78F /* FSNavigationMenuDataSource.h in Headers */,
 				95353C27156D68FD003B78FB /* FSPaneBorderShadowView.h in Headers */,
 				95353C2D156D68FD003B78FB /* FSPaneView.h in Headers */,
 				95353C38156D6907003B78FB /* FSPanesMenuViewController.h in Headers */,
 				95353C3F156D690F003B78FB /* FSPanesNavigationController.h in Headers */,
 				95353C41156D690F003B78FB /* FSPanesNavigationView.h in Headers */,
 				95353C49156D6915003B78FB /* FSPanesSplitView.h in Headers */,
-				1E97F2E5224BBA8D00BDD78F /* FSNavigationMenuDataSource.h in Headers */,
 				95353C4B156D6915003B78FB /* FSPanesSplitViewController.h in Headers */,
 				95353C4E156D6923003B78FB /* FSPanesGlobal.h in Headers */,
 				95353C50156D6928003B78FB /* FSPanes.h in Headers */,
