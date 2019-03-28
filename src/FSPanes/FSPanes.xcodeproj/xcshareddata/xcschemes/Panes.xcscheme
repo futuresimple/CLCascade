@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B6EA8CAB1456D25200817157"
-               BuildableName = "libFSPanes.a"
-               BlueprintName = "FSPanes"
+               BlueprintIdentifier = "1E97F2EA224BCA4100BDD78F"
+               BuildableName = "Panes.framework"
+               BlueprintName = "Panes"
                ReferencedContainer = "container:FSPanes.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B6EA8CAB1456D25200817157"
-            BuildableName = "libFSPanes.a"
-            BlueprintName = "FSPanes"
+            BlueprintIdentifier = "1E97F2EA224BCA4100BDD78F"
+            BuildableName = "Panes.framework"
+            BlueprintName = "Panes"
             ReferencedContainer = "container:FSPanes.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,9 +63,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B6EA8CAB1456D25200817157"
-            BuildableName = "libFSPanes.a"
-            BlueprintName = "FSPanes"
+            BlueprintIdentifier = "1E97F2EA224BCA4100BDD78F"
+            BuildableName = "Panes.framework"
+            BlueprintName = "Panes"
             ReferencedContainer = "container:FSPanes.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

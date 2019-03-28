@@ -8,6 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		1E97F2E5224BBA8D00BDD78F /* FSNavigationMenuDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E97F2E4224BBA8D00BDD78F /* FSNavigationMenuDataSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1E97F2EF224BCA4100BDD78F /* Panes.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E97F2ED224BCA4100BDD78F /* Panes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1E97F2F7224BCA7A00BDD78F /* UIViewController+FSPanes.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C52156D6934003B78FB /* UIViewController+FSPanes.m */; };
+		1E97F2FA224BCA7A00BDD78F /* FSPanesSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C47156D6915003B78FB /* FSPanesSplitViewController.m */; };
+		1E97F2FC224BCA7A00BDD78F /* FSPanesSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C45156D6915003B78FB /* FSPanesSplitView.m */; };
+		1E97F2FE224BCA7A00BDD78F /* FSPanesMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C35156D6907003B78FB /* FSPanesMenuViewController.m */; };
+		1E97F300224BCA7A00BDD78F /* FSPanesNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C3C156D690F003B78FB /* FSPanesNavigationController.m */; };
+		1E97F302224BCA7A00BDD78F /* FSPanesNavigationScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F9D6C369156FBA2900A6B916 /* FSPanesNavigationScrollView.m */; };
+		1E97F304224BCA7A00BDD78F /* FSPanesNavigationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C3E156D690F003B78FB /* FSPanesNavigationView.m */; };
+		1E97F306224BCA7A00BDD78F /* FSPaneBorderShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C1E156D68FD003B78FB /* FSPaneBorderShadowView.m */; };
+		1E97F308224BCA7A00BDD78F /* FSPaneView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C24156D68FD003B78FB /* FSPaneView.m */; };
 		95353C27156D68FD003B78FB /* FSPaneBorderShadowView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C1D156D68FD003B78FB /* FSPaneBorderShadowView.h */; };
 		95353C28156D68FD003B78FB /* FSPaneBorderShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95353C1E156D68FD003B78FB /* FSPaneBorderShadowView.m */; };
 		95353C2D156D68FD003B78FB /* FSPaneView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95353C23156D68FD003B78FB /* FSPaneView.h */; };
@@ -34,6 +44,9 @@
 
 /* Begin PBXFileReference section */
 		1E97F2E4224BBA8D00BDD78F /* FSNavigationMenuDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSNavigationMenuDataSource.h; sourceTree = "<group>"; };
+		1E97F2EB224BCA4100BDD78F /* Panes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Panes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E97F2ED224BCA4100BDD78F /* Panes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Panes.h; sourceTree = "<group>"; };
+		1E97F2EE224BCA4100BDD78F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95353C1D156D68FD003B78FB /* FSPaneBorderShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPaneBorderShadowView.h; sourceTree = "<group>"; };
 		95353C1E156D68FD003B78FB /* FSPaneBorderShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSPaneBorderShadowView.m; sourceTree = "<group>"; };
 		95353C23156D68FD003B78FB /* FSPaneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSPaneView.h; sourceTree = "<group>"; };
@@ -61,6 +74,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1E97F2E8224BCA4100BDD78F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6EA8CA91456D25200817157 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -72,6 +92,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E97F2EC224BCA4100BDD78F /* Panes */ = {
+			isa = PBXGroup;
+			children = (
+				1E97F2ED224BCA4100BDD78F /* Panes.h */,
+				1E97F2EE224BCA4100BDD78F /* Info.plist */,
+			);
+			path = Panes;
+			sourceTree = "<group>";
+		};
 		95353C1C156D68FD003B78FB /* FSPane */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				B6EA8CB11456D25200817157 /* FSPanes */,
+				1E97F2EC224BCA4100BDD78F /* Panes */,
 				B6EA8CAE1456D25200817157 /* Frameworks */,
 				B6EA8CAD1456D25200817157 /* Products */,
 			);
@@ -129,6 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				B6EA8CAC1456D25200817157 /* libFSPanes.a */,
+				1E97F2EB224BCA4100BDD78F /* Panes.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -170,6 +201,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		1E97F2E6224BCA4100BDD78F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E97F2EF224BCA4100BDD78F /* Panes.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6EA8CAA1456D25200817157 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -193,6 +232,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		1E97F2EA224BCA4100BDD78F /* Panes */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1E97F2F2224BCA4100BDD78F /* Build configuration list for PBXNativeTarget "Panes" */;
+			buildPhases = (
+				1E97F2E6224BCA4100BDD78F /* Headers */,
+				1E97F2E7224BCA4100BDD78F /* Sources */,
+				1E97F2E8224BCA4100BDD78F /* Frameworks */,
+				1E97F2E9224BCA4100BDD78F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Panes;
+			productName = Panes;
+			productReference = 1E97F2EB224BCA4100BDD78F /* Panes.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		B6EA8CAB1456D25200817157 /* FSPanes */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B6EA8CB91456D25200817157 /* Build configuration list for PBXNativeTarget "FSPanes" */;
@@ -218,6 +275,11 @@
 			attributes = {
 				LastUpgradeCheck = 0930;
 				TargetAttributes = {
+					1E97F2EA224BCA4100BDD78F = {
+						CreatedOnToolsVersion = 10.1;
+						DevelopmentTeam = Y8JL4GUYW3;
+						ProvisioningStyle = Automatic;
+					};
 					B6EA8CAB1456D25200817157 = {
 						LastSwiftMigration = 1000;
 					};
@@ -236,11 +298,38 @@
 			projectRoot = "";
 			targets = (
 				B6EA8CAB1456D25200817157 /* FSPanes */,
+				1E97F2EA224BCA4100BDD78F /* Panes */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		1E97F2E9224BCA4100BDD78F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		1E97F2E7224BCA4100BDD78F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E97F2F7224BCA7A00BDD78F /* UIViewController+FSPanes.m in Sources */,
+				1E97F2FA224BCA7A00BDD78F /* FSPanesSplitViewController.m in Sources */,
+				1E97F2FC224BCA7A00BDD78F /* FSPanesSplitView.m in Sources */,
+				1E97F2FE224BCA7A00BDD78F /* FSPanesMenuViewController.m in Sources */,
+				1E97F300224BCA7A00BDD78F /* FSPanesNavigationController.m in Sources */,
+				1E97F302224BCA7A00BDD78F /* FSPanesNavigationScrollView.m in Sources */,
+				1E97F304224BCA7A00BDD78F /* FSPanesNavigationView.m in Sources */,
+				1E97F306224BCA7A00BDD78F /* FSPaneBorderShadowView.m in Sources */,
+				1E97F308224BCA7A00BDD78F /* FSPaneView.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B6EA8CA81456D25200817157 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -260,6 +349,88 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		1E97F2F0224BCA4100BDD78F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = Y8JL4GUYW3;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = Panes/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.futuresimple.Panes;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		1E97F2F1224BCA4100BDD78F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = Y8JL4GUYW3;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = Panes/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.futuresimple.Panes;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		B6EA8CB71456D25200817157 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -386,6 +557,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1E97F2F2224BCA4100BDD78F /* Build configuration list for PBXNativeTarget "Panes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E97F2F0224BCA4100BDD78F /* Debug */,
+				1E97F2F1224BCA4100BDD78F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B6EA8CA61456D25200817157 /* Build configuration list for PBXProject "FSPanes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
