@@ -48,7 +48,7 @@
     // on the iPad in landscape width is 20 and height is 1024 :)
     CGFloat statusBarHeight = MIN(CGRectGetHeight(statusBarFrame), CGRectGetWidth(statusBarFrame));
 
-    NSDictionary *metrics = @{@"spacing": [FSPanesSplitViewController isRunningIOS6] ? @0 : @(statusBarHeight)};
+    NSDictionary *metrics = @{@"spacing": @(statusBarHeight)};
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[content]|"
                                                                  options:0
                                                                  metrics:metrics
